@@ -1,5 +1,5 @@
 {
-  "name": "@splunkdev/splunk-cloud-node-auth",
+  "name": "@splunkdev/cloud-node-auth",
   "version": "0.0.1",
   "description": "Splunk Cloud Node Authentication Management for Javascript",
   "main": "splunk.js",
@@ -15,14 +15,12 @@
     "docs": "yarn ts:docs",
     "build": "node ci/extract_version.js && tsc -p tsconfig.json",
     "build:tests": "tsc -p tsconfig.test.json",
-    "clean": "rimraf *.js *.map *.d.ts services service_base service_extensions || true",
+    "clean": "rimraf *.js *.map *.d.ts || true",
     "cover": "NODE_ENV=coverage nyc yarn test",
     "cover:integration": "NODE_ENV=coverage nyc --report-dir coverage-integration yarn ci:integration",
     "cover:integration:ml": "NODE_ENV=coverage nyc --report-dir coverage-integration-ml yarn ci:integration:ml",
     "pretest": "yarn tslint && yarn build",
     "test": "ts-mocha -p tsconfig.test.json test/unit/*.ts --timeout=900000 --exclude test/unit/*.d.ts",
-    "test:integration": "ts-mocha -p tsconfig.test.json --timeout=900000 test/integration/*.ts --exclude test/integration/ml_proxy.ts",
-    "test:integration:ml": "ts-mocha -p tsconfig.test.json --timeout=900000 test/integration/ml_proxy.ts",
     "test:examples": "ts-mocha -p tsconfig.test.json --timeout=900000 test/examples/*.ts",
     "ci:integration": "bash -c 'allow_failures=0 ./ci/integration/runtests.sh'",
     "ci:integration:ml": "bash -c 'allow_failures=0 ./ci/integration/runtests-ml.sh'",
@@ -76,11 +74,11 @@
     "tslint-eslint-rules": "^5.4.0",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.2.1",
-    "typescript": "^3.0.3"
+    "typescript": "^3.7.2"
   },
   "dependencies": {
-    "buffer": "^5.4.3",
-    "rxjs": "^6.3.2"
+    "@splunkdev/cloud-sdk": "^2.0.0",
+    "buffer": "^5.4.3"
   },
   "nyc": {
     "reporter": [

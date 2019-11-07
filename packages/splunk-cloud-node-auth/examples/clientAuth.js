@@ -18,8 +18,8 @@
 // ***** TITLE: Use Client Credential authentication to create and retrieve a KVCollection dataset.
 require('isomorphic-fetch');
 
-const { SplunkCloud } = require('../splunk');
-const { ClientAuthManager, ClientAuthManagerSettings } = require('../auth/client_auth_manager')
+const { SplunkCloud } = require('@splunkdev/cloud-sdk');
+const { ClientAuthManager, ClientAuthManagerSettings } = require('../client_auth_manager')
 const {
     SPLUNK_CLOUD_API_HOST,
     SPLUNK_CLOUD_APPS_HOST,

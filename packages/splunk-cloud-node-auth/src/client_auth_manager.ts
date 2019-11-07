@@ -14,10 +14,10 @@
  * under the License.
  */
 
+import { AuthManager } from '@splunkdev/cloud-sdk/auth_manager';
 import { Buffer } from 'buffer';
-import { AuthManager } from './auth_manager';
-import { SplunkAuthError } from './splunk_auth_error';
 import { AuthManagerSettings, BaseAuthManager } from './base_auth_manager';
+import { SplunkAuthError } from './splunk_auth_error';
 
 import 'isomorphic-fetch';
 
@@ -91,7 +91,6 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
             throw new SplunkAuthError('grantType is not specified.');
         }
 
-        // Client Credential authentication should only be used for node applications.  Buffer does not exist within a web browser client.
         const authEncoded = Buffer.from(`${this.authSettings.clientId}:${this.authSettings.clientSecret}`).toString('base64');
         const headers = {
             ...{

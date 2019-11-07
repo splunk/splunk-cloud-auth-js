@@ -248,6 +248,13 @@
     mkdirp "^0.5.1"
     rimraf "^2.5.2"
 
+"@splunkdev/cloud-sdk@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@splunkdev/cloud-sdk/-/cloud-sdk-2.0.0.tgz#f4efefa8b24eb8867204add11d7fff04a881d78c"
+  integrity sha512-Vw/budquOBmZjp8KT66EkMnJLA8Kp6RklMD8VHM3bjTeT1/nlrpxMGNoXF3Y2vWi/LCVuJQgYDPFflCNaiWmsw==
+  dependencies:
+    rxjs "^6.3.2"
+
 "@types/body-parser@*":
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.17.1.tgz#18fcf61768fb5c30ccc508c21d6fd2e8b3bf7897"
@@ -5178,10 +5185,15 @@ typedoc@^0.15.0:
     typedoc-default-themes "^0.6.0"
     typescript "3.5.x"
 
-typescript@3.5.x, typescript@^3.0.3:
+typescript@3.5.x:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"
   integrity sha512-ACzBtm/PhXBDId6a6sDJfroT2pOWt/oOnk4/dElG5G33ZL776N3Y6/6bKZJBFpd+b05F3Ct9qDjMeJmRWtE2/g==
+
+typescript@^3.7.2:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.2.tgz#27e489b95fa5909445e9fef5ee48d81697ad18fb"
+  integrity sha512-ml7V7JfiN2Xwvcer+XAf2csGO1bPBdRbFCkYBczNZggrBZ9c7G3riSUeJmqEU5uOtXNPMhE3n+R4FA/3YOAWOQ==
 
 uc.micro@^1.0.1, uc.micro@^1.0.5:
   version "1.0.6"

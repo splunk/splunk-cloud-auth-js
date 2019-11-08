@@ -34,6 +34,11 @@ export class AuthContext {
     public accessToken: string = '';
 
     /**
+     * Refresh token.
+     */
+    public refreshToken: string = '';
+
+    /**
      * Id token.
      */
     public idToken: string = '';
@@ -76,20 +81,20 @@ export abstract class AuthManagerSettings {
     }
 }
 
+export const HEADERS_APPLICATION_JSON = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+};
+
+export const HEADERS_APPLICATION_JSON_URLENCODED = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded'
+};
+
 /**
  * BaseAuthManager abstract class.
  */
 export abstract class BaseAuthManager<T extends AuthManagerSettings> {
-    protected readonly HEADERS_DEFAULT = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    };
-
-    protected readonly HEADERS_URLENCODED = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-    };
-
     protected readonly DEFAULT_SCOPE: string = 'openid email profile';
     protected readonly SCOPE_OPENID = 'openid';
     protected readonly PATH_AUTHN: string = '/authn';
@@ -98,7 +103,7 @@ export abstract class BaseAuthManager<T extends AuthManagerSettings> {
     protected readonly PATH_TOKEN_CSRF: string = '/csrfToken';
 
     protected readonly authSettings: T;
-    protected readonly authContext: AuthContext;
+    protected authContext: AuthContext;
 
     /**
      * BaseAuthManager constructor.

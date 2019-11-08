@@ -36,11 +36,11 @@ const {
 
     // ***** STEP 1: Create ClientAuthManagerSettings.
     const authSettings = new ClientAuthManagerSettings(
-        SPLUNK_CLOUD_AUTH_HOST,
-        '',
-        BACKEND_CLIENT_ID,
-        BACKEND_CLIENT_SECRET,
-        'client_credentials');
+        host = SPLUNK_CLOUD_AUTH_HOST,
+        scope = '',
+        clientId = BACKEND_CLIENT_ID,
+        clientSecret = BACKEND_CLIENT_SECRET,
+        grantType = 'client_credentials');
 
     // ***** STEP 2: Create ClientAuthManager.
     // ***** DESCRIPTION: Use the ClientAuthManagerSettings.

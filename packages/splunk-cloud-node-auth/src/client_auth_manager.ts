@@ -16,7 +16,7 @@
 
 import { AuthManager } from '@splunkdev/cloud-sdk/auth_manager';
 import { Buffer } from 'buffer';
-import { AuthManagerSettings, BaseAuthManager } from './base_auth_manager';
+import { AuthManagerSettings, BaseAuthManager, HEADERS_APPLICATION_JSON_URLENCODED } from './base_auth_manager';
 import { SplunkAuthError } from './splunk_auth_error';
 
 import 'isomorphic-fetch';
@@ -63,7 +63,7 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
      * Checks whether the client is authenticated by checking for a token and comparing against the expiration time.
      */
     public isAuthenticated(): boolean {
-        if (this.authContext.accessToken && this.authContext.tokenExpiration < new Date().getTime()) {
+        if (this.authContext.accessToken && this.authContext.tokenExpiration > new Date().getTime()) {
             return true;
         }
         return false;
@@ -96,7 +96,7 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
             ...{
                 Authorization: `Basic ${authEncoded}`
             },
-            ...this.HEADERS_URLENCODED
+            ...HEADERS_APPLICATION_JSON_URLENCODED
         };
         const tokenUrl = new URL(this.PATH_TOKEN, this.authSettings.host);
         const body: Map<string, any> = new Map([

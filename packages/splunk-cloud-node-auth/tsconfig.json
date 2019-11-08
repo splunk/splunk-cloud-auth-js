@@ -9,6 +9,7 @@
       "es2015.symbol.wellknown",
       "dom"
     ],
+    "esModuleInterop": true,
     "sourceMap": true,
     "outDir": ".",
     "declaration": true,
@@ -18,7 +19,9 @@
     // "noUnusedLocals": true,
     "strict": true,
     "target": "es3",
-    "types": [],
+    "types": [
+      "node"
+    ],
     "resolveJsonModule": true
   },
   "include": [

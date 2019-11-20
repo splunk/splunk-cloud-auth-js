@@ -1,0 +1,18 @@
+{
+  "restoreMocks": true,
+  "moduleNameMapper": {
+  },
+  "testMatch": [
+    "**/src/tests/*.unit.js"
+  ],
+  "testPathIgnorePatterns": [
+  ],
+  "reporters": [
+    "default",
+    "jest-junit"
+  ],
+  "transform": {
+    ".*": "babel-jest"
+  }
+}
+

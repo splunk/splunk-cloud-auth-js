@@ -248,10 +248,10 @@
     mkdirp "^0.5.1"
     rimraf "^2.5.2"
 
-"@splunkdev/cloud-sdk@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@splunkdev/cloud-sdk/-/cloud-sdk-2.0.0.tgz#f4efefa8b24eb8867204add11d7fff04a881d78c"
-  integrity sha512-Vw/budquOBmZjp8KT66EkMnJLA8Kp6RklMD8VHM3bjTeT1/nlrpxMGNoXF3Y2vWi/LCVuJQgYDPFflCNaiWmsw==
+"@splunkdev/cloud-sdk@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@splunkdev/cloud-sdk/-/cloud-sdk-3.0.0.tgz#1d438ded195d9778912f31847a95b50014565e50"
+  integrity sha512-VnTv2F2OAuu6N80gFqD0NGeSDOU0djdeDMGS6ZXWabRpevll1sEPsFt4zOc4qjnv1J3v0jBdxtdg91kAACzh4A==
   dependencies:
     rxjs "^6.3.2"
 

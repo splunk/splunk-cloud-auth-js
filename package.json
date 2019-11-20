@@ -3,6 +3,9 @@
   "license": "UNLICENSED",
   "author": "Splunk",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "lerna run build",
     "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",

@@ -1,0 +1,86 @@
+# Various scratch files
+tmp/*
+!tmp/DO_NOT_DELETE
+*.DS_Store
+*.bak
+
+# Binaries
+bin
+
+# Coverage files
+.coverage
+coverage.out
+*coverprofile*
+coverage.xml
+htmlcov
+coverage
+
+# test results
+test-result.xml
+.eslintcache
+cached_uglify
+
+# Project files
+.idea
+*.iml
+.vscode*
+venv*
+
+# Secrets
+*.aes
+*secret*
+.npmrc
+
+# Generated files
+cover.html
+build
+dist
+package
+backend/constants_gen.go
+
+# Python stuff
+*egg-info
+.egg*
+.cache
+*.pyc
+
+# Dependencies
+node_modules
+package-lock.json
+
+# Debug files
+debug
+npm-debug.log
+lerna-debug.log
+
+# Lua coverage files
+luacov.stats.out
+luacov.report.out
+
+# performance
+performance/artifacts
+
+# From create-react-app:
+
+# dependencies
+node_modules
+
+# testing
+coverage_report
+functional-temp
+splunktional-temp
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+packages/SWA/lib

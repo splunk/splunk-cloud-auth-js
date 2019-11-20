@@ -1,0 +1,29 @@
+{
+  "name": "@splunk/splunk-cloud-auth-js",
+  "license": "UNLICENSED",
+  "author": "Splunk",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build",
+    "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",
+    "format:verify": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier -l",
+    "lint": "lerna run lint --no-sort",
+    "lint:ci": "lerna run lint:ci --no-sort",
+    "publish": "cicd/scripts/publish.sh",
+    "docs": "lerna run docs --no-sort",
+    "setup": "yarn; lerna run build;",
+    "start": "lerna run start --stream --no-sort --concurrency 100",
+    "test": "lerna run test --stream --no-sort",
+    "test:ci": "lerna run test:ci --no-sort"
+  },
+  "devDependencies": {
+    "lerna": "^3.18.4"
+  },
+  "dependencies": {
+    "cz-customizable": "^6.2.0",
+    "prettier": "^1.19.1"
+  },
+  "engines": {
+    "node": ">=8"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "command": {
+    "publish": {
+      "registry": "https://repo.splunk.com/artifactory/api/npm/npm-solutions-local"
+    }
+  },
+  "packages": [
+    "packages/*"
+  ],
+  "npmClient": "yarn",
+  "version": "independent"
+}

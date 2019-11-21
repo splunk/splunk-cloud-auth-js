@@ -19,7 +19,7 @@
 require('isomorphic-fetch');
 
 const { SplunkCloud } = require('@splunkdev/cloud-sdk');
-const { ClientAuthManager, ClientAuthManagerSettings } = require('../client_auth_manager')
+const { ClientAuthManager, ClientAuthManagerSettings } = require('../dist');
 const {
     SPLUNK_CLOUD_API_HOST,
     SPLUNK_CLOUD_APPS_HOST,
@@ -71,6 +71,6 @@ const {
         // ***** STEP 5: Cleanup - Delete all created data sets.
         // ***** DESCRIPTION: Ignoring exceptions on cleanup.
         console.log('Cleaning up all created datasets.');
-        await splunk.catalog.deleteDataset(`${collectionModule}.${kvcollectionName}`).catch(() => {});
+        await splunk.catalog.deleteDataset(`${collectionModule}.${kvcollectionName}`).catch(() => { });
     };
 })().catch(error => console.error(error));

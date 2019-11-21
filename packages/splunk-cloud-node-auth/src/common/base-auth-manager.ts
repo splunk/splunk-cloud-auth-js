@@ -19,6 +19,26 @@
  */
 export class AuthContext {
     /**
+     * Access token.  This is the token used for authorization.
+     */
+    public accessToken: string = '';
+
+    /**
+     * Id token.
+     */
+    public idToken: string = '';
+
+    /**
+     * Refresh token.
+     */
+    public refreshToken: string = '';
+
+    /**
+     * Scope.
+     */
+    public scope: string = '';
+
+    /**
      * Token expiration time in milliseconds since epoch.
      */
     public tokenExpiration: number = 0;
@@ -27,32 +47,17 @@ export class AuthContext {
      * Token type.
      */
     public tokenType: string = '';
-
-    /**
-     * Access token.  This is the token used for authorization.
-     */
-    public accessToken: string = '';
-
-    /**
-     * Refresh token.
-     */
-    public refreshToken: string = '';
-
-    /**
-     * Id token.
-     */
-    public idToken: string = '';
-
-    /**
-     * Scope.
-     */
-    public scope: string = '';
 }
 
 /**
  * AuthManagerSettings can be used to store common fields required to authenticate.
  */
 export abstract class AuthManagerSettings {
+    /**
+     * Client Id.
+     */
+    public clientId: string;
+
     /**
      * Host endpoint.
      */
@@ -62,11 +67,6 @@ export abstract class AuthManagerSettings {
      * Scope.
      */
     public scope: string;
-
-    /**
-     * Client Id.
-     */
-    public clientId: string;
 
     /**
      * AuthManagerSettings.
@@ -112,5 +112,12 @@ export abstract class BaseAuthManager<T extends AuthManagerSettings> {
     constructor(authSettings: T) {
         this.authSettings = authSettings;
         this.authContext = new AuthContext();
+    }
+
+    /**
+     * Gets the AuthContext.
+     */
+    get authorizationContext(): AuthContext {
+        return this.authContext;
     }
 }

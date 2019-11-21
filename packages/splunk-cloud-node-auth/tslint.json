@@ -1,62 +1,118 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended",
-        "tslint-eslint-rules",
-        "tslint-config-airbnb",
-        "tslint-config-prettier"
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-eslint-rules",
+    "tslint-config-airbnb",
+    "tslint-config-prettier"
+  ],
+  "linterOptions": {
+    "exclude": [
+      "src/version.ts"
     ],
-    "linterOptions": {
-        "exclude": [
-            "src/generated/**/*",
-            "test/data/**/*"
-        ]
+    "include": [
+      "src/**/*.ts",
+      "examples/**/*.js"
+    ]
+  },
+  "jsRules": {
+    "max-line-length": {
+      "options": [
+        120
+      ]
     },
-    "jsRules": {},
-    "rules": {
-        "quotemark": [
-            true,
-            "single"
+    "file-name-casing": [
+      true,
+      "kebab-case"
+    ]
+  },
+  "rules": {
+    "align": [
+      true,
+      "arguments",
+      "elements",
+      "members",
+      "parameters",
+      "statements"
+    ],
+    "arrow-parens": false,
+    "curly": true,
+    "file-name-casing": [
+      true,
+      "kebab-case"
+    ],
+    "function-name": [
+      false,
+      {}
+    ],
+    "import-name": false,
+    "interface-name": false,
+    "interface-over-type-literal": false,
+    "max-classes-per-file": false,
+    "max-line-length": [
+      true,
+      120
+    ],
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "public-static-field",
+          "public-instance-field",
+          "public-constructor",
+          "private-static-field",
+          "private-instance-field",
+          "private-constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
         ],
-        "interface-name": false,
-        "member-ordering": false,
-        "object-literal-sort-keys": false,
-        "no-console": false,
-        "arrow-parens": false,
-        "max-classes-per-file": false,
-        "max-line-length": false,
-        "prefer-array-literal": false,
-        "interface-over-type-literal": false,
-        "no-increment-decrement": false,
-        "ter-indent": [
-            true,
-            4,
-            {
-                "SwitchCase": 1,
-                "VariableDeclarator": 1,
-                "outerIIFEBody": 1
-            }
-        ],
-        "ter-no-tabs": true,
-        "import-name": false,
-        "no-this-assignment": false,
-        "curly": true,
-        "object-curly-spacing": [
-            true,
-            "always"
-        ],
-        "no-trailing-whitespace": true,
-        "triple-equals": true,
-        "no-irregular-whitespace": true,
-        "semicolon": true,
-        "no-unnecessary-callback-wrapper": true,
-        "object-literal-key-quotes": [true, "consistent-as-needed"],
-        "no-multi-spaces": true,
-        "variable-name": [true, "allow-leading-underscore"],
-        "no-floating-promises": true,
-        "no-redundant-jsdoc": true,
-        "no-empty-interface": false,
-        "function-name": [false, {}]
-    },
-    "rulesDirectory": []
+        "alphabetize": true
+      }
+    ],
+    "no-console": false,
+    "no-empty-interface": false,
+    "no-floating-promises": true,
+    "no-increment-decrement": false,
+    "no-irregular-whitespace": true,
+    "no-multi-spaces": true,
+    "no-this-assignment": false,
+    "no-trailing-whitespace": true,
+    "no-redundant-jsdoc": true,
+    "no-unnecessary-callback-wrapper": true,
+    "object-literal-key-quotes": [
+      true,
+      "consistent-as-needed"
+    ],
+    "object-curly-spacing": [
+      true,
+      "always"
+    ],
+    "object-literal-sort-keys": [
+      true,
+      "shorthand-first"
+    ],
+    "prefer-array-literal": false,
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "semicolon": true,
+    "ter-indent": [
+      true,
+      4,
+      {
+        "SwitchCase": 1,
+        "VariableDeclarator": 1,
+        "outerIIFEBody": 1
+      }
+    ],
+    "ter-no-tabs": true,
+    "triple-equals": true,
+    "variable-name": [
+      true,
+      "allow-leading-underscore"
+    ]
+  },
+  "rulesDirectory": []
 }

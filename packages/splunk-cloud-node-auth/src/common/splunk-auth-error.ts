@@ -5,8 +5,8 @@ import { SplunkErrorParams } from '@splunkdev/cloud-sdk/client';
  */
 export class SplunkAuthError extends Error implements SplunkErrorParams {
     public code?: string;
-    public httpStatusCode?: number;
     public details?: object | any[];
+    public httpStatusCode?: number;
     public moreInfo?: string;
 
     /**

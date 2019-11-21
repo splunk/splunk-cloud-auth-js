@@ -12,7 +12,9 @@
       "es2015.symbol.wellknown",
       "dom"
     ],
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
   "include": [
     "test/**/*.ts"

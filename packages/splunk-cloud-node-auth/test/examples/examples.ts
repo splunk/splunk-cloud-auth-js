@@ -36,18 +36,21 @@ examples.forEach((exampleFile: string) => {
     if (extension === '.js' || extension === '.ts') {
         describe(`Testing ${exampleFile} example`, () => {
             it('should execute successfully', (done) => {
-                execFile(runners[path.extname(exampleFile)], [path.join(examplesPath, exampleFile)], (error: any, stdout: string, stderr: string) => {
-                    console.log('========================== STDERR ==========================');
-                    console.log(stderr);
-                    console.log('========================== STDOUT ==========================');
-                    console.log(stdout);
-                    if (error) {
-                        console.log('======================== NODE ERROR ========================');
-                    }
-                    console.log('============================================================');
-                    assert.isEmpty(stderr);
-                    done(error);
-                });
+                execFile(
+                    runners[path.extname(exampleFile)],
+                    [path.join(examplesPath, exampleFile)],
+                    (error: any, stdout: string, stderr: string) => {
+                        console.log('========================== STDERR ==========================');
+                        console.log(stderr);
+                        console.log('========================== STDOUT ==========================');
+                        console.log(stdout);
+                        if (error) {
+                            console.log('======================== NODE ERROR ========================');
+                        }
+                        console.log('============================================================');
+                        assert.isEmpty(stderr);
+                        done(error);
+                    });
             });
         });
     }

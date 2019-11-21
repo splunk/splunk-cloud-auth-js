@@ -16,8 +16,8 @@
 
 import { AuthManager } from '@splunkdev/cloud-sdk/auth_manager';
 import { Buffer } from 'buffer';
-import { AuthManagerSettings, BaseAuthManager, HEADERS_APPLICATION_JSON_URLENCODED } from './base_auth_manager';
-import { SplunkAuthError } from './splunk_auth_error';
+import { AuthManagerSettings, BaseAuthManager, HEADERS_APPLICATION_JSON_URLENCODED } from '../common/base-auth-manager';
+import { SplunkAuthError } from '../common/splunk-auth-error';
 
 import 'isomorphic-fetch';
 
@@ -60,22 +60,13 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
     }
 
     /**
-     * Checks whether the client is authenticated by checking for a token and comparing against the expiration time.
-     */
-    public isAuthenticated(): boolean {
-        if (this.authContext.accessToken && this.authContext.tokenExpiration > new Date().getTime()) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Gets the access token.
      * Calls will only be made to the auth endpoint when token is no longer authenticated or it is about to expire.
      */
-    public getAccessToken(): Promise<string> {
+    public async getAccessToken(): Promise<string> {
         // allow for a 30 second buffer to trigger access token update.
-        if (this.isAuthenticated() && this.authContext.tokenExpiration > new Date().getTime() + TOKEN_EXPIRY_BUFFER_MILLISECONDS) {
+        if (this.isAuthenticated()
+            && this.authContext.tokenExpiration > new Date().getTime() + TOKEN_EXPIRY_BUFFER_MILLISECONDS) {
             return new Promise<string>((resolve) => resolve(this.authContext.accessToken));
         }
 
@@ -91,7 +82,8 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
             throw new SplunkAuthError('grantType is not specified.');
         }
 
-        const authEncoded = Buffer.from(`${this.authSettings.clientId}:${this.authSettings.clientSecret}`).toString('base64');
+        const authEncoded =
+            Buffer.from(`${this.authSettings.clientId}:${this.authSettings.clientSecret}`).toString('base64');
         const headers = {
             ...{
                 Authorization: `Basic ${authEncoded}`
@@ -113,19 +105,31 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
             body: formUrlEncodedBody,
             method: 'POST'
         })
-        .then(res => res.json())
-        .then(json => {
-            if (!json.access_token) {
-                throw new SplunkAuthError(`Unable to authenticate and retrieve access_token. ErrorCode=${json.code}`);
-            }
+            .then(res => res.json())
+            .then(json => {
+                if (!json.access_token) {
+                    throw new SplunkAuthError(
+                        `Unable to authenticate and retrieve access_token. ErrorCode=${json.code}`);
+                }
 
-            this.authContext.tokenExpiration = new Date().getTime() + json.expires_in * MILLISECONDS_IN_SECOND;
-            this.authContext.tokenType = json.token_type;
-            this.authContext.accessToken = json.access_token;
-            this.authContext.idToken = json.id_token;
-            this.authContext.scope = json.scope;
+                this.authContext.tokenExpiration = new Date().getTime() + json.expires_in * MILLISECONDS_IN_SECOND;
+                this.authContext.tokenType = json.token_type;
+                this.authContext.accessToken = json.access_token;
+                this.authContext.idToken = json.id_token;
+                this.authContext.scope = json.scope;
 
-            return json.access_token;
-        });
+                return json.access_token;
+            });
     }
+
+    /**
+     * Checks whether the client is authenticated by checking for a token and comparing against the expiration time.
+     */
+    public isAuthenticated(): boolean {
+        if (this.authContext.accessToken && this.authContext.tokenExpiration > new Date().getTime()) {
+            return true;
+        }
+        return false;
+    }
+
 }

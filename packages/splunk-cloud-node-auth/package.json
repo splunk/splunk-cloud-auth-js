@@ -2,7 +2,11 @@
   "name": "@splunkdev/cloud-node-auth",
   "version": "0.0.1",
   "description": "Splunk Cloud Node Authentication Management for Javascript",
-  "main": "splunk.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "commit": "yarn git-cz",
     "tslint": "tslint -p tsconfig.json -c tslint.json && yarn tslint:tests",
@@ -15,7 +19,7 @@
     "docs": "yarn ts:docs",
     "build": "node ci/extract_version.js && tsc -p tsconfig.json",
     "build:tests": "tsc -p tsconfig.test.json",
-    "clean": "rimraf *.js *.map *.d.ts || true",
+    "clean": "rimraf *.js *.map *.d.ts dist/* || true",
     "cover": "NODE_ENV=coverage nyc yarn test",
     "cover:integration": "NODE_ENV=coverage nyc --report-dir coverage-integration yarn ci:integration",
     "cover:integration:ml": "NODE_ENV=coverage nyc --report-dir coverage-integration-ml yarn ci:integration:ml",
@@ -24,6 +28,7 @@
     "test:examples": "ts-mocha -p tsconfig.test.json --timeout=900000 test/examples/*.ts",
     "ci:integration": "bash -c 'allow_failures=0 ./ci/integration/runtests.sh'",
     "ci:integration:ml": "bash -c 'allow_failures=0 ./ci/integration/runtests-ml.sh'",
+    "prepare": "npm run build",
     "publish:docs": "yarn ts:docs && npm add --no-save @splunk/cicd-tools --registry https://repo.splunk.com/artifactory/api/npm/npm && yarn cicd-publish-docs --force docs/md",
     "start:swagger": "docker run --name=swagger -d -p 80:8080 swaggerapi/swagger-ui",
     "stop:swagger": "docker rm -f swagger",

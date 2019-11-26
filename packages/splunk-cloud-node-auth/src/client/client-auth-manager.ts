@@ -14,12 +14,12 @@
  * under the License.
  */
 
-import { AuthManager } from '@splunkdev/cloud-sdk/auth_manager';
-import { Buffer } from 'buffer';
-import { AuthManagerSettings, BaseAuthManager, HEADERS_APPLICATION_JSON_URLENCODED } from '../common/base-auth-manager';
-import { SplunkAuthError } from '../common/splunk-auth-error';
+'use strict';
 
-import 'isomorphic-fetch';
+import { AuthManager } from '@splunkdev/cloud-sdk/auth_manager';
+import { AccessTokenResponse, AuthProxy } from '../common/auth-proxy';
+import { AuthManagerSettings, BaseAuthManager } from '../common/base-auth-manager';
+import { SplunkAuthError } from '../common/splunk-auth-error';
 
 const MILLISECONDS_IN_SECOND = 1000;
 const TOKEN_EXPIRY_BUFFER_MILLISECONDS = 30000;
@@ -41,7 +41,6 @@ export class ClientAuthManagerSettings extends AuthManagerSettings {
      */
     constructor(host: string, scope: string, clientId: string, clientSecret: string, grantType: string) {
         super(host, scope, clientId);
-
         this.clientSecret = clientSecret;
         this.grantType = grantType;
     }
@@ -51,13 +50,18 @@ export class ClientAuthManagerSettings extends AuthManagerSettings {
  * ClientAuthManager enables authentication with Splunk Cloud Services services using client credentials.
  */
 export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings> implements AuthManager {
+
     /**
      * ClientAuthManager constructor.
      * @param authSettings ClientAuthManagerSettings.
+     * @param authProxy AuthProxy.
      */
-    constructor(authSettings: ClientAuthManagerSettings) {
+    public constructor(authSettings: ClientAuthManagerSettings, authProxy?: AuthProxy) {
         super(authSettings);
+        this.authProxy = authProxy || new AuthProxy(this.authSettings.host);
     }
+
+    private authProxy: AuthProxy;
 
     /**
      * Gets the access token.
@@ -65,7 +69,7 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
      */
     public async getAccessToken(): Promise<string> {
         // allow for a 30 second buffer to trigger access token update.
-        if (this.isAuthenticated()
+        if (this.authContext.accessToken
             && this.authContext.tokenExpiration > new Date().getTime() + TOKEN_EXPIRY_BUFFER_MILLISECONDS) {
             return new Promise<string>((resolve) => resolve(this.authContext.accessToken));
         }
@@ -82,43 +86,17 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
             throw new SplunkAuthError('grantType is not specified.');
         }
 
-        const authEncoded =
-            Buffer.from(`${this.authSettings.clientId}:${this.authSettings.clientSecret}`).toString('base64');
-        const headers = {
-            ...{
-                Authorization: `Basic ${authEncoded}`
-            },
-            ...HEADERS_APPLICATION_JSON_URLENCODED
-        };
-        const tokenUrl = new URL(this.PATH_TOKEN, this.authSettings.host);
-        const body: Map<string, any> = new Map([
-            ['grant_type', this.authSettings.grantType],
-            ['scope', this.authSettings.scope]
-        ]);
-        let formUrlEncodedBody: string = '';
-        body.forEach((value, key) => {
-            formUrlEncodedBody += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
-        });
-
-        return fetch(tokenUrl.href, {
-            headers,
-            body: formUrlEncodedBody,
-            method: 'POST'
-        })
-            .then(res => res.json())
-            .then(json => {
-                if (!json.access_token) {
-                    throw new SplunkAuthError(
-                        `Unable to authenticate and retrieve access_token. ErrorCode=${json.code}`);
-                }
-
-                this.authContext.tokenExpiration = new Date().getTime() + json.expires_in * MILLISECONDS_IN_SECOND;
-                this.authContext.tokenType = json.token_type;
-                this.authContext.accessToken = json.access_token;
-                this.authContext.idToken = json.id_token;
-                this.authContext.scope = json.scope;
-
-                return json.access_token;
+        return this.authProxy.clientAccessToken(
+            this.authSettings.clientId,
+            this.authSettings.clientSecret,
+            this.authSettings.grantType,
+            this.authSettings.scope)
+            .then((res: AccessTokenResponse) => {
+                this.authContext.accessToken = res.access_token;
+                this.authContext.idToken = res.id_token;
+                this.authContext.tokenExpiration = new Date().getTime() + res.expires_in * MILLISECONDS_IN_SECOND;
+                this.authContext.tokenType = res.token_type;
+                return this.authContext.accessToken;
             });
     }
 
@@ -131,5 +109,4 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
         }
         return false;
     }
-
 }

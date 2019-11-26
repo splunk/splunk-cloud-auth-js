@@ -12,6 +12,8 @@
       "es2015.symbol.wellknown",
       "dom"
     ],
+    "sourceMap": true,
+    "target": "es5",
     "types": [
       "node"
     ]

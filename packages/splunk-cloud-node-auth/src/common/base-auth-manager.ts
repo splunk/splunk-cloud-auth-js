@@ -14,6 +14,8 @@
  * under the License.
  */
 
+'use strict';
+
 /**
  * AuthContext can be used to store the context required for authentication including the auth token itself.
  */
@@ -81,29 +83,15 @@ export abstract class AuthManagerSettings {
     }
 }
 
-export const HEADERS_APPLICATION_JSON = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-};
-
-export const HEADERS_APPLICATION_JSON_URLENCODED = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded'
-};
-
 /**
  * BaseAuthManager abstract class.
  */
 export abstract class BaseAuthManager<T extends AuthManagerSettings> {
     protected readonly DEFAULT_SCOPE: string = 'openid email profile';
     protected readonly SCOPE_OPENID = 'openid';
-    protected readonly PATH_AUTHN: string = '/authn';
-    protected readonly PATH_AUTHORIZATION: string = '/authorize';
-    protected readonly PATH_TOKEN: string = '/token';
-    protected readonly PATH_TOKEN_CSRF: string = '/csrfToken';
 
     protected readonly authSettings: T;
-    protected authContext: AuthContext;
+    protected readonly authContext: AuthContext;
 
     /**
      * BaseAuthManager constructor.

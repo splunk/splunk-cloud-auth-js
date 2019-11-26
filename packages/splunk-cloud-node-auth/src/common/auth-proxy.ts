@@ -72,6 +72,63 @@ export class AuthProxy {
     }
 
     /**
+     * Gets an authorization code for PKCE auth flow.
+     * IETF Reference: https://tools.ietf.org/html/rfc7636#section-4.3, https://tools.ietf.org/html/rfc7636#section-4.4
+     * @param clientId Client Id.
+     * @param codeChallenge Code challenge.
+     * @param codeChallengeMethod Code challenge method.
+     * @param nonce Nonce.
+     * @param redirectUri Redirect Uri.
+     * @param responseType Response type.
+     * @param scope Scope.
+     * @param sessionToken Session token.
+     * @param state State.
+     */
+    public async authorizationCode(
+        clientId: string,
+        codeChallenge: string,
+        codeChallengeMethod: string = 'S256',
+        nonce: string = 'none',
+        redirectUri: string,
+        responseType: string = 'code',
+        scope: string,
+        sessionToken: string,
+        state: string): Promise<string> {
+        const queryParamMap: Map<string, any> = new Map([
+            ['client_id', clientId],
+            ['code_challenge', codeChallenge],
+            ['code_challenge_method', codeChallengeMethod],
+            ['nonce', nonce],
+            ['redirect_uri', redirectUri],
+            ['response_type', responseType],
+            ['scope', scope],
+            ['session_token', sessionToken],
+            ['state', state]
+        ]);
+        let queryParamString: string = '?';
+        queryParamMap.forEach((value, key) => {
+            queryParamString += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
+        });
+
+        const authorizeBaseUrl = new URL(this.PATH_AUTHORIZATION, this.host);
+        const authorizeUrl = new URL(queryParamString, authorizeBaseUrl.href);
+        return fetch(
+            authorizeUrl.href,
+            {
+                headers: HEADERS_APPLICATION_JSON,
+                method: 'GET'
+            })
+            .then(res => {
+                const codeUrl = new URL(res.url);
+                const code = codeUrl.searchParams.get('code');
+                if (!code) {
+                    throw new SplunkAuthError(`Unable to retrieve authorization code from Authorize response URL.`);
+                }
+                return code.toString();
+            });
+    }
+
+    /**
      * Retrieves an access token using client credentials.
      * @param clientId Client id.
      * @param clientSecret Client secret.
@@ -96,6 +153,82 @@ export class AuthProxy {
         ]);
 
         return this._token(headers, body);
+    }
+
+    /**
+     * Gets a CSRF token to be passed to the (extended) 'primary' endpoint (/authn) for PKCE auth flow.
+     */
+    public async csrfToken(): Promise<CsrfTokenResponse> {
+        let cookie: any;
+        const csrfTokenurl = new URL(this.PATH_TOKEN_CSRF, this.host);
+        return fetch(
+            csrfTokenurl.href,
+            {
+                headers: HEADERS_APPLICATION_JSON,
+                method: 'GET'
+            })
+            .then(res => {
+                if (res.status !== 200) {
+                    throw new SplunkAuthError(
+                        `CSRF token call failed with status='${res.status}', statusText='${res.statusText}'`);
+                }
+                cookie = res.headers.get('set-cookie');
+                return res.json();
+            })
+            .then(json => {
+                if (!json.csrf) {
+                    throw new SplunkAuthError(`Unable to retrieve CSRF token from csrfToken endpoint.`);
+                }
+                return new CsrfTokenResponse(json.csrf, cookie);
+            });
+    }
+
+    /**
+     * Authenticates user and returns a session token for PKCE auth flow.
+     * @param username User name.
+     * @param password Password.
+     * @param csrfToken CSRF token.
+     * @param cookies Cookies.
+     */
+    public async sessionToken(
+        username: string,
+        password: string,
+        csrfToken: string,
+        cookies: string): Promise<string> {
+        const headers = {
+            ...HEADERS_APPLICATION_JSON,
+            Cookie: `${cookies}`
+        };
+        const body = JSON.stringify({
+            password,
+            username,
+            csrftoken: csrfToken
+        });
+
+        const authnUrl = new URL(this.PATH_AUTHN, this.host);
+        return fetch(
+            authnUrl.href,
+            {
+                body,
+                headers,
+                method: 'POST'
+            })
+            .then(res => {
+                if (res.status !== 200) {
+                    throw new SplunkAuthError(
+                        `Authn call failed with status='${res.status}', statusText='${res.statusText}'`);
+                }
+                return res.json();
+            })
+            .then(json => {
+                if (json.status !== 'SUCCESS') {
+                    throw new SplunkAuthError(`User authentication failed with status='${json.status}'`);
+                }
+                if (!json.sessionToken) {
+                    throw new SplunkAuthError(`Unable to retrieve sessionToken from authn endpoint.`);
+                }
+                return json.sessionToken;
+            });
     }
 
     private async _token(headers: any, body: Map<string, any>): Promise<AccessTokenResponse> {
@@ -132,4 +265,29 @@ export interface AccessTokenResponse {
     refresh_token: string;
     scope: string;
     token_type: string;
+}
+
+/**
+ * CsrfTokenResponse.
+ */
+export class CsrfTokenResponse {
+
+    /**
+     * Cookies.
+     */
+    public cookies: any;
+    /**
+     * CSRF token.
+     */
+    public csrfToken: string;
+
+    /**
+     * CsrfTokenResponse constructor.
+     * @param csrfToken CSRF token.
+     * @param cookies Cookies.
+     */
+    constructor(csrfToken: string, cookies: any) {
+        this.csrfToken = csrfToken;
+        this.cookies = cookies;
+    }
 }

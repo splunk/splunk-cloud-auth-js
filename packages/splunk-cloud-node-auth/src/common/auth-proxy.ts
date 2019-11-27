@@ -19,12 +19,12 @@
 import 'node-fetch';
 import { SplunkAuthError } from './splunk-auth-error';
 
-export const HEADERS_APPLICATION_JSON = {
+const HEADERS_APPLICATION_JSON = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
 };
 
-export const HEADERS_APPLICATION_JSON_URLENCODED = {
+const HEADERS_APPLICATION_JSON_URLENCODED = {
     'Accept': 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded'
 };
@@ -184,6 +184,29 @@ export class AuthProxy {
     }
 
     /**
+     * Retrieves an access token using refresh token.
+     * @param clientId Client id.
+     * @param clientSecret Client secret.
+     * @param grantType Grant type.
+     * @param scope Scope.
+     */
+    public async refreshAccessToken(
+        clientId: string,
+        grantType: string = 'refresh_token',
+        scope: string,
+        refreshToken: string
+    ): Promise<AccessTokenResponse> {
+        const body: Map<string, any> = new Map([
+            ['client_id', clientId],
+            ['grant_type', grantType],
+            ['refresh_token', refreshToken],
+            ['scope', scope],
+        ]);
+
+        return this._token(HEADERS_APPLICATION_JSON_URLENCODED, body);
+    }
+
+    /**
      * Authenticates user and returns a session token for PKCE auth flow.
      * @param username User name.
      * @param password Password.
@@ -238,11 +261,13 @@ export class AuthProxy {
             formUrlEncodedBody += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
         });
 
-        return fetch(tokenUrl.href, {
-            headers,
-            body: formUrlEncodedBody,
-            method: 'POST'
-        })
+        return fetch(
+            tokenUrl.href,
+            {
+                headers,
+                body: formUrlEncodedBody,
+                method: 'POST'
+            })
             .then(res => res.json())
             .then(json => {
                 if (!json.access_token) {

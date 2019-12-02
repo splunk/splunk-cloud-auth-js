@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "declarationDir": "./dist",
+    "declarationDir": "./src",
     "downlevelIteration": true,
     "esModuleInterop": true,
     "lib": [
@@ -18,7 +18,7 @@
     "noImplicitAny": true,
     // comment this out to avoid compile error in generated files
     // "noUnusedLocals": true,
-    "outDir": "./dist",
+    "outDir": "./src",
     "removeComments": false,
     "resolveJsonModule": true,
     "sourceMap": true,
@@ -30,7 +30,6 @@
   },
   "exclude": [
     "node_modules",
-    "dist"
   ],
   "include": [
     "src/**/*"

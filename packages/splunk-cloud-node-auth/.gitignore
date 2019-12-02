@@ -4,6 +4,10 @@ generated/**/**
 models/**/**
 /src/*.js
 /src/*.d.ts
+/src/*.js.map
+/src/**/*.js
+/src/**/*.d.ts
+/src/**/*.js.map
 /test/**/*.d.ts
 /test/**/*.js
 ./dist/ # built dir

@@ -19,7 +19,7 @@
 require('isomorphic-fetch');
 
 const { SplunkCloud } = require('@splunkdev/cloud-sdk');
-const { PKCEAuthManager, PKCEAuthManagerSettings } = require('../dist');
+const { PKCEAuthManager, PKCEAuthManagerSettings } = require('../src');
 const {
     IDP_CLIENT_ID,
     SPLUNK_CLOUD_API_HOST,

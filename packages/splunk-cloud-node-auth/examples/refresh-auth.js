@@ -24,7 +24,7 @@ const {
     PKCEAuthManagerSettings,
     RefreshAuthManager,
     RefreshAuthManagerSettings
-} = require('../dist');
+} = require('../src');
 const {
     IDP_CLIENT_ID,
     SPLUNK_CLOUD_API_HOST,

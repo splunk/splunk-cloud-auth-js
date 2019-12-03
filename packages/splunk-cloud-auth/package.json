@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Library to help authenticating web applications in Splunk Cloud.",
   "author": "Splunk",
+  "private": true,
   "scripts": {
     "build": "babel src -d . --ignore \"**/tests/*\" --ignore \"**/src/tests/*\"",
     "docs": "yarn run third-party-licenses",

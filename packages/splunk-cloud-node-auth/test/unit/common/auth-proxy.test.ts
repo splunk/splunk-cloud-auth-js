@@ -42,6 +42,47 @@ describe('AuthProxy', () => {
         fetchMock.restore();
     });
 
+    describe('accessToken', () => {
+        const CLIENT_ID = 'clientid';
+        const AUTH_CODE = 'authcode';
+        const CODE_VERIFIER = 'codeverifier';
+        const REDIRECT_URI = 'https://redirect.com/';
+        it('should return a successful AccessTokenResponse promise', async () => {
+            // Arrange
+            // TODO: figure out how to assert the body.
+            fetchMock.post(
+                `${MOCK_HOST}${PATH_TOKEN}`,
+                {
+                    body: {
+                        access_token: MOCK_ACCESS_TOKEN,
+                        expires_in: MOCK_EXPIRES_IN,
+                        id_token: MOCK_ID_TOKEN,
+                        refresh_token: MOCK_REFRESH_TOKEN,
+                        scope: MOCK_SCOPE,
+                        token_type: MOCK_TOKEN_TYPE
+                    },
+                    status: 200,
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+            // Act
+            const result = await authProxy.accessToken(CLIENT_ID, AUTH_CODE, CODE_VERIFIER, REDIRECT_URI);
+
+            // Assert
+            assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
+            assert.equal(result.expires_in, MOCK_EXPIRES_IN);
+            assert.equal(result.id_token, MOCK_ID_TOKEN);
+            assert.equal(result.refresh_token, MOCK_REFRESH_TOKEN);
+            assert.equal(result.scope, MOCK_SCOPE);
+            assert.equal(result.token_type, MOCK_TOKEN_TYPE);
+        });
+    });
+
     describe('authorizationCode', () => {
         const CLIENT_ID = 'clientid';
         const CODE_CHALLENGE = 'codechallenge';
@@ -88,6 +129,78 @@ describe('AuthProxy', () => {
             // Assert
             assert.equal(result, AUTH_CODE);
         });
+
+        it('should throw SplunkAuthError when response status is not 200', async () => {
+            // Arrange
+            const ERROR_STATUS = 404;
+            const ERROR_STATUS_TEXT = 'Not Found';
+            const expectedErrorMessage = `authorization call failed with ` +
+                `status='${ERROR_STATUS}', statusText='${ERROR_STATUS_TEXT}'`;
+            fetchMock.get(
+                `${MOCK_HOST}${PATH_AUTHORIZATION}`
+                + `?client_id=${CLIENT_ID}`
+                + `&code_challenge=${CODE_CHALLENGE}`
+                + `&code_challenge_method=${CODE_CHALLENGE_METHOD}`
+                + `&nonce=${NONCE}`
+                + `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
+                + `&response_type=${RESPONSE_TYPE}`
+                + `&scope=${SCOPE}`
+                + `&session_token=${SESSION_TOKEN}`
+                + `&state=${STATE}&`,
+                {
+                    status: ERROR_STATUS,
+                });
+
+            // Act/Assert
+            return assert.isRejected(
+                authProxy.authorizationCode(
+                    CLIENT_ID,
+                    CODE_CHALLENGE,
+                    CODE_CHALLENGE_METHOD,
+                    NONCE,
+                    REDIRECT_URI,
+                    RESPONSE_TYPE,
+                    SCOPE,
+                    SESSION_TOKEN,
+                    STATE),
+                expectedErrorMessage);
+        });
+
+        // tslint:disable-next-line
+        it('should throw SplunkAuthError when code cannot be parsed from authorize response URL search params', async () => {
+            // Arrange
+            const expectedErrorMessage = 'Unable to retrieve authorization code from Authorize response URL.';
+            const responseUrl = `https://response.com?param=value`;
+            fetchMock.get(
+                `${MOCK_HOST}${PATH_AUTHORIZATION}`
+                + `?client_id=${CLIENT_ID}`
+                + `&code_challenge=${CODE_CHALLENGE}`
+                + `&code_challenge_method=${CODE_CHALLENGE_METHOD}`
+                + `&nonce=${NONCE}`
+                + `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
+                + `&response_type=${RESPONSE_TYPE}`
+                + `&scope=${SCOPE}`
+                + `&session_token=${SESSION_TOKEN}`
+                + `&state=${STATE}&`,
+                {
+                    body: {},
+                    redirectUrl: responseUrl
+                });
+
+            // Act/Assert
+            return assert.isRejected(
+                authProxy.authorizationCode(
+                    CLIENT_ID,
+                    CODE_CHALLENGE,
+                    CODE_CHALLENGE_METHOD,
+                    NONCE,
+                    REDIRECT_URI,
+                    RESPONSE_TYPE,
+                    SCOPE,
+                    SESSION_TOKEN,
+                    STATE),
+                expectedErrorMessage);
+        });
     });
 
     describe('clientAccessToken', () => {
@@ -127,6 +240,32 @@ describe('AuthProxy', () => {
             assert.equal(result.id_token, MOCK_ID_TOKEN);
             assert.equal(result.scope, MOCK_SCOPE);
             assert.equal(result.token_type, MOCK_TOKEN_TYPE);
+        });
+
+        it('should throw SplunkAuthError if access_token is not returned', async () => {
+            // Arrange
+            const ERROR_CODE = 'errorcode';
+            const expectedErrorMessage = '';
+            fetchMock.post(
+                `${MOCK_HOST}${PATH_TOKEN}`,
+                {
+                    body: {
+                        access_token: '',
+                        code: ERROR_CODE
+                    },
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': 'Basic Y2xpZW50aWQ6Y2xpZW50c2VjcmV0',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                });
+
+            // Act/Assert
+            return assert.isRejected(
+                authProxy.clientAccessToken(CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, SCOPE),
+                expectedErrorMessage);
         });
     });
 
@@ -209,11 +348,11 @@ describe('AuthProxy', () => {
         });
     });
 
-    describe('accessToken', () => {
+    describe('refreshAccessToken', () => {
         const CLIENT_ID = 'clientid';
-        const AUTH_CODE = 'authcode';
-        const CODE_VERIFIER = 'codeverifier';
-        const REDIRECT_URI = 'https://redirect.com/';
+        const GRANT_TYPE = 'refresh_token';
+        const SCOPE = 'scope';
+        const REFRESH_TOKEN = 'abcde12345';
         it('should return a successful AccessTokenResponse promise', async () => {
             // Arrange
             // TODO: figure out how to assert the body.
@@ -224,7 +363,6 @@ describe('AuthProxy', () => {
                         access_token: MOCK_ACCESS_TOKEN,
                         expires_in: MOCK_EXPIRES_IN,
                         id_token: MOCK_ID_TOKEN,
-                        refresh_token: MOCK_REFRESH_TOKEN,
                         scope: MOCK_SCOPE,
                         token_type: MOCK_TOKEN_TYPE
                     },
@@ -233,18 +371,17 @@ describe('AuthProxy', () => {
                 {
                     headers: {
                         'Accept': 'application/json',
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     }
                 });
 
             // Act
-            const result = await authProxy.accessToken(CLIENT_ID, AUTH_CODE, CODE_VERIFIER, REDIRECT_URI);
+            const result = await authProxy.refreshAccessToken(CLIENT_ID, GRANT_TYPE, SCOPE, REFRESH_TOKEN);
 
             // Assert
             assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
             assert.equal(result.expires_in, MOCK_EXPIRES_IN);
             assert.equal(result.id_token, MOCK_ID_TOKEN);
-            assert.equal(result.refresh_token, MOCK_REFRESH_TOKEN);
             assert.equal(result.scope, MOCK_SCOPE);
             assert.equal(result.token_type, MOCK_TOKEN_TYPE);
         });

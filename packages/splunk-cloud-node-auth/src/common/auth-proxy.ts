@@ -119,6 +119,11 @@ export class AuthProxy {
                 method: 'GET'
             })
             .then(res => {
+                if (res.status !== 200) {
+                    throw new SplunkAuthError(
+                        `authorization call failed with status='${res.status}', statusText='${res.statusText}'`);
+                }
+
                 const codeUrl = new URL(res.url);
                 const code = codeUrl.searchParams.get('code');
                 if (!code) {

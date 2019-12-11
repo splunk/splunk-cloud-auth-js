@@ -14,7 +14,7 @@
  * under the License.
  */
 
-import { AuthManager } from '@splunkdev/cloud-sdk/auth_manager';
+import { AuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
 import { AccessTokenResponse, AuthProxy } from '../common/auth-proxy';
 import { AuthManagerSettings, BaseAuthManager } from '../common/base-auth-manager';
 import { SplunkAuthError } from '../common/splunk-auth-error';

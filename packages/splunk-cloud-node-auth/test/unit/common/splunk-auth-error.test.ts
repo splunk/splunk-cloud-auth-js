@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { SplunkErrorParams } from '@splunkdev/cloud-sdk/client';
+import { SplunkErrorParams } from '@splunkdev/cloud-sdk/src/client';
 import { assert } from 'chai';
 import 'mocha';
 import { SplunkAuthError } from '../../../src/common/splunk-auth-error';

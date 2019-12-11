@@ -1,4 +1,4 @@
-import { SplunkErrorParams } from '@splunkdev/cloud-sdk/client';
+import { SplunkErrorParams } from '@splunkdev/cloud-sdk/src/client';
 
 /**
  * SplunkAuthError.

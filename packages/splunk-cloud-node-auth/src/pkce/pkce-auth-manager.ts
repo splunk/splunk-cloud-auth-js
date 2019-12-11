@@ -14,7 +14,7 @@
  * under the License.
  */
 
-import { AuthManager } from '@splunkdev/cloud-sdk/auth_manager';
+import { AuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
 import 'buffer';
 import { createHash, randomBytes } from 'crypto';
 import { AuthProxy } from '../common/auth-proxy';

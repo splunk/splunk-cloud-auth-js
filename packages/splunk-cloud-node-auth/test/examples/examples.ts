@@ -27,13 +27,12 @@ const runners: any = {
     '.ts': 'ts-node'
 };
 
-
 const examplesPath = path.join(__dirname, '..', '..', 'examples');
 const examples = fs.readdirSync(examplesPath);
 
 examples.forEach((exampleFile: string) => {
     const extension = path.extname(exampleFile);
-    if (extension === '.js' || extension === '.ts') {
+    if (exampleFile !== 'config.js' && (extension === '.js' || extension === '.ts')) {
         describe(`Testing ${exampleFile} example`, () => {
             it('should execute successfully', (done) => {
                 execFile(

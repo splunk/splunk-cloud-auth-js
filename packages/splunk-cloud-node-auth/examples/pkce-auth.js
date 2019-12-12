@@ -15,21 +15,20 @@
  */
 
 
-// ***** TITLE: Use PKCE authentication to create and retrieve a KVCollection dataset.
+// ***** TITLE: Use PKCE authentication with the Splunk Cloud JavaScript SDK to create and retrieve a KVCollection dataset.
 require('isomorphic-fetch');
 
 const { SplunkCloud } = require('@splunkdev/cloud-sdk');
 const { PKCEAuthManager, PKCEAuthManagerSettings } = require('../src');
 const {
     IDP_CLIENT_ID,
+    IDP_CLIENT_PASSWORD,
+    IDP_CLIENT_USERNAME,
     SPLUNK_CLOUD_API_HOST,
-    SPLUNK_CLOUD_APPS_HOST,
     SPLUNK_CLOUD_AUTH_HOST,
     SPLUNK_CLOUD_LOGIN_REDIRECT_URL,
     TENANT_ID,
-    TEST_PASSWORD,
-    TEST_USERNAME
-} = process.env;
+} = require('./config');
 
 (async function () {
     const DATE_NOW = Date.now();
@@ -42,8 +41,8 @@ const {
         scope = 'openid offline_access email profile',
         clientId = IDP_CLIENT_ID,
         redirectUri = SPLUNK_CLOUD_LOGIN_REDIRECT_URL,
-        username = TEST_USERNAME,
-        password = TEST_PASSWORD);
+        username = IDP_CLIENT_USERNAME,
+        password = IDP_CLIENT_PASSWORD);
 
     // ***** STEP 2: Create PKCEAuthManager.
     // ***** DESCRIPTION: Use the PKCEAuthManagerSettings.
@@ -53,9 +52,7 @@ const {
     // ***** DESCRIPTION: Get Splunk Cloud client of a tenant using the PKCEAuthManager.
     const splunk = new SplunkCloud({
         urls: {
-            api: SPLUNK_CLOUD_API_HOST,
-            app: SPLUNK_CLOUD_APPS_HOST,
-            auth: SPLUNK_CLOUD_AUTH_HOST
+            api: SPLUNK_CLOUD_API_HOST
         },
         tokenSource: authManager,
         defaultTenant: TENANT_ID,

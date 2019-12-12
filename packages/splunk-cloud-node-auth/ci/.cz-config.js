@@ -47,7 +47,7 @@ module.exports = {
 
     // override scopes for certain types
     scopeOverrides: {
-        test: [{ name: 'unit' }, { name: 'integration' }, { name: '*' }],
+        test: [{ name: 'unit' }, { name: 'integration' }, { name: 'example' }, { name: '*' }],
     },
 
     // override the messages, defaults are as follows

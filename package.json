@@ -15,6 +15,7 @@
     "publish": "cicd/scripts/publish.sh",
     "docs": "lerna run docs --no-sort",
     "setup": "yarn; lerna run build;",
+    "third-party-licenses": "lerna run third-party-licenses",
     "start": "lerna run start --stream --no-sort --concurrency 100",
     "test": "lerna run test --stream --no-sort",
     "test:ci": "lerna run test:ci --no-sort"

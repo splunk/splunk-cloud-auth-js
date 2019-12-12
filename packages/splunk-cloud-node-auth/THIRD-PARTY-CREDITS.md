@@ -5,25 +5,15 @@ The Splunk Developer Cloud SDK for JavaScript contains some libraries that were 
 
 We want to thank the contributors to these projects:
 
-## buffer
+## node-fetch
 
-Name: buffer
+Name: node-fetch
 
-Version: 5.4.3
+Version: 2.6.0
 
-License: [MIT](https://github.com/feross/buffer/raw/master/LICENSE)
+License: [MIT](https://github.com/bitinn/node-fetch/raw/master/LICENSE.md)
 
-Repository: [https://github.com/feross/buffer](https://github.com/feross/buffer)
-
-## rxjs
-
-Name: rxjs
-
-Version: 6.5.2
-
-License: [Apache-2.0](https://github.com/reactivex/rxjs/raw/master/LICENSE.txt)
-
-Repository: [https://github.com/reactivex/rxjs](https://github.com/reactivex/rxjs)
+Repository: [https://github.com/bitinn/node-fetch](https://github.com/bitinn/node-fetch)
 
 ## @commitlint/cli
 
@@ -45,6 +35,16 @@ License: [MIT](https://github.com/conventional-changelog/commitlint/raw/master/l
 
 Repository: [https://github.com/conventional-changelog/commitlint](https://github.com/conventional-changelog/commitlint)
 
+## @types/chai-as-promised
+
+Name: @types/chai-as-promised
+
+Version: 7.1.2
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
 ## @types/chai
 
 Name: @types/chai
@@ -65,15 +65,15 @@ License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LIC
 
 Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
-## @types/isomorphic-fetch
+## @types/fetch-mock
 
-Name: @types/isomorphic-fetch
+Name: @types/fetch-mock
 
-Version: 0.0.34
+Version: 7.3.2
 
-License: [MIT](https://wwwhub.com/DefinitelyTyped/DefinitelyTyped)
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
-Repository: [https://wwwhub.com/DefinitelyTyped/DefinitelyTyped](https://wwwhub.com/DefinitelyTyped/DefinitelyTyped)
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
 ## @types/mocha
 
@@ -85,11 +85,21 @@ License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LIC
 
 Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
+## @types/node-fetch
+
+Name: @types/node-fetch
+
+Version: 2.5.4
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
 ## @types/node
 
 Name: @types/node
 
-Version: 10.14.13
+Version: 12.12.6
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -104,6 +114,26 @@ Version: 1.9.5
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
 Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
+## @types/sinon
+
+Name: @types/sinon
+
+Version: 7.5.1
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
+## chai-as-promised
+
+Name: chai-as-promised
+
+Version: 7.1.1
+
+License: [WTFPL](https://github.com/domenic/chai-as-promised/raw/master/LICENSE.txt)
+
+Repository: [https://github.com/domenic/chai-as-promised](https://github.com/domenic/chai-as-promised)
 
 ## chai
 
@@ -164,6 +194,16 @@ Version: 4.17.1
 License: [MIT](https://github.com/expressjs/express/raw/master/LICENSE)
 
 Repository: [https://github.com/expressjs/express](https://github.com/expressjs/express)
+
+## fetch-mock
+
+Name: fetch-mock
+
+Version: 8.0.1
+
+License: [MIT](https://github.com/wheresrhys/fetch-mock/raw/master/LICENSE)
+
+Repository: [https://github.com/wheresrhys/fetch-mock](https://github.com/wheresrhys/fetch-mock)
 
 ## husky
 
@@ -239,7 +279,7 @@ Repository: [http://github.com/mwittig/npm-license-crawler](http://github.com/mw
 
 Name: nyc
 
-Version: 13.3.0
+Version: 14.1.1
 
 License: [ISC](https://github.com/istanbuljs/nyc/raw/master/LICENSE.txt)
 
@@ -274,6 +314,16 @@ Version: 2.6.3
 License: [ISC](https://github.com/isaacs/rimraf/raw/master/LICENSE)
 
 Repository: [https://github.com/isaacs/rimraf](https://github.com/isaacs/rimraf)
+
+## sinon
+
+Name: sinon
+
+Version: 7.5.0
+
+License: [BSD-3-Clause](http://github.com/sinonjs/sinon/raw/master/LICENSE)
+
+Repository: [http://github.com/sinonjs/sinon](http://github.com/sinonjs/sinon)
 
 ## sleep-promise
 
@@ -399,7 +449,7 @@ Repository: [https://github.com/TypeStrong/TypeDoc](https://github.com/TypeStron
 
 Name: typescript
 
-Version: 3.5.3
+Version: 3.7.2
 
 License: [Apache-2.0](https://github.com/Microsoft/TypeScript/raw/master/LICENSE.txt)
 

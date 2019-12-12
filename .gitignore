@@ -1,5 +1,6 @@
 # Various scratch files
 tmp/*
+**/tmp/
 !tmp/DO_NOT_DELETE
 *.DS_Store
 *.bak

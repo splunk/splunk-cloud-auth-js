@@ -2,11 +2,11 @@
   "name": "@splunkdev/cloud-auth",
   "version": "1.0.0",
   "description": "Library to help authenticating web applications in Splunk Cloud.",
-  "author": "Splunk",
+  "author": "Splunk, Inc.",
+  "license": "Apache-2.0",
   "private": true,
   "scripts": {
     "build": "babel src -d . --ignore \"**/tests/*\" --ignore \"**/src/tests/*\"",
-    "docs": "yarn run third-party-licenses",
     "lint": "eslint src",
     "lint:ci": "yarn run lint -- -f junit -o test-reports/lint-results.xml",
     "prepack": "yarn build",
@@ -14,9 +14,9 @@
     "test": "jest --config ./jest.json",
     "test:ci": "yarn run test --ci --reporters=default --reporters=jest-junit",
     "test:watch": "yarn run test --watch",
-    "third-party-licenses": "node ci/generate_3rdparty.js"
+    "third-party-licenses:generate": "node ./ci/generate_3rdparty.js",
+    "third-party-licenses": "sh ./ci/scripts/generate_third_party_credits.sh"
   },
-  "license": "SEE LICENSE IN LICENSE.txt",
   "devDependencies": {
     "@splunk/babel-preset": "^1.1.0",
     "@splunk/eslint-config": "^1.2.0",

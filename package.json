@@ -8,17 +8,17 @@
   ],
   "scripts": {
     "build": "lerna run build",
+    "clean": "lerna run clean",
+    "cover": "lerna run cover --stream",
     "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",
     "format:verify": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier -l",
-    "lint": "lerna run lint --no-sort",
-    "lint:ci": "lerna run lint:ci --no-sort",
+    "lint": "lerna run lint",
     "publish": "cicd/scripts/publish.sh",
-    "docs": "lerna run docs --no-sort",
+    "docs": "lerna run docs",
     "setup": "yarn; lerna run build;",
     "third-party-licenses": "lerna run third-party-licenses",
-    "start": "lerna run start --stream --no-sort --concurrency 100",
-    "test": "lerna run test --stream --no-sort",
-    "test:ci": "lerna run test:ci --no-sort"
+    "test": "lerna run test --stream",
+    "test:examples": "lerna run test:examples --stream"
   },
   "devDependencies": {
     "lerna": "^3.18.4"

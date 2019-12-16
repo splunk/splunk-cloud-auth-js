@@ -199,7 +199,7 @@ Repository: [https://github.com/expressjs/express](https://github.com/expressjs/
 
 Name: fetch-mock
 
-Version: 8.0.1
+Version: 8.1.0
 
 License: [MIT](https://github.com/wheresrhys/fetch-mock/raw/master/LICENSE)
 

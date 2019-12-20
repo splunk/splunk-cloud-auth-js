@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "build": "babel src -d . --ignore \"**/tests/*\" --ignore \"**/src/tests/*\"",
+    "commit": "yarn git-cz",
     "lint": "eslint src",
     "lint:ci": "yarn run lint -- -f junit -o test-reports/lint-results.xml",
     "prepack": "yarn build",
@@ -59,5 +60,13 @@
   },
   "jest-junit": {
     "output": "./test-reports/unit-results.xml"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "../../ci/.cz-config.js"
+    }
   }
 }

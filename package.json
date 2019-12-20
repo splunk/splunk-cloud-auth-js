@@ -9,6 +9,7 @@
   "scripts": {
     "build": "lerna run build",
     "clean": "lerna run clean",
+    "commit": "yarn git-cz",
     "cover": "lerna run cover --stream",
     "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",
     "format:verify": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier -l",
@@ -21,13 +22,48 @@
     "test:examples": "lerna run test:examples --stream"
   },
   "devDependencies": {
-    "lerna": "^3.18.4"
-  },
-  "dependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "^3.0.2",
     "cz-customizable": "^6.2.0",
-    "prettier": "^1.19.1"
+    "husky": "^3.1.0",
+    "lerna": "^3.18.4"
   },
   "engines": {
     "node": ">=8"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "header-max-length": [
+        0,
+        "always",
+        100
+      ]
+    }
+  },
+  "standard-version": {
+    "skip": {
+      "tag": true
+    },
+    "scripts": {
+      "postchangelog": "cd/replace_url.sh"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "ci/.cz-config.js"
+    }
   }
 }

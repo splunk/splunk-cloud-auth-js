@@ -36,15 +36,9 @@
     "publish:docs": "yarn ts:docs && npm add --no-save @splunk/cicd-tools --registry https://repo.splunk.com/artifactory/api/npm/npm && yarn cicd-publish-docs --force docs/md",
     "example": "./ci/integration/runExamples.sh",
     "third-party-licenses:generate": "node ./ci/generate_3rdparty.js",
-    "third-party-licenses": "sh ./ci/scripts/generate_third_party_credits.sh",
-    "release:dryrun": "yarn standard-version --dry-run",
-    "release:minor": "yarn standard-version --release-as minor",
-    "release:patch": "yarn standard-version --release-as patch",
-    "release": "yarn standard-version"
+    "third-party-licenses": "sh ./ci/scripts/generate_third_party_credits.sh"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-conventional": "^7.1.2",
     "@splunkdev/cloud-sdk": "^4.0.0",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.2",
@@ -58,12 +52,8 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
-    "commitizen": "^4.0.0",
-    "cz-conventional-changelog": "^2.1.0",
-    "cz-customizable": "^5.2.0",
     "express": "^4.17.1",
     "fetch-mock": "^8.0.0",
-    "husky": "^1.1.3",
     "isomorphic-fetch": "^2.2.1",
     "js-yaml": "^3.11.0",
     "jsdoc": "^3.5.5",
@@ -126,37 +116,12 @@
     ],
     "sourceMap": true
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -e"
-    }
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
-    "rules": {
-      "header-max-length": [
-        0,
-        "always",
-        100
-      ]
-    }
-  },
-  "standard-version": {
-    "skip": {
-      "tag": true
-    },
-    "scripts": {
-      "postchangelog": "cd/replace_url.sh"
-    }
-  },
   "config": {
     "commitizen": {
       "path": "node_modules/cz-customizable"
     },
     "cz-customizable": {
-      "config": "ci/.cz-config.js"
+      "config": "../../ci/.cz-config.js"
     }
   }
 }

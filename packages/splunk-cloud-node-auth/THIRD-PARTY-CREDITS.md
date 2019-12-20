@@ -15,26 +15,6 @@ License: [MIT](https://github.com/bitinn/node-fetch/raw/master/LICENSE.md)
 
 Repository: [https://github.com/bitinn/node-fetch](https://github.com/bitinn/node-fetch)
 
-## @commitlint/cli
-
-Name: @commitlint/cli
-
-Version: 8.1.0
-
-License: [MIT](https://github.com/conventional-changelog/commitlint/raw/master/license.md)
-
-Repository: [https://github.com/conventional-changelog/commitlint](https://github.com/conventional-changelog/commitlint)
-
-## @commitlint/config-conventional
-
-Name: @commitlint/config-conventional
-
-Version: 7.6.0
-
-License: [MIT](https://github.com/conventional-changelog/commitlint/raw/master/license.md)
-
-Repository: [https://github.com/conventional-changelog/commitlint](https://github.com/conventional-changelog/commitlint)
-
 ## @types/chai-as-promised
 
 Name: @types/chai-as-promised
@@ -155,36 +135,6 @@ License: [MIT](https://github.com/codecov/codecov-node/raw/master/LICENSE)
 
 Repository: [https://github.com/codecov/codecov-node](https://github.com/codecov/codecov-node)
 
-## commitizen
-
-Name: commitizen
-
-Version: 4.0.0
-
-License: [MIT](https://github.com/commitizen/cz-cli/raw/master/LICENSE)
-
-Repository: [https://github.com/commitizen/cz-cli](https://github.com/commitizen/cz-cli)
-
-## cz-conventional-changelog
-
-Name: cz-conventional-changelog
-
-Version: 2.1.0
-
-License: [MIT](https://github.com/commitizen/cz-conventional-changelog)
-
-Repository: [https://github.com/commitizen/cz-conventional-changelog](https://github.com/commitizen/cz-conventional-changelog)
-
-## cz-customizable
-
-Name: cz-customizable
-
-Version: 5.10.0
-
-License: [MIT](https://github.com/leonardoanalista/cz-customizable/raw/master/LICENSE)
-
-Repository: [https://github.com/leonardoanalista/cz-customizable](https://github.com/leonardoanalista/cz-customizable)
-
 ## express
 
 Name: express
@@ -204,16 +154,6 @@ Version: 8.1.0
 License: [MIT](https://github.com/wheresrhys/fetch-mock/raw/master/LICENSE)
 
 Repository: [https://github.com/wheresrhys/fetch-mock](https://github.com/wheresrhys/fetch-mock)
-
-## husky
-
-Name: husky
-
-Version: 1.3.1
-
-License: [MIT](https://github.com/typicode/husky/raw/master/LICENSE)
-
-Repository: [https://github.com/typicode/husky](https://github.com/typicode/husky)
 
 ## isomorphic-fetch
 

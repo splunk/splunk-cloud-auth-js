@@ -40,8 +40,9 @@ module.exports = {
 
     // pre-defined scopes.
     scopes: [
-        { name: 'auth' },
-
+        { name: 'client-auth' },
+        { name: 'node-auth' },
+        { name: 'common' },
         { name: '*' },
     ],
 

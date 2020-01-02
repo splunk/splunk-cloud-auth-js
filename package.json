@@ -14,7 +14,7 @@
     "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",
     "format:verify": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier -l",
     "lint": "lerna run lint",
-    "publish": "cicd/scripts/publish.sh",
+    "publish": "sh ./cd/publish.sh",
     "docs": "lerna run docs",
     "setup": "yarn; lerna run build;",
     "third-party-licenses": "lerna run third-party-licenses",

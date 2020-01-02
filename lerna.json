@@ -6,6 +6,14 @@
         "*.md",
         "@splunkdev/cloud-auth"
       ]
+    },
+    "version": {
+      "allowBranch": [
+        "master",
+        "release/*"
+      ],
+      "conventionalCommits": true,
+      "message": "chore(release): publish"
     }
   },
   "packages": [

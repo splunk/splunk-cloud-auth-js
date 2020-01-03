@@ -1,12 +1,11 @@
-# Splunk Cloud Services SDK for JavaScript
+# Splunk Cloud Services Node Authentication Library
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-The Splunk Cloud Services software development kit (SDK) for JavaScript contains library code and examples to enable you to build apps using the Splunk Cloud Services services with the JavaScript programming language.
+The Splunk Cloud Services Node Authentication Library contains code and examples to enable you to authenticate with Splunk Cloud Services in a Node-based application using the JavaScript programming language.
 
-To use the Splunk Cloud Services SDKs, you must be included in the Splunk Investigates Beta Program.
-Sign up here: https://si.scp.splunk.com/.
+This library can be used in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to access Splunk Cloud Services.
 
 ## Terms of Service (TOS)
 [Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
@@ -15,63 +14,52 @@ Log in to [Splunk Investigate](https://si.scp.splunk.com/) and accept the Terms 
 
 ## Get started
 
-### Install the SDK
+### Install the Library
 
-Install the SDK to enable your app project to interact with Splunk Cloud Services services.
+Install the library to enable your project to authenticate with Splunk Cloud Services services.
 
 Run the following command from your project directory:
 
 ```sh
-npm install @splunkdev/cloud-sdk
+npm install @splunkdev/cloud-node-auth
 ```
 
 ### Example usage
 
-This example shows how to use one service client to access all supported services:
+This example demonstrates usage of the library with the SDK:
 
 ```js
 require('isomorphic-fetch'); // or a fetch polyfill of your choosing
 
 const { SplunkCloud } = require('@splunkdev/cloud-sdk');
+const { ClientAuthManager, ClientAuthManagerSettings } = require('@splunkdev/cloud-node-auth');
 
-const svc = new SplunkCloud({ tokenSource: AUTH_TOKEN, defaultTenant: TENANT });
+// initialize AuthManagerSettings
+const authSettings = new ClientAuthManagerSettings(
+    host = SPLUNK_CLOUD_AUTH_HOST,
+    scope = '',
+    clientId = CLIENT_CREDENTIAL_ID,
+    clientSecret = CLIENT_CREDENTIAL_SECRET,
+    grantType = 'client_credentials');
 
-// Retrieve the datasets for this tenant from the Catalog service
-svc.catalog.getDatasets();
+// use the AuthManagerSettings to initialize an AuthManager.
+const authManager = new ClientAuthManager(authSettings);
 
-// Run a search on the "main" index
-svc.search.createJob({ "query": "| from index:main | head 5" });
-
-...
-
-```
-
-If your app needs to work with one specific service, use a specific client for only the required service as follows:
-
-```javascript
-require('isomorphic-fetch'); // or a fetch polyfill of your choosing
-
-const { IdentityService } = require('@splunkdev/cloud-sdk/services/identity');
-
-const ENDPOINT_URL = "https://api.scp.splunk.com";
-
-const identity = new IdentityService(ENDPOINT_URL, AUTH_TOKEN, TENANT);
-
-// Get the user profile from the Identity API
-identity.getPrincipal(PRINCIPAL_NAME);
+// use the AuthManager as the tokenSource to initialize SplunkCloud.
+const svc = new SplunkCloud({ tokenSource: authManager, defaultTenant: TENANT });
 
 ...
 
 ```
+
+Additional examples can be found under the examples directory.
 
 ## Documentation
 For general documentation, see the [Splunk Developer Portal](https://developer.splunk.com/scs/).
 
-For reference documentation, see the [Splunk Cloud Services SDK for JavaScript API Reference](https://developer.splunk.com/scs/reference/sdk/splunk-cloud-sdk-js).
+For JavaScript SDK documentation, see the [Splunk Cloud Services SDK for JavaScript API Reference](https://developer.splunk.com/scs/reference/sdk/splunk-cloud-sdk-js).
 
 ## Contributing
-
-Do not directly edit any source file in the `/src/generated` directory because these files were generated from service specifications.
 
 ## Contact
 If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.

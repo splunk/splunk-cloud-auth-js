@@ -42,10 +42,10 @@ const authSettings = new ClientAuthManagerSettings(
     clientSecret = CLIENT_CREDENTIAL_SECRET,
     grantType = 'client_credentials');
 
-// use the AuthManagerSettings to initialize an AuthManager.
+// use AuthManagerSettings to initialize an AuthManager.
 const authManager = new ClientAuthManager(authSettings);
 
-// use the AuthManager as the tokenSource to initialize SplunkCloud.
+// use AuthManager as the tokenSource to initialize SplunkCloud.
 const svc = new SplunkCloud({ tokenSource: authManager, defaultTenant: TENANT });
 
 ...

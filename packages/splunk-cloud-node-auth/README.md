@@ -5,7 +5,7 @@
 
 The Splunk Cloud Services Node Authentication Library contains code and examples to enable you to authenticate with Splunk Cloud Services in a Node-based application using the JavaScript programming language.
 
-This library can be used in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to access Splunk Cloud Services.
+This library can be used in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to programmatically access Splunk Cloud Services.
 
 ## Terms of Service (TOS)
 [Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)

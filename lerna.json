@@ -3,7 +3,6 @@
     "publish": {
       "registry": "https://repo.splunk.com/artifactory/api/npm/npm-solutions-local",
       "ignoreChanges": [
-        "*.md",
         "@splunkdev/cloud-auth"
       ]
     },

@@ -14,11 +14,12 @@
     "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",
     "format:verify": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier -l",
     "lint": "lerna run lint",
+    "prepublishOnly": "lerna run build",
     "publish:lerna": "sh ./cd/publish.sh",
     "publish:docs": "lerna run publish:docs",
     "docs": "lerna run docs",
     "setup": "yarn; lerna run build;",
-    "third-party-licenses": "lerna run third-party-licenses",
+    "third-party-licenses": "lerna run third-party-licenses --stream",
     "test": "lerna run test --stream",
     "test:examples": "lerna run test:examples --stream"
   },

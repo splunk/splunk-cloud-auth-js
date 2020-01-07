@@ -14,7 +14,7 @@
  * under the License.
  */
 
-'use strict';
+/* eslint-disable @typescript-eslint/camelcase */
 
 import { assert } from 'chai';
 import * as fetchMock from 'fetch-mock';
@@ -166,7 +166,7 @@ describe('AuthProxy', () => {
                 expectedErrorMessage);
         });
 
-        // tslint:disable-next-line
+        /* eslint-disable-next-line max-len */
         it('should throw SplunkAuthError when code cannot be parsed from authorize response URL search params', async () => {
             // Arrange
             const expectedErrorMessage = 'Unable to retrieve authorization code from Authorize response URL.';

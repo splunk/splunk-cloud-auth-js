@@ -14,8 +14,6 @@
  * under the License.
  */
 
-'use strict';
-
 import { SplunkErrorParams } from '@splunkdev/cloud-sdk/src/client';
 import { assert } from 'chai';
 import 'mocha';

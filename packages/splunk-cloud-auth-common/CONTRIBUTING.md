@@ -162,7 +162,7 @@ For the body of the commit, follow the rules above and include detailed descript
 4. Check for lint errors.
 
     ```
-    yarn run tslint
+    yarn run lint
     ```
 
 5. Commit your changes. Be sure to adhere to the Conventional Commits format.

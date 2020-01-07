@@ -14,7 +14,7 @@
  * under the License.
  */
 
-'use strict';
+
 
 /**
  * AuthContext can be used to store the context required for authentication including the auth token itself.
@@ -23,32 +23,32 @@ export class AuthContext {
     /**
      * Access token.  This is the token used for authorization.
      */
-    public accessToken: string = '';
+    public accessToken = '';
 
     /**
      * Id token.
      */
-    public idToken: string = '';
+    public idToken = '';
 
     /**
      * Refresh token.
      */
-    public refreshToken: string = '';
+    public refreshToken = '';
 
     /**
      * Scope.
      */
-    public scope: string = '';
+    public scope = '';
 
     /**
      * Token expiration time in milliseconds since epoch.
      */
-    public tokenExpiration: number = 0;
+    public tokenExpiration = 0;
 
     /**
      * Token type.
      */
-    public tokenType: string = '';
+    public tokenType = '';
 }
 
 /**
@@ -88,9 +88,11 @@ export abstract class AuthManagerSettings {
  */
 export abstract class BaseAuthManager<T extends AuthManagerSettings> {
     protected readonly DEFAULT_SCOPE: string = 'openid email profile';
+
     protected readonly SCOPE_OPENID = 'openid';
 
     protected readonly authSettings: T;
+
     protected readonly authContext: AuthContext;
 
     /**

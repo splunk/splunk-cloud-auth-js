@@ -14,8 +14,6 @@
  * under the License.
  */
 
-'use strict';
-
 import 'isomorphic-fetch';
 import { SplunkAuthError } from './splunk-auth-error';
 
@@ -30,6 +28,46 @@ const HEADERS_APPLICATION_JSON_URLENCODED = {
 };
 
 /**
+ * AccessTokenResponse.
+ */
+/* eslint-disable camelcase */
+export interface AccessTokenResponse {
+    access_token: string;
+    expires_in: number;
+    id_token: string;
+    refresh_token: string;
+    scope: string;
+    token_type: string;
+}
+/* eslint-enable camelcase */
+
+/**
+ * CsrfTokenResponse.
+ */
+export class CsrfTokenResponse {
+
+    /**
+     * Cookies.
+     */
+    public cookies: any;
+
+    /**
+     * CSRF token.
+     */
+    public csrfToken: string;
+
+    /**
+     * CsrfTokenResponse constructor.
+     * @param csrfToken CSRF token.
+     * @param cookies Cookies.
+     */
+    constructor(csrfToken: string, cookies: any) {
+        this.csrfToken = csrfToken;
+        this.cookies = cookies;
+    }
+}
+
+/**
  * Authorization Proxy.
  */
 export class AuthProxy {
@@ -42,9 +80,13 @@ export class AuthProxy {
     }
 
     private host: string;
+
     private readonly PATH_AUTHN: string = '/authn';
+
     private readonly PATH_AUTHORIZATION: string = '/authorize';
+
     private readonly PATH_TOKEN: string = '/token';
+
     private readonly PATH_TOKEN_CSRF: string = '/csrfToken';
 
     /**
@@ -87,14 +129,14 @@ export class AuthProxy {
     public async authorizationCode(
         clientId: string,
         codeChallenge: string,
-        codeChallengeMethod: string = 'S256',
-        nonce: string = 'none',
+        codeChallengeMethod = 'S256',
+        nonce = 'none',
         redirectUri: string,
-        responseType: string = 'code',
+        responseType = 'code',
         scope: string,
         sessionToken: string,
         state: string): Promise<string> {
-        const queryParamMap: Map<string, any> = new Map([
+        const queryParameterMap = new Map([
             ['client_id', clientId],
             ['code_challenge', codeChallenge],
             ['code_challenge_method', codeChallengeMethod],
@@ -105,26 +147,27 @@ export class AuthProxy {
             ['session_token', sessionToken],
             ['state', state]
         ]);
-        let queryParamString: string = '?';
-        queryParamMap.forEach((value, key) => {
-            queryParamString += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
+        let queryParameterString = '?';
+        queryParameterMap.forEach((value, key) => {
+            queryParameterString += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
         });
 
         const authorizeBaseUrl = new URL(this.PATH_AUTHORIZATION, this.host);
-        const authorizeUrl = new URL(queryParamString, authorizeBaseUrl.href);
+        const authorizeUrl = new URL(queryParameterString, authorizeBaseUrl.href);
         return fetch(
             authorizeUrl.href,
             {
                 headers: HEADERS_APPLICATION_JSON,
                 method: 'GET'
             })
-            .then(res => {
-                if (res.status !== 200) {
+            .then(response => {
+                if (response.status !== 200) {
                     throw new SplunkAuthError(
-                        `authorization call failed with status='${res.status}', statusText='${res.statusText}'`);
+                        `authorization call failed with status='${response.status}', ` +
+                        `statusText='${response.statusText}'`);
                 }
 
-                const codeUrl = new URL(res.url);
+                const codeUrl = new URL(response.url);
                 const code = codeUrl.searchParams.get('code');
                 if (!code) {
                     throw new SplunkAuthError(`Unable to retrieve authorization code from Authorize response URL.`);
@@ -147,11 +190,10 @@ export class AuthProxy {
         scope: string
     ): Promise<AccessTokenResponse> {
         const authEncoded = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-        const headers = Object.assign(
-            {
-                Authorization: `Basic ${authEncoded}`
-            },
-            HEADERS_APPLICATION_JSON_URLENCODED);
+        const headers = {
+            Authorization: `Basic ${authEncoded}`,
+            ...HEADERS_APPLICATION_JSON_URLENCODED
+        };
         const body: Map<string, any> = new Map([
             ['grant_type', grantType],
             ['scope', scope]
@@ -172,13 +214,13 @@ export class AuthProxy {
                 headers: HEADERS_APPLICATION_JSON,
                 method: 'GET'
             })
-            .then(res => {
-                if (res.status !== 200) {
+            .then(response => {
+                if (response.status !== 200) {
                     throw new SplunkAuthError(
-                        `CSRF token call failed with status='${res.status}', statusText='${res.statusText}'`);
+                        `CSRF token call failed with status='${response.status}', statusText='${response.statusText}'`);
                 }
-                cookie = res.headers.get('set-cookie');
-                return res.json();
+                cookie = response.headers.get('set-cookie');
+                return response.json();
             })
             .then(json => {
                 if (!json.csrf) {
@@ -197,7 +239,7 @@ export class AuthProxy {
      */
     public async refreshAccessToken(
         clientId: string,
-        grantType: string = 'refresh_token',
+        grantType = 'refresh_token',
         scope: string,
         refreshToken: string
     ): Promise<AccessTokenResponse> {
@@ -241,12 +283,12 @@ export class AuthProxy {
                 headers,
                 method: 'POST'
             })
-            .then(res => {
-                if (res.status !== 200) {
+            .then(response => {
+                if (response.status !== 200) {
                     throw new SplunkAuthError(
-                        `Authn call failed with status='${res.status}', statusText='${res.statusText}'`);
+                        `Authn call failed with status='${response.status}', statusText='${response.statusText}'`);
                 }
-                return res.json();
+                return response.json();
             })
             .then(json => {
                 if (json.status !== 'SUCCESS') {
@@ -261,7 +303,7 @@ export class AuthProxy {
 
     private async _token(headers: any, body: Map<string, any>): Promise<AccessTokenResponse> {
         const tokenUrl = new URL(this.PATH_TOKEN, this.host);
-        let formUrlEncodedBody: string = '';
+        let formUrlEncodedBody = '';
         body.forEach((value, key) => {
             formUrlEncodedBody += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
         });
@@ -273,7 +315,7 @@ export class AuthProxy {
                 body: formUrlEncodedBody,
                 method: 'POST'
             })
-            .then(res => res.json())
+            .then(response => response.json())
             .then(json => {
                 if (!json.access_token) {
                     throw new SplunkAuthError(
@@ -282,42 +324,5 @@ export class AuthProxy {
 
                 return json;
             });
-    }
-}
-
-/**
- * AccessTokenResponse.
- */
-export interface AccessTokenResponse {
-    access_token: string;
-    expires_in: number;
-    id_token: string;
-    refresh_token: string;
-    scope: string;
-    token_type: string;
-}
-
-/**
- * CsrfTokenResponse.
- */
-export class CsrfTokenResponse {
-
-    /**
-     * Cookies.
-     */
-    public cookies: any;
-    /**
-     * CSRF token.
-     */
-    public csrfToken: string;
-
-    /**
-     * CsrfTokenResponse constructor.
-     * @param csrfToken CSRF token.
-     * @param cookies Cookies.
-     */
-    constructor(csrfToken: string, cookies: any) {
-        this.csrfToken = csrfToken;
-        this.cookies = cookies;
     }
 }

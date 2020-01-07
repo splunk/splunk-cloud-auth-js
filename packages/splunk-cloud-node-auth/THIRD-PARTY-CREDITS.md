@@ -35,26 +35,6 @@ License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LIC
 
 Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
-## @types/express
-
-Name: @types/express
-
-Version: 4.17.1
-
-License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
-
-Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-
-## @types/fetch-mock
-
-Name: @types/fetch-mock
-
-Version: 7.3.2
-
-License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
-
-Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-
 ## @types/mocha
 
 Name: @types/mocha
@@ -134,26 +114,6 @@ Version: 3.5.0
 License: [MIT](https://github.com/codecov/codecov-node/raw/master/LICENSE)
 
 Repository: [https://github.com/codecov/codecov-node](https://github.com/codecov/codecov-node)
-
-## express
-
-Name: express
-
-Version: 4.17.1
-
-License: [MIT](https://github.com/expressjs/express/raw/master/LICENSE)
-
-Repository: [https://github.com/expressjs/express](https://github.com/expressjs/express)
-
-## fetch-mock
-
-Name: fetch-mock
-
-Version: 8.3.1
-
-License: [MIT](https://github.com/wheresrhys/fetch-mock/raw/master/LICENSE)
-
-Repository: [https://github.com/wheresrhys/fetch-mock](https://github.com/wheresrhys/fetch-mock)
 
 ## isomorphic-fetch
 

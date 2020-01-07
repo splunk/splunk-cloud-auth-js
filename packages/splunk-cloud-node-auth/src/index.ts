@@ -17,5 +17,3 @@
 export { ClientAuthManager, ClientAuthManagerSettings } from './client/client-auth-manager';
 export { PKCEAuthManager, PKCEAuthManagerSettings } from './pkce/pkce-auth-manager';
 export { RefreshAuthManager, RefreshAuthManagerSettings } from './refresh/refresh-auth-manager';
-export { AuthContext, AuthManagerSettings, BaseAuthManager } from './common/base-auth-manager';
-export { SplunkAuthError } from './common/splunk-auth-error';

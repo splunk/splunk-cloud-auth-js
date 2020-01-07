@@ -16,10 +16,10 @@
 
 'use strict';
 
+import { AccessTokenResponse, AuthProxy } from '@splunkdev/splunk-cloud-auth-common';
 import { assert } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import { AccessTokenResponse, AuthProxy } from '../../../src/common/auth-proxy';
 import { RefreshAuthManager, RefreshAuthManagerSettings } from '../../../src/refresh/refresh-auth-manager';
 import '../fixture/test-setup';
 

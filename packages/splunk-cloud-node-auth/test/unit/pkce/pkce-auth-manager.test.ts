@@ -16,10 +16,10 @@
 
 'use strict';
 
+import { AccessTokenResponse, AuthProxy, CsrfTokenResponse } from '@splunkdev/splunk-cloud-auth-common';
 import { assert } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import { AccessTokenResponse, AuthProxy, CsrfTokenResponse } from '../../../src/common/auth-proxy';
 import {
     PKCEAuthManager,
     PKCEAuthManagerSettings,

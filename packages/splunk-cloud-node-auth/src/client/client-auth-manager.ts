@@ -17,9 +17,13 @@
 'use strict';
 
 import { AuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
-import { AccessTokenResponse, AuthProxy } from '../common/auth-proxy';
-import { AuthManagerSettings, BaseAuthManager } from '../common/base-auth-manager';
-import { SplunkAuthError } from '../common/splunk-auth-error';
+import {
+    AccessTokenResponse,
+    AuthManagerSettings,
+    AuthProxy,
+    BaseAuthManager,
+    SplunkAuthError
+} from '@splunkdev/splunk-cloud-auth-common';
 
 const MILLISECONDS_IN_SECOND = 1000;
 const TOKEN_EXPIRY_BUFFER_MILLISECONDS = 30000;

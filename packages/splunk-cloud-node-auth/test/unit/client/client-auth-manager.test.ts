@@ -16,11 +16,11 @@
 
 'use strict';
 
+import { AccessTokenResponse, AuthProxy } from '@splunkdev/splunk-cloud-auth-common';
 import { assert } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import { ClientAuthManager, ClientAuthManagerSettings } from '../../../src/client/client-auth-manager';
-import { AccessTokenResponse, AuthProxy } from '../../../src/common/auth-proxy';
 import '../fixture/test-setup';
 
 const MOCK_ACCESS_TOKEN = 'at';

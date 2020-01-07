@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.8](https://cd.splunkdev.com/libraries/js-cloud-auth/compare/@splunkdev/cloud-node-auth@0.1.0-alpha.7...@splunkdev/cloud-node-auth@0.1.0-alpha.8) (2020-01-07)
+
+
+### Features
+
+* **common:** eslint integration ([fcc2b31](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/fcc2b31d70d90136fdec376464967a459a95067a))
+* **node-auth:** pinning common dependency in node auth ([8f25a21](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/8f25a21b81b5edda161fee6985102aea1a2787ef))
+* **node-auth:** use common library for authproxy, base manager ([0ff4de8](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/0ff4de83420bb759231d21f48c2d54650319a839))
+
+
+
+
+
 # [0.1.0-alpha.7](https://cd.splunkdev.com/libraries/js-cloud-auth/compare/@splunkdev/cloud-node-auth@0.1.0-alpha.6...@splunkdev/cloud-node-auth@0.1.0-alpha.7) (2020-01-07)
 
 **Note:** Version bump only for package @splunkdev/cloud-node-auth

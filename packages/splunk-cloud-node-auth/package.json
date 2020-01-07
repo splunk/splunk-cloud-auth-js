@@ -1,6 +1,6 @@
 {
   "name": "@splunkdev/cloud-node-auth",
-  "version": "0.1.0-alpha.7",
+  "version": "0.1.0-alpha.8",
   "author": "Splunk, Inc.",
   "license": "Apache-2.0",
   "description": "Splunk Cloud Node Authentication Management for JavaScript",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@splunkdev/cloud-sdk": "^4.0.0",
-    "@splunkdev/splunk-cloud-auth-common": "0.1.0-alpha.1",
+    "@splunkdev/splunk-cloud-auth-common": "^0.1.0-alpha.2",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.2",
     "@types/mocha": "^5.2.5",

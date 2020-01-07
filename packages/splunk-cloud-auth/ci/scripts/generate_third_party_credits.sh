@@ -27,7 +27,7 @@ cp $TMP_WORKING_DIR/THIRD-PARTY-CREDITS.md $ORIGINAL_WORKING_DIR/THIRD-PARTY-CRE
 rm -rf $TMP_WORKING_DIR
 
 # CI steps
-if [ $CI == true ]
+if [[ $CI == true ]]
 then
     if [ "$(git diff --exit-code $ORIGINAL_WORKING_DIR/THIRD-PARTY-CREDITS.md)" ]
     then

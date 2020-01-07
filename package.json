@@ -19,7 +19,7 @@
     "publish:docs": "lerna run publish:docs",
     "docs": "lerna run docs",
     "setup": "yarn; lerna run build;",
-    "third-party-licenses": "lerna run third-party-licenses --stream",
+    "third-party-licenses": "lerna run third-party-licenses --stream --concurrency=1",
     "test": "lerna run test --stream",
     "test:examples": "lerna run test:examples --stream"
   },

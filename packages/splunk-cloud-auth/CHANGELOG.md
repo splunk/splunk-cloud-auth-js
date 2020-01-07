@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.4](https://cd.splunkdev.com/libraries/js-cloud-auth/compare/@splunkdev/cloud-auth@1.1.0-alpha.3...@splunkdev/cloud-auth@1.1.0-alpha.4) (2020-01-07)
+
+**Note:** Version bump only for package @splunkdev/cloud-auth
+
+
+
+
+
 # [1.1.0-alpha.3](https://cd.splunkdev.com/libraries/js-cloud-auth/compare/@splunkdev/cloud-auth@1.1.0-alpha.0...@splunkdev/cloud-auth@1.1.0-alpha.3) (2020-01-03)
 
 **Note:** Version bump only for package @splunkdev/cloud-auth

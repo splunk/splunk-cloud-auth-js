@@ -14,7 +14,7 @@
  * under the License.
  */
 
-'use strict';
+
 
 /**
  * This file contains variables used in the examples.  They can be set as node environment variables or hardcoded below.

@@ -44,15 +44,13 @@ describe('PKCEAuthManager', () => {
         new PKCEAuthManagerSettings(
             MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_REDIRECT_URI, MOCK_USERNAME, MOCK_PASSWORD);
     let mockAuthProxy: AuthProxy;
-    let mockPkceCodeFlowHelper: PKCECodeFlowHelper;
     let authManager: PKCEAuthManager;
 
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
 
     beforeEach(() => {
         mockAuthProxy = new AuthProxy(MOCK_HOST);
-        mockPkceCodeFlowHelper = new PKCECodeFlowHelper();
-        authManager = new PKCEAuthManager(mockAuthSettings, mockAuthProxy, mockPkceCodeFlowHelper);
+        authManager = new PKCEAuthManager(mockAuthSettings, mockAuthProxy);
     });
 
     afterEach(() => {
@@ -81,9 +79,9 @@ describe('PKCEAuthManager', () => {
                 .returns(new Promise<string>((resolve) => {
                     resolve(SESSION_TOKEN);
                 }));
-            const codeVerifierStub = sandbox.stub(mockPkceCodeFlowHelper, 'createCodeVerifier')
+            const codeVerifierStub = sandbox.stub(PKCECodeFlowHelper, 'createCodeVerifier')
                 .returns(CODE_VERIFIER);
-            const codeChallengeStub = sandbox.stub(mockPkceCodeFlowHelper, 'createCodeChallenge')
+            const codeChallengeStub = sandbox.stub(PKCECodeFlowHelper, 'createCodeChallenge')
                 .returns(CODE_CHALLENGE);
             const authorizationCodeStub = sandbox.stub(mockAuthProxy, 'authorizationCode')
                 .returns(new Promise<string>((resolve) => {
@@ -148,9 +146,9 @@ describe('PKCEAuthManager', () => {
                 .returns(new Promise<string>((resolve) => {
                     resolve(SESSION_TOKEN);
                 }));
-            const codeVerifierStub = sandbox.stub(mockPkceCodeFlowHelper, 'createCodeVerifier')
+            const codeVerifierStub = sandbox.stub(PKCECodeFlowHelper, 'createCodeVerifier')
                 .returns(CODE_VERIFIER);
-            const codeChallengeStub = sandbox.stub(mockPkceCodeFlowHelper, 'createCodeChallenge')
+            const codeChallengeStub = sandbox.stub(PKCECodeFlowHelper, 'createCodeChallenge')
                 .returns(CODE_CHALLENGE);
             const authorizationCodeStub = sandbox.stub(mockAuthProxy, 'authorizationCode')
                 .returns(new Promise<string>((resolve) => {
@@ -225,8 +223,7 @@ describe('PKCEAuthManager', () => {
             authManager = new PKCEAuthManager(
                 new PKCEAuthManagerSettings(
                     MOCK_HOST, MOCK_SCOPE, '', MOCK_REDIRECT_URI, MOCK_USERNAME, MOCK_PASSWORD),
-                mockAuthProxy,
-                mockPkceCodeFlowHelper);
+                mockAuthProxy);
             const csrfTokenStub = sandbox.stub(mockAuthProxy, 'csrfToken');
             const expectedErrorMessage = 'clientId is not specified.';
 
@@ -244,8 +241,7 @@ describe('PKCEAuthManager', () => {
             authManager = new PKCEAuthManager(
                 new PKCEAuthManagerSettings(
                     MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, '', MOCK_USERNAME, MOCK_PASSWORD),
-                mockAuthProxy,
-                mockPkceCodeFlowHelper);
+                mockAuthProxy);
             const csrfTokenStub = sandbox.stub(mockAuthProxy, 'csrfToken');
             const expectedErrorMessage = 'redirectUri is not specified.';
 

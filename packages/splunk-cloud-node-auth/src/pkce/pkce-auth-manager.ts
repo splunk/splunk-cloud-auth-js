@@ -24,6 +24,50 @@ const TOKEN_EXPIRY_BUFFER_MILLISECONDS = 30000;
 const DEFAULT_CODE_VERIFIER_LENGTH = 50;
 
 /**
+ * PKCECodeFlowHelper.
+ */
+export class PKCECodeFlowHelper {
+
+    /**
+     * Creates a code challenge.
+     * A code challenge is derived from the code verifier by the following transformation:
+     * BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
+     * IETF reference: https://tools.ietf.org/html/rfc7636#section-4.2
+     * @param codeVerifier Code verifier.
+     */
+    public static createCodeChallenge(codeVerifier: string): string {
+        const buffer = createHash('sha256').update(codeVerifier).digest();
+        return PKCECodeFlowHelper.base64URLEncode(buffer);
+    }
+
+    /**
+     * Creates a code verifier.
+     * A code verifier is a high-entropy cryptographic random STRING using the
+     * unreserved characters [A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~"
+     * from Section 2.3 of [RFC3986], with a minimum length of 43 characters
+     * and a maximum length of 128 characters.
+     * IETF reference: https://tools.ietf.org/html/rfc7636#section-4.1
+     * @param codeVerifierLength number between 43 and 128 inclusive representing the length of chars
+     *                           for the generated code verifier.
+     */
+    public static createCodeVerifier(codeVerifierLength: number): string {
+        if (!codeVerifierLength || codeVerifierLength < 43 || codeVerifierLength > 128) {
+            throw new SplunkAuthError(`Specified code verifier length is invalid. len=${codeVerifierLength}`);
+        }
+
+        const buffer = randomBytes(codeVerifierLength);
+        return PKCECodeFlowHelper.base64URLEncode(buffer);
+    }
+
+    private static base64URLEncode(buffer: Buffer): string {
+        return Buffer.from(buffer).toString('base64')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=/g, '');
+    }
+}
+
+/**
  * PKCEAuthManagerSettings.
  */
 export class PKCEAuthManagerSettings extends AuthManagerSettings {
@@ -32,6 +76,7 @@ export class PKCEAuthManagerSettings extends AuthManagerSettings {
      * Password.
      */
     public password: string;
+
     /**
      * Redirect URI.
      */
@@ -53,7 +98,7 @@ export class PKCEAuthManagerSettings extends AuthManagerSettings {
      */
     constructor(
         host: string,
-        scope: string = 'openid offline_access email profile',
+        scope = 'openid offline_access email profile',
         clientId: string,
         redirectUri: string,
         username: string,
@@ -76,20 +121,16 @@ export class PKCEAuthManager extends BaseAuthManager<PKCEAuthManagerSettings> im
      * PKCEAuthManager constructor.
      * @param authSettings PKCEAuthManagerSettings.
      * @param authProxy: Authorization Proxy.
-     * @param pkceCodeFlowHelper PKCECodeFlowHelper.
      */
     constructor(
         authSettings: PKCEAuthManagerSettings,
-        authProxy?: AuthProxy,
-        pkceCodeFlowHelper?: PKCECodeFlowHelper
+        authProxy?: AuthProxy
     ) {
         super(authSettings);
         this.authProxy = authProxy || new AuthProxy(authSettings.host);
-        this.pkceCodeFlowHelper = pkceCodeFlowHelper || new PKCECodeFlowHelper();
     }
 
     private authProxy: AuthProxy;
-    private pkceCodeFlowHelper: PKCECodeFlowHelper;
 
     /**
      * Gets the access token.
@@ -120,8 +161,8 @@ export class PKCEAuthManager extends BaseAuthManager<PKCEAuthManagerSettings> im
             csrfTokenResponse.cookies);
 
         // generate code verifier and code challenge.
-        const codeVerifier = this.pkceCodeFlowHelper.createCodeVerifier(DEFAULT_CODE_VERIFIER_LENGTH);
-        const codeChallenge = this.pkceCodeFlowHelper.createCodeChallenge(codeVerifier);
+        const codeVerifier = PKCECodeFlowHelper.createCodeVerifier(DEFAULT_CODE_VERIFIER_LENGTH);
+        const codeChallenge = PKCECodeFlowHelper.createCodeChallenge(codeVerifier);
 
         // get authorization code.
         const authCode = await this.authProxy.authorizationCode(
@@ -161,47 +202,5 @@ export class PKCEAuthManager extends BaseAuthManager<PKCEAuthManagerSettings> im
             return true;
         }
         return false;
-    }
-}
-
-/**
- * PKCECodeFlowHelper.
- */
-export class PKCECodeFlowHelper {
-
-    /**
-     * Creates a code challenge.
-     * A code challenge is derived from the code verifier by the following transformation:
-     * BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
-     * IETF reference: https://tools.ietf.org/html/rfc7636#section-4.2
-     * @param codeVerifier Code verifier.
-     */
-    public createCodeChallenge(codeVerifier: string): string {
-        const buffer = createHash('sha256').update(codeVerifier).digest();
-        return this.base64URLEncode(buffer);
-    }
-    /**
-     * Creates a code verifier.
-     * A code verifier is a high-entropy cryptographic random STRING using the
-     * unreserved characters [A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~"
-     * from Section 2.3 of [RFC3986], with a minimum length of 43 characters
-     * and a maximum length of 128 characters.
-     * IETF reference: https://tools.ietf.org/html/rfc7636#section-4.1
-     * @param len number between 43 and 128 inclusive representing the length of chars for the generated code verifier.
-     */
-    public createCodeVerifier(len: number): string {
-        if (!len || len < 43 || len > 128) {
-            throw new SplunkAuthError(`Specified code verifier length is invalid. len=${len}`);
-        }
-
-        const buffer = randomBytes(len);
-        return this.base64URLEncode(buffer);
-    }
-
-    private base64URLEncode(buffer: Buffer): string {
-        return Buffer.from(buffer).toString('base64')
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=/g, '');
     }
 }

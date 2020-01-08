@@ -15,7 +15,8 @@
  */
 
 
-// ***** TITLE: Use PKCE authentication with the Splunk Cloud JavaScript SDK to create and retrieve a KVCollection dataset.
+// ***** TITLE: Use PKCE authentication with the Splunk Cloud JavaScript SDK to create
+// *****        and retrieve a KVCollection dataset.
 require('isomorphic-fetch');
 
 const { SplunkCloud } = require('@splunkdev/cloud-sdk');
@@ -37,12 +38,12 @@ const {
 
     // ***** STEP 1: Create PKCEAuthManagerSettings.
     const authSettings = new PKCEAuthManagerSettings(
-        host = SPLUNK_CLOUD_AUTH_HOST,
-        scope = 'openid offline_access email profile',
-        clientId = IDP_CLIENT_ID,
-        redirectUri = SPLUNK_CLOUD_LOGIN_REDIRECT_URL,
-        username = IDP_CLIENT_USERNAME,
-        password = IDP_CLIENT_PASSWORD);
+        SPLUNK_CLOUD_AUTH_HOST,
+        'openid offline_access email profile',
+        IDP_CLIENT_ID,
+        SPLUNK_CLOUD_LOGIN_REDIRECT_URL,
+        IDP_CLIENT_USERNAME,
+        IDP_CLIENT_PASSWORD);
 
     // ***** STEP 2: Create PKCEAuthManager.
     // ***** DESCRIPTION: Use the PKCEAuthManagerSettings.

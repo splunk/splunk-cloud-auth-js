@@ -15,7 +15,8 @@
  */
 
 
-// ***** TITLE: Use Client Credential authentication with the Splunk Cloud JavaScript SDK to create and retrieve a KVCollection dataset.
+// ***** TITLE: Use Client Credential authentication with the Splunk Cloud JavaScript SDK
+// *****        to create and retrieve a KVCollection dataset.
 require('isomorphic-fetch');
 
 const { SplunkCloud } = require('@splunkdev/cloud-sdk');
@@ -35,11 +36,11 @@ const {
 
     // ***** STEP 1: Create ClientAuthManagerSettings.
     const authSettings = new ClientAuthManagerSettings(
-        host = SPLUNK_CLOUD_AUTH_HOST,
-        scope = '',
-        clientId = CLIENT_CREDENTIAL_ID,
-        clientSecret = CLIENT_CREDENTIAL_SECRET,
-        grantType = 'client_credentials');
+        SPLUNK_CLOUD_AUTH_HOST,
+        '',
+        CLIENT_CREDENTIAL_ID,
+        CLIENT_CREDENTIAL_SECRET,
+        'client_credentials');
 
     // ***** STEP 2: Create ClientAuthManager.
     // ***** DESCRIPTION: Use the ClientAuthManagerSettings.

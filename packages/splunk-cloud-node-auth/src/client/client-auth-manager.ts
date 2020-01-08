@@ -14,8 +14,6 @@
  * under the License.
  */
 
-'use strict';
-
 import { AuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
 import {
     AccessTokenResponse,
@@ -33,7 +31,8 @@ const TOKEN_EXPIRY_BUFFER_MILLISECONDS = 30000;
  */
 export class ClientAuthManagerSettings extends AuthManagerSettings {
     public clientSecret: string;
-    public grantType: string = 'client_credentials';
+
+    public grantType = 'client_credentials';
 
     /**
      * ClientAuthManagerSettings.
@@ -95,11 +94,11 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
             this.authSettings.clientSecret,
             this.authSettings.grantType,
             this.authSettings.scope)
-            .then((res: AccessTokenResponse) => {
-                this.authContext.accessToken = res.access_token;
-                this.authContext.idToken = res.id_token;
-                this.authContext.tokenExpiration = new Date().getTime() + res.expires_in * MILLISECONDS_IN_SECOND;
-                this.authContext.tokenType = res.token_type;
+            .then((response: AccessTokenResponse) => {
+                this.authContext.accessToken = response.access_token;
+                this.authContext.idToken = response.id_token;
+                this.authContext.tokenExpiration = new Date().getTime() + response.expires_in * MILLISECONDS_IN_SECOND;
+                this.authContext.tokenType = response.token_type;
                 return this.authContext.accessToken;
             });
     }

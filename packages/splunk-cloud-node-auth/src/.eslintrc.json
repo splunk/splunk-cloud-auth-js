@@ -1,7 +1,6 @@
 {
   "env": {
     "browser": true,
-    "mocha": true,
     "node": true
   },
   "extends": [
@@ -13,8 +12,9 @@
   ],
   "overrides": [
     {
+      "excludedFiles": "src/version.ts",
       "files": [
-        "test/**/*.ts"
+        "src/**/*.ts"
       ]
     }
   ],
@@ -38,7 +38,6 @@
       {
         "case": "kebabCase"
       }
-    ],
-    "unicorn/prevent-abbreviations": "off"
+    ]
   }
 }

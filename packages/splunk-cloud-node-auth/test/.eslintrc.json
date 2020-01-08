@@ -1,6 +1,5 @@
 {
   "env": {
-    "browser": true,
     "mocha": true,
     "node": true
   },
@@ -13,6 +12,10 @@
   ],
   "overrides": [
     {
+      "excludedFiles": [
+        "test/**/*.d.ts",
+        "test/**/*.js*"
+      ],
       "files": [
         "test/**/*.ts"
       ]

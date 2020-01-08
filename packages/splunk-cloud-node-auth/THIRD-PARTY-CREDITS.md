@@ -85,6 +85,26 @@ License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LIC
 
 Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
+## @typescript-eslint/eslint-plugin
+
+Name: @typescript-eslint/eslint-plugin
+
+Version: 2.15.0
+
+License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
+
+Repository: [https://github.com/typescript-eslint/typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+
+## @typescript-eslint/parser
+
+Name: @typescript-eslint/parser
+
+Version: 2.15.0
+
+License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
+
+Repository: [https://github.com/typescript-eslint/typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+
 ## chai-as-promised
 
 Name: chai-as-promised
@@ -114,6 +134,86 @@ Version: 3.5.0
 License: [MIT](https://github.com/codecov/codecov-node/raw/master/LICENSE)
 
 Repository: [https://github.com/codecov/codecov-node](https://github.com/codecov/codecov-node)
+
+## eslint-config-airbnb
+
+Name: eslint-config-airbnb
+
+Version: 18.0.1
+
+License: [MIT](https://github.com/airbnb/javascript/raw/master/LICENSE.md)
+
+Repository: [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript)
+
+## eslint-config-prettier
+
+Name: eslint-config-prettier
+
+Version: 6.9.0
+
+License: [MIT](https://github.com/prettier/eslint-config-prettier/raw/master/LICENSE)
+
+Repository: [https://github.com/prettier/eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)
+
+## eslint-import-resolver-webpack
+
+Name: eslint-import-resolver-webpack
+
+Version: 0.12.0
+
+License: [MIT](https://github.com/benmosher/eslint-plugin-import)
+
+Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.com/benmosher/eslint-plugin-import)
+
+## eslint-plugin-import
+
+Name: eslint-plugin-import
+
+Version: 2.19.1
+
+License: [MIT](https://github.com/benmosher/eslint-plugin-import/raw/master/LICENSE)
+
+Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.com/benmosher/eslint-plugin-import)
+
+## eslint-plugin-jsx-a11y
+
+Name: eslint-plugin-jsx-a11y
+
+Version: 6.2.3
+
+License: [MIT](https://github.com/evcohen/eslint-plugin-jsx-a11y/raw/master/LICENSE.md)
+
+Repository: [https://github.com/evcohen/eslint-plugin-jsx-a11y](https://github.com/evcohen/eslint-plugin-jsx-a11y)
+
+## eslint-plugin-react
+
+Name: eslint-plugin-react
+
+Version: 7.17.0
+
+License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICENSE)
+
+Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react)
+
+## eslint-plugin-unicorn
+
+Name: eslint-plugin-unicorn
+
+Version: 15.0.1
+
+License: [MIT](https://github.com/sindresorhus/eslint-plugin-unicorn/raw/master/license)
+
+Repository: [https://github.com/sindresorhus/eslint-plugin-unicorn](https://github.com/sindresorhus/eslint-plugin-unicorn)
+
+## eslint
+
+Name: eslint
+
+Version: 6.8.0
+
+License: [MIT](https://github.com/eslint/eslint/raw/master/LICENSE)
+
+Repository: [https://github.com/eslint/eslint](https://github.com/eslint/eslint)
 
 ## isomorphic-fetch
 
@@ -194,6 +294,16 @@ Version: 1.14.2
 License: [MIT](https://github.com/Dexus/pem/raw/master/LICENSE)
 
 Repository: [https://github.com/Dexus/pem](https://github.com/Dexus/pem)
+
+## react
+
+Name: react
+
+Version: 16.12.0
+
+License: [MIT](https://github.com/facebook/react/raw/master/LICENSE)
+
+Repository: [https://github.com/facebook/react](https://github.com/facebook/react)
 
 ## replace
 
@@ -284,46 +394,6 @@ Version: 1.20150623.0
 License: [MIT](https://github.com/basarat/tsc)
 
 Repository: [https://github.com/basarat/tsc](https://github.com/basarat/tsc)
-
-## tslint-config-airbnb
-
-Name: tslint-config-airbnb
-
-Version: 5.11.1
-
-License: [Apache-2.0](github:progre/tslint-config-airbnb)
-
-Repository: [github:progre/tslint-config-airbnb](github:progre/tslint-config-airbnb)
-
-## tslint-config-prettier
-
-Name: tslint-config-prettier
-
-Version: 1.18.0
-
-License: [MIT](https://github.com/prettier/tslint-config-prettier/raw/master/LICENSE)
-
-Repository: [https://github.com/prettier/tslint-config-prettier](https://github.com/prettier/tslint-config-prettier)
-
-## tslint-eslint-rules
-
-Name: tslint-eslint-rules
-
-Version: 5.4.0
-
-License: [MIT](https://github.com/buzinas/tslint-eslint-rules/raw/master/LICENSE)
-
-Repository: [https://github.com/buzinas/tslint-eslint-rules](https://github.com/buzinas/tslint-eslint-rules)
-
-## tslint
-
-Name: tslint
-
-Version: 5.18.0
-
-License: [Apache-2.0](https://github.com/palantir/tslint/raw/master/LICENSE)
-
-Repository: [https://github.com/palantir/tslint](https://github.com/palantir/tslint)
 
 ## typedoc-plugin-markdown
 

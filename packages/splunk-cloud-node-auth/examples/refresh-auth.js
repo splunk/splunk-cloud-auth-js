@@ -15,7 +15,8 @@
  */
 
 
-// ***** TITLE: Use a refresh token for authentication with the Splunk Cloud JavaScript SDK to create and retrieve a KVCollection dataset.
+// ***** TITLE: Use a refresh token for authentication with the Splunk Cloud JavaScript SDK
+// *****        to create and retrieve a KVCollection dataset.
 require('isomorphic-fetch');
 
 const { SplunkCloud } = require('@splunkdev/cloud-sdk');
@@ -35,21 +36,41 @@ const {
     TENANT_ID
 } = require('./config');
 
+/**
+ * Using the PKCE Auth flow to retrieve a valid refresh token.
+ */
+async function retrieveRefreshToken() {
+    const authSettings = new PKCEAuthManagerSettings(
+        SPLUNK_CLOUD_AUTH_HOST,
+        'openid offline_access email profile',
+        IDP_CLIENT_ID,
+        SPLUNK_CLOUD_LOGIN_REDIRECT_URL,
+        IDP_CLIENT_USERNAME,
+        IDP_CLIENT_PASSWORD);
+
+    const authManager = new PKCEAuthManager(authSettings);
+
+    return authManager.getAccessToken()
+        .then(() => {
+            return authManager.authContext.refreshToken;
+        });
+}
+
 (async function () {
     const DATE_NOW = Date.now();
     const collectionModule = `collectionmodule`;
     const kvcollectionName = `kvcollection${DATE_NOW}`;
 
     // ***** STEP 0: Retrieve Refresh Token using PKCE flow.
-    let originalRefreshToken = await retrieveRefreshToken();
+    const originalRefreshToken = await retrieveRefreshToken();
 
     // ***** STEP 1: Create RefreshAuthManagerSettings.
     const authSettings = new RefreshAuthManagerSettings(
-        host = SPLUNK_CLOUD_AUTH_HOST,
-        scope = 'openid',
-        clientId = IDP_CLIENT_ID,
-        grantType = 'refresh_token',
-        refreshToken = originalRefreshToken);
+        SPLUNK_CLOUD_AUTH_HOST,
+        'openid',
+        IDP_CLIENT_ID,
+        'refresh_token',
+        originalRefreshToken);
 
     // ***** STEP 2: Create RefreshAuthManager.
     // ***** DESCRIPTION: Use the RefreshAuthManagerSettings.
@@ -81,23 +102,3 @@ const {
         await splunk.catalog.deleteDataset(`${collectionModule}.${kvcollectionName}`).catch(() => { });
     };
 })().catch(error => console.error(error));
-
-/**
- * Using the PKCE Auth flow to retrieve a valid refresh token.
- */
-async function retrieveRefreshToken() {
-    const authSettings = new PKCEAuthManagerSettings(
-        host = SPLUNK_CLOUD_AUTH_HOST,
-        scope = 'openid offline_access email profile',
-        clientId = IDP_CLIENT_ID,
-        redirectUri = SPLUNK_CLOUD_LOGIN_REDIRECT_URL,
-        username = IDP_CLIENT_USERNAME,
-        password = IDP_CLIENT_PASSWORD);
-
-    const authManager = new PKCEAuthManager(authSettings);
-
-    return authManager.getAccessToken()
-        .then(() => {
-            return authManager.authContext.refreshToken;
-        });
-}

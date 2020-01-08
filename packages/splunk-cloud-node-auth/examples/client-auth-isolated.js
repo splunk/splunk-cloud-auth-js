@@ -28,11 +28,11 @@ const {
 (async function () {
     // ***** STEP 1: Create ClientAuthManagerSettings.
     const authSettings = new ClientAuthManagerSettings(
-        host = SPLUNK_CLOUD_AUTH_HOST,
-        scope = '',
-        clientId = CLIENT_CREDENTIAL_ID,
-        clientSecret = CLIENT_CREDENTIAL_SECRET,
-        grantType = 'client_credentials');
+        SPLUNK_CLOUD_AUTH_HOST,
+        '',
+        CLIENT_CREDENTIAL_ID,
+        CLIENT_CREDENTIAL_SECRET,
+        'client_credentials');
 
     // ***** STEP 2: Create ClientAuthManager.
     // ***** DESCRIPTION: Use the ClientAuthManagerSettings.

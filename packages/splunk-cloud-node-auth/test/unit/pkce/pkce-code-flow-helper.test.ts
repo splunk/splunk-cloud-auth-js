@@ -25,13 +25,7 @@ import { PKCECodeFlowHelper } from '../../../src/pkce/pkce-auth-manager';
 import '../fixture/test-setup';
 
 describe('PKCECodeFlowHelper', () => {
-    let pkceCodeFlowHelper: PKCECodeFlowHelper;
-
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
-
-    beforeEach(() => {
-        pkceCodeFlowHelper = new PKCECodeFlowHelper();
-    });
 
     afterEach(() => {
         sandbox.restore();
@@ -46,7 +40,7 @@ describe('PKCECodeFlowHelper', () => {
             const spyCreateHash = sandbox.spy(crypto, 'createHash');
 
             // Act
-            const result = pkceCodeFlowHelper.createCodeChallenge(MOCK_CODE_VERIFIER);
+            const result = PKCECodeFlowHelper.createCodeChallenge(MOCK_CODE_VERIFIER);
 
             // Assert
             assert.equal(result, EXPECTED_CODE_CHALLENGE);
@@ -64,7 +58,7 @@ describe('PKCECodeFlowHelper', () => {
             const spyRandomBytes = sandbox.spy(crypto, 'randomBytes');
 
             // Act
-            const result = pkceCodeFlowHelper.createCodeVerifier(LENGTH_OF_CODE_VERIFIER);
+            const result = PKCECodeFlowHelper.createCodeVerifier(LENGTH_OF_CODE_VERIFIER);
 
             // Assert
             assert.isNotNull(result);
@@ -82,7 +76,7 @@ describe('PKCECodeFlowHelper', () => {
             const LESS_THAN_43 = 42;
 
             // Act/Assert
-            assert.throws(() => pkceCodeFlowHelper.createCodeVerifier(LESS_THAN_43));
+            assert.throws(() => PKCECodeFlowHelper.createCodeVerifier(LESS_THAN_43));
         });
 
         it('should throw SplunkAuthError when length of code verifier is greater than 128', () => {
@@ -90,7 +84,7 @@ describe('PKCECodeFlowHelper', () => {
             const GREATER_THAN_128 = 129;
 
             // Act/Assert
-            assert.throws(() => pkceCodeFlowHelper.createCodeVerifier(GREATER_THAN_128));
+            assert.throws(() => PKCECodeFlowHelper.createCodeVerifier(GREATER_THAN_128));
         });
     });
 });

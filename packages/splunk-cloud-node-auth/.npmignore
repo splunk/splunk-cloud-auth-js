@@ -23,6 +23,7 @@ coverage/
 tmp/
 jsdoc.json
 .eslintrc.*
+**/.eslintrc.*
 .npmpignore
 .babelrc
 examples/

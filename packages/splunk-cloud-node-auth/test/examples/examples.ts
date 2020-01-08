@@ -14,6 +14,8 @@
  * under the License.
  */
 
+/* eslint-disable no-console */
+
 import { assert } from 'chai';
 import { execFile } from 'child_process';
 import * as fs from 'fs';

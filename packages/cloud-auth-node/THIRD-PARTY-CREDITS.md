@@ -179,7 +179,7 @@ Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.c
 
 Name: eslint-plugin-jsx-a11y
 
-Version: 6.2.3
+Version: 5.1.1
 
 License: [MIT](https://github.com/evcohen/eslint-plugin-jsx-a11y/raw/master/LICENSE.md)
 

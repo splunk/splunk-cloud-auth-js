@@ -309,7 +309,7 @@ Repository: [https://github.com/facebook/react](https://github.com/facebook/reac
 
 Name: replace
 
-Version: 1.1.3
+Version: 1.1.4
 
 License: [MIT](https://github.com/ALMaclaine/replace/raw/master/LICENSE)
 
@@ -399,7 +399,7 @@ Repository: [https://github.com/tgreyuk/typedoc-plugin-markdown](https://github.
 
 Name: typedoc
 
-Version: 0.15.6
+Version: 0.15.7
 
 License: [Apache-2.0](https://github.com/TypeStrong/TypeDoc/raw/master/LICENSE)
 

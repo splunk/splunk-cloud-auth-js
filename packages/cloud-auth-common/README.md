@@ -3,7 +3,7 @@
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-This library contains common code used in the [@splunkdev/cloud-auth-client](https://github.com/splunk/js-cloud-auth/tree/develop/packages/cloud-auth-client) and [@splunkdev/cloud-auth-node](https://github.com/splunk/js-cloud-auth/tree/develop/packages/cloud-auth-node).
+The Splunk Cloud Services Common Authentication Library contains common code used in the [@splunkdev/cloud-auth-client](https://github.com/splunk/js-cloud-auth/tree/develop/packages/cloud-auth-client) and [@splunkdev/cloud-auth-node](https://github.com/splunk/js-cloud-auth/tree/develop/packages/cloud-auth-node).
 
 ## Get started
 

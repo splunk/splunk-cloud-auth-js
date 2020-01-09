@@ -24,7 +24,7 @@ const thirdPartyLicenseFile = path.join(__dirname, '..', thirdPartyLicenseFileNa
 
 function createMarkdown(deps) {
     let document = '\n# Third-party software credits\n\n';
-    document += 'The Splunk Developer Cloud SDK for JavaScript contains some libraries that were written by others, and are being redistributed as part of the SDK, under their respective open source licenses.\n';
+    document += 'The Splunk Cloud Services Node Authentication Library for JavaScript contains some libraries that were written by others, and are being redistributed as part of the library, under their respective open source licenses.\n';
     document += '\nWe want to thank the contributors to these projects:\n';
 
     for (const dependencyKey of Object.keys(deps)) {

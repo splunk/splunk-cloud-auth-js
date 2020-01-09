@@ -1,7 +1,7 @@
 
 # Third-party software credits
 
-The Splunk Cloud Auth library for JavaScript contains some libraries that were written by others, and are being redistributed as part of the library, under their respective open source licenses.
+The Splunk Cloud Services Web Application Authentication Library for JavaScript contains some libraries that were written by others, and are being redistributed as part of the library, under their respective open source licenses.
 
 We want to thank the contributors to these projects:
 

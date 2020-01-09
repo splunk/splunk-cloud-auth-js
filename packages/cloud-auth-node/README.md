@@ -1,4 +1,4 @@
-# Splunk Cloud Services Node Authentication Library
+# @splunkdev/cloud-auth-node
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
@@ -20,8 +20,12 @@ Install the library to enable your project to authenticate with Splunk Cloud Ser
 
 Run the following command from your project directory:
 
-```sh
-npm install @splunkdev/cloud-auth-node
+```sh-session
+yarn add @splunkdev/cloud-auth-node
+
+# or
+
+npm install --save @splunkdev/cloud-auth-node
 ```
 
 ### Example usage
@@ -52,14 +56,12 @@ const svc = new SplunkCloud({ tokenSource: authManager, defaultTenant: TENANT })
 
 ```
 
-Additional examples can be found under the examples directory.
+Additional examples can be found under the [examples directory](https://github.com/splunk/js-cloud-auth/tree/develop/packages/cloud-auth-node/examples).
 
 ## Documentation
 For general documentation, see the [Splunk Developer Portal](https://developer.splunk.com/scs/).
 
 For JavaScript SDK documentation, see the [Splunk Cloud Services SDK for JavaScript API Reference](https://developer.splunk.com/scs/reference/sdk/splunk-cloud-sdk-js).
-
-## Contributing
 
 ## Contact
 If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.

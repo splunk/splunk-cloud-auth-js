@@ -309,7 +309,7 @@ Repository: [https://github.com/facebook/react](https://github.com/facebook/reac
 
 Name: replace
 
-Version: 1.1.4
+Version: 1.1.5
 
 License: [MIT](https://github.com/ALMaclaine/replace/raw/master/LICENSE)
 

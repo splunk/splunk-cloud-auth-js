@@ -1,10 +1,5 @@
 # Contribution Guidelines
 
-For general information about contributing to Splunk projects, see: 
-
--  [Splunk and open source](http://dev.splunk.com/view/opensource/SP-CAAAEDM)
--  [Individual contributions](http://dev.splunk.com/goto/individualcontributions)
--  [Company contributions](http://dev.splunk.com/view/companycontributions/SP-CAAAEDR)
 
 ## Issues and bug reports
 
@@ -80,6 +75,15 @@ To install JavaScript dependencies, run the following command from the root of t
 yarn
 ```
 
+### Developing with dependent packages
+
+When working with packages within the mono-repo that depend on each other, you will need to symlink the packages.  This can be done using the [@lerna/link](https://github.com/lerna/lerna/tree/master/commands/link#readme) command.
+
+
+```
+yarn lerna link
+```
+
 ## Git commit conventions
 
 Follow the [Conventional Commits](https://www.conventionalcommits.org/) format for Git commit messages. Using the format makes the commit history for the project more readable and generates a changelog automatically.
@@ -121,18 +125,11 @@ Use one of the following values for "type":
 | ci       | A code change in the CI pipeline                           |
 | revert   | Revert to a commit                                         |
 
-Scopes are broken down at a service level. The value for "scope" must be one of the following:
+Scopes are broken down at the package level. The value for "scope" must be one of the following:
 
-* action
-* auth
-* catalog
-* core
-* examples
-* identity
-* ingest
-* kvstore
-* search
-* streams
+* cloud-auth-client
+* cloud-auth-common
+* cloud-auth-node
 
 **Note:**  If your changes do not apply to any of the scopes above, or if your changes affect more than one scope, use a scope value of "*". 
 
@@ -147,7 +144,7 @@ For the body of the commit, follow the rules above and include detailed descript
 
 ## Submit a pull request
 
-1. Fill out the [Individual Contributor Agreement](http://dev.splunk.com/goto/individualcontributions).
+1. Fill out the [Splunk Contribution Agreement](https://www.splunk.com/goto/contributions).
 
 2. Configure your development environment as described above.
 
@@ -162,7 +159,7 @@ For the body of the commit, follow the rules above and include detailed descript
 4. Check for lint errors.
 
     ```
-    yarn run lint
+    yarn run tslint
     ```
 
 5. Commit your changes. Be sure to adhere to the Conventional Commits format.

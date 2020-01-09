@@ -1,18 +1,38 @@
 # @splunkdev/cloud-auth-client
 
-Library to help authenticating web applications in Splunk Cloud.
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-## Install
+The Splunk Cloud Services Web Application Authentication Library contains code and examples to enable you to authenticate with Splunk Cloud Services in a web application using the JavaScript programming language.
+
+This library can be used alone or in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to programmatically access Splunk Cloud Services.
+
+## Terms of Service (TOS)
+[Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
+
+Log in to [Splunk Investigate](https://si.scp.splunk.com/) and accept the Terms of Service when prompted.
+
+## Get started
+
+### Install the Library
+
+Install the library to enable your project to authenticate with Splunk Cloud Services services.
+
+Run the following command from your project directory:
 
 ```sh-session
-$ yarn add @splunkdev/cloud-auth-client
+yarn add @splunkdev/cloud-auth-client
 
 # or
 
-$ npm install --save @splunkdev/cloud-auth-client
+npm install --save @splunkdev/cloud-auth-client
 ```
 
-## Usage Example
+### Example usage
+
+#### React web application
+
+This example demonstrates usage of the library in a React web application.
 
 ```js
 "auth": {
@@ -72,7 +92,7 @@ class App extends Component {
 }
 ```
 
-## Configuration
+#### AuthClient configuration
 
 Configuration Options for `AuthClient`:
 
@@ -121,3 +141,11 @@ Configuration Options for `AuthClient`:
     autoTokenRenewalBuffer: 120
 }
 ```
+
+## Documentation
+For general documentation, see the [Splunk Developer Portal](https://developer.splunk.com/scs/).
+
+For JavaScript SDK documentation, see the [Splunk Cloud Services SDK for JavaScript API Reference](https://developer.splunk.com/scs/reference/sdk/splunk-cloud-sdk-js).
+
+## Contact
+If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.

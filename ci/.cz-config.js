@@ -41,8 +41,8 @@ module.exports = {
     // pre-defined scopes.
     scopes: [
         { name: 'cloud-auth-client' },
-        { name: 'cloud-auth-node' },
         { name: 'cloud-auth-common' },
+        { name: 'cloud-auth-node' },
         { name: '*' },
     ],
 

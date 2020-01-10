@@ -1,8 +1,10 @@
 # Source code
 /src/
-/tests/
+/test/
 /demo/
 /ci/
+/cd/
+.eslintrc.json
 
 # Tools
 /.babelrc
@@ -21,7 +23,8 @@
 /webpack.test.config.js
 /*hooks.js
 /test-app
-/tests/
+/test/
+junit.xml
 
 # Misc
 /.npmignore

@@ -2,7 +2,7 @@
   "restoreMocks": true,
   "moduleNameMapper": {},
   "testMatch": [
-    "**/src/tests/**/*.unit.js"
+    "**/test/**/*.unit.js"
   ],
   "testPathIgnorePatterns": [],
   "reporters": [

@@ -284,6 +284,16 @@ License: [BSD-3-Clause](http://github.com/mwittig/npm-license-crawler/raw/master
 
 Repository: [http://github.com/mwittig/npm-license-crawler](http://github.com/mwittig/npm-license-crawler)
 
+## rimraf
+
+Name: rimraf
+
+Version: 2.7.1
+
+License: [ISC](https://github.com/isaacs/rimraf/raw/master/LICENSE)
+
+Repository: [https://github.com/isaacs/rimraf](https://github.com/isaacs/rimraf)
+
 ## sinon
 
 Name: sinon

@@ -3,6 +3,5 @@
 !/karma.conf.js
 !/webpack.test.config.js
 /test-reports/
-/tests/
 /lib/
 junit.xml

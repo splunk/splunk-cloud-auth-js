@@ -1,9 +1,9 @@
 /* eslint-env mocha */
 
 import { assert, expect } from 'chai';
-import { storageBuilder } from '../lib/util';
-import { cookies } from '../lib/cookies';
-import StorageManager from '../lib/storage';
+import { storageBuilder } from '../../../src/lib/util';
+import { cookies } from '../../../src/lib/cookies';
+import StorageManager from '../../../src/lib/storage';
 
 describe('Browser storage', () => {
     describe('storage builder', () => {

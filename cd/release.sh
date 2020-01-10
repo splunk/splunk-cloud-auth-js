@@ -35,7 +35,7 @@ echo "Running 'git fetch --all && git pull --all' ..."
 git fetch --tags --all && git pull --all
 
 print_header_line
-BRANCH_NAME=release/$(date +'%Y-%m-%d')
+BRANCH_NAME=release/$(date +'%Y-%m-%d_%H-%M-%S')
 echo "Checking out a $BRANCH_NAME branch ..."
 git checkout -b $BRANCH_NAME
 git checkout $BRANCH_NAME

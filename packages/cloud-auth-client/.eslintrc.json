@@ -5,10 +5,17 @@
   "extends": [
     "eslint:recommended",
     "@splunk/eslint-config/browser-prettier",
+    "plugin:import/errors",
+    "plugin:import/warnings",
     "plugin:unicorn/recommended"
+  ],
+  "plugins": [
+    "import",
+    "simple-import-sort"
   ],
   "root": true,
   "rules": {
+    "import/order": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/control-has-associated-label": "off",
     "max-classes-per-file": "off",
@@ -24,6 +31,8 @@
     ],
     "no-underscore-dangle": "off",
     "prefer-destructuring": "off", // TODO: update code,
+    "simple-import-sort/sort": "error",
+    "sort-imports": "off",
     "unicorn/catch-error-name": "off", // TODO: update code
     "unicorn/consistent-function-scoping": "off", // TODO: update code
     "unicorn/explicit-length-check": "off", // TODO: update code

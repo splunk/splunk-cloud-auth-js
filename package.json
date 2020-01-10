@@ -9,11 +9,13 @@
   "scripts": {
     "build": "lerna run build",
     "clean": "lerna run clean",
+    "clean:modules": "lerna run clean:modules && rimraf node_modules || true",
     "commit": "yarn git-cz",
     "cover": "lerna run cover --stream",
     "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",
     "format:verify": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier -l",
     "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
     "prepublishOnly": "lerna run build",
     "publish:lerna": "sh ./cd/publish.sh",
     "publish:docs": "lerna run publish:docs",
@@ -30,7 +32,8 @@
     "cz-conventional-changelog": "^3.0.2",
     "cz-customizable": "^6.2.0",
     "husky": "^3.1.0",
-    "lerna": "^3.18.4"
+    "lerna": "^3.18.4",
+    "rimraf": "^2.6.2"
   },
   "engines": {
     "node": ">=8"

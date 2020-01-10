@@ -14,9 +14,10 @@
  * under the License.
  */
 
-import { AuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
-import { AuthManagerSettings, AuthProxy, BaseAuthManager, SplunkAuthError } from '@splunkdev/cloud-auth-common';
 import 'buffer';
+
+import { AuthManagerSettings, AuthProxy, BaseAuthManager, SplunkAuthError } from '@splunkdev/cloud-auth-common';
+import { AuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
 import { createHash, randomBytes } from 'crypto';
 
 const MILLISECONDS_IN_SECOND = 1000;

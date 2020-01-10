@@ -1,8 +1,9 @@
 /* eslint-env mocha */
 
 import { assert, expect } from 'chai';
-import TokenManager from '../../../src/lib/TokenManager';
+
 import config from '../../../src/lib/config';
+import TokenManager from '../../../src/lib/TokenManager';
 
 describe('TokenManager', () => {
     const manager = new TokenManager({ options: {} });

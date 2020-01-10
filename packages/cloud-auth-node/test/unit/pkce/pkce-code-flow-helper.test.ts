@@ -14,15 +14,15 @@
  * under the License.
  */
 
-'use strict';
-
 import 'buffer';
+import 'mocha';
+import '../fixture/test-setup';
+
 import { assert } from 'chai';
 import * as crypto from 'crypto';
-import 'mocha';
 import * as sinon from 'sinon';
+
 import { PKCECodeFlowHelper } from '../../../src/pkce/pkce-auth-manager';
-import '../fixture/test-setup';
 
 describe('PKCECodeFlowHelper', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();

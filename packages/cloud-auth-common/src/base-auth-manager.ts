@@ -14,8 +14,6 @@
  * under the License.
  */
 
-
-
 /**
  * AuthContext can be used to store the context required for authentication including the auth token itself.
  */

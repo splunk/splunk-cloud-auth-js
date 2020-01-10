@@ -15,6 +15,7 @@
  */
 
 import 'isomorphic-fetch';
+
 import { SplunkAuthError } from './splunk-auth-error';
 
 const HEADERS_APPLICATION_JSON = {

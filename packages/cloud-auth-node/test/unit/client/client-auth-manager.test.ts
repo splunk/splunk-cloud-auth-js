@@ -14,14 +14,16 @@
  * under the License.
  */
 
-'use strict';
+/* eslint-disable @typescript-eslint/camelcase */
+
+import 'mocha';
+import '../fixture/test-setup';
 
 import { AccessTokenResponse, AuthProxy } from '@splunkdev/cloud-auth-common';
 import { assert } from 'chai';
-import 'mocha';
 import * as sinon from 'sinon';
+
 import { ClientAuthManager, ClientAuthManagerSettings } from '../../../src/client/client-auth-manager';
-import '../fixture/test-setup';
 
 const MOCK_ACCESS_TOKEN = 'at';
 const MOCK_CLIENT_ID = 'clientid';

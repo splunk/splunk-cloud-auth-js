@@ -195,6 +195,16 @@ License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICEN
 
 Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react)
 
+## eslint-plugin-simple-import-sort
+
+Name: eslint-plugin-simple-import-sort
+
+Version: 5.0.0
+
+License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
+
+Repository: [https://github.com/lydell/eslint-plugin-simple-import-sort](https://github.com/lydell/eslint-plugin-simple-import-sort)
+
 ## eslint-plugin-unicorn
 
 Name: eslint-plugin-unicorn

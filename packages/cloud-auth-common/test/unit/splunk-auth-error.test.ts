@@ -14,9 +14,11 @@
  * under the License.
  */
 
+import 'mocha';
+
 import { SplunkErrorParams } from '@splunkdev/cloud-sdk/src/client';
 import { assert } from 'chai';
-import 'mocha';
+
 import { SplunkAuthError } from '../../src/splunk-auth-error';
 
 const ERROR_MESSAGE = 'errormessage';

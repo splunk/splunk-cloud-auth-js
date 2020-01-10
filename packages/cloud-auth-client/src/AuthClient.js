@@ -5,16 +5,17 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 */
 
 import get from 'lodash/get';
-import urlParse from 'url-parse';
-import memoize from 'lodash/memoize';
 import has from 'lodash/has';
-import config from './lib/config';
-import token from './lib/token';
-import { warn } from './lib/util';
-import TokenManager from './lib/TokenManager';
-import StorageManager from './lib/storage';
+import memoize from 'lodash/memoize';
+import urlParse from 'url-parse';
+
 import defaultConfig from './auth.defaults';
+import config from './lib/config';
 import AuthClientError from './lib/errors/AuthClientError';
+import StorageManager from './lib/storage';
+import token from './lib/token';
+import TokenManager from './lib/TokenManager';
+import { warn } from './lib/util';
 
 class AuthClient {
     constructor(args) {

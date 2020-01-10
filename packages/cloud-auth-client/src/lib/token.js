@@ -7,10 +7,11 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 /* eslint-disable dot-notation */
 
 import Q from 'q';
+
 import config from './config';
-import StorageManager from './storage';
 import AuthClientError from './errors/AuthClientError';
 import OAuthError from './errors/OAuthError';
+import StorageManager from './storage';
 import * as util from './util';
 
 const storage = new StorageManager(config.REDIRECT_PARAMS_STORAGE_NAME);

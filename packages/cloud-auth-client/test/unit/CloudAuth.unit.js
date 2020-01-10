@@ -1,12 +1,13 @@
 /* eslint-env mocha */
 
 import { assert, expect } from 'chai';
-import AuthClient from '../../src/AuthClient';
+
 import defaultOptions from '../../src/auth.defaults';
+import AuthClient from '../../src/AuthClient';
 import config from '../../src/lib/config';
 import { cookies } from '../../src/lib/cookies';
-import testData from './fixture/testData';
 import StorageManager from '../../src/lib/storage';
+import testData from './fixture/testData';
 
 describe('CloudAuth', () => {
     const clientId = '12345678';

@@ -16,11 +16,13 @@
 
 /* eslint-disable @typescript-eslint/camelcase */
 
+import './fixture/test-setup';
+import 'mocha';
+
 import { assert } from 'chai';
 import * as fetchMock from 'fetch-mock';
-import 'mocha';
+
 import { AuthProxy } from '../../src/auth-proxy';
-import './fixture/test-setup';
 
 const MOCK_ACCESS_TOKEN = 'at';
 const MOCK_EXPIRES_IN = 1000;

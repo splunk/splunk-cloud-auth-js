@@ -138,7 +138,7 @@ Repository: [https://github.com/chaijs/chai](https://github.com/chaijs/chai)
 
 Name: core-js
 
-Version: 3.6.2
+Version: 3.6.3
 
 License: [MIT](https://github.com/zloirock/core-js/raw/master/LICENSE)
 

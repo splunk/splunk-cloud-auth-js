@@ -14,7 +14,6 @@
  * under the License.
  */
 
-import { AuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
 import {
     AccessTokenResponse,
     AuthManagerSettings,
@@ -22,6 +21,7 @@ import {
     BaseAuthManager,
     SplunkAuthError
 } from '@splunkdev/cloud-auth-common';
+import { AuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
 
 const MILLISECONDS_IN_SECOND = 1000;
 const TOKEN_EXPIRY_BUFFER_MILLISECONDS = 30000;

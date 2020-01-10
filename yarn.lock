@@ -1925,11 +1925,6 @@
     "@babel/preset-env" "^7.2.0"
     "@babel/preset-react" "^7.0.0"
 
-"@splunk/eslint-config@^1.2.0":
-  version "1.2.0"
-  resolved "https://repo.splunk.com/artifactory/api/npm/npm/@splunk/eslint-config/-/@splunk/eslint-config-1.2.0.tgz#a1044d144dc19c4e9929ba0c800015a53ce86b72"
-  integrity sha1-oQRNFE3BnE6ZKboMgAAVpTzoa3I=
-
 "@splunk/eslint-config@^2.0.0":
   version "2.0.0"
   resolved "https://repo.splunk.com/artifactory/api/npm/npm-solutions-local/@splunk/eslint-config/-/@splunk/eslint-config-2.0.0.tgz#678bb57b31d6a8176b9ec5cb75d9e0365f2c2b5a"
@@ -5023,6 +5018,11 @@ eslint-plugin-react@^7.17.0:
     object.values "^1.1.0"
     prop-types "^15.7.2"
     resolve "^1.13.1"
+
+eslint-plugin-simple-import-sort@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-simple-import-sort/-/eslint-plugin-simple-import-sort-5.0.0.tgz#fd2abac52c0ae6050baf340c004b0b5d9aa76e8e"
+  integrity sha512-Zn6OppySnbwl/UonkzmMBbiFXZwe/tI9ZlSXwQek5h1FfPv3hcDTE3kG0SC70pBsKuVE8IMwZCMl0tKwcY89rw==
 
 eslint-plugin-unicorn@^15.0.1:
   version "15.0.1"

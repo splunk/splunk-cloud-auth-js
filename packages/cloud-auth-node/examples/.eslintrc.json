@@ -14,9 +14,14 @@
       ]
     }
   ],
+  "plugins": [
+    "import",
+    "simple-import-sort"
+  ],
   "root": true,
   "rules": {
     "func-names": "off",
+    "import/order": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/control-has-associated-label": "off",
     "max-classes-per-file": "off",
@@ -28,6 +33,8 @@
     ],
     "no-console": "off",
     "no-underscore-dangle": "off",
+    "simple-import-sort/sort": "error",
+    "sort-imports": "off",
     "unicorn/filename-case": [
       "error",
       {

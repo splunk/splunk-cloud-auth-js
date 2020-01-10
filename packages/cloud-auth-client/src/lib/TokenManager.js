@@ -5,10 +5,10 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 */
 
 import config from './config';
-import StorageManager from './storage';
-import { isValidTokenObject, warn } from './util';
-import token from './token';
 import AuthClientError from './errors/AuthClientError';
+import StorageManager from './storage';
+import token from './token';
+import { isValidTokenObject, warn } from './util';
 
 class TokenManager extends StorageManager {
     constructor(client) {

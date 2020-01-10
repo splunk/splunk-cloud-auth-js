@@ -29,6 +29,7 @@
     "build:tests": "tsc -p tsconfig.test.json",
     "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts src/*.js src/*.js.map src/*.d.ts && yarn run clean:coverage || true",
     "clean:coverage": "rm -rf coverage",
+    "clean:modules": "rimraf node_modules || true",
     "cover": "yarn run clean:coverage && nyc npm run test",
     "pretest": "yarn lint && yarn build",
     "test": "yarn pretest && ts-mocha \"test/unit/**/*.ts\"  -p tsconfig.test.json --exit --timeout=900000 --recursive",
@@ -38,7 +39,7 @@
     "third-party-licenses": "sh ./ci/scripts/generate_third_party_credits.sh"
   },
   "devDependencies": {
-    "@splunk/eslint-config": "^1.2.0",
+    "@splunk/eslint-config": "^2.0.0",
     "@splunkdev/cloud-sdk": "^4.0.0",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.2",

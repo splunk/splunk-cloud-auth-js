@@ -2,12 +2,13 @@
 /* eslint-disable arrow-body-style */
 
 import { assert, expect } from 'chai';
+
 import defaultOptions from '../../src/auth.defaults';
+import AuthClient from '../../src/AuthClient';
 import config from '../../src/lib/config';
+import StorageManager from '../../src/lib/storage';
 import token from '../../src/lib/token';
 import testData from './fixture/testData';
-import AuthClient from '../../src/AuthClient';
-import StorageManager from '../../src/lib/storage';
 
 describe('token', () => {
     describe('parseFromUrl', () => {

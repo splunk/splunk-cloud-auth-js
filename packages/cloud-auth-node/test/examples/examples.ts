@@ -16,10 +16,11 @@
 
 /* eslint-disable no-console */
 
+import 'mocha';
+
 import { assert } from 'chai';
 import { execFile } from 'child_process';
 import * as fs from 'fs';
-import 'mocha';
 import * as path from 'path';
 
 // Reads all examples in and executes them using the appropriate runner

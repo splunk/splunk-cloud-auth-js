@@ -12,10 +12,6 @@
   ],
   "overrides": [
     {
-      "excludedFiles": [
-        "test/**/*.d.ts",
-        "test/**/*.js*"
-      ],
       "files": [
         "test/**/*.ts"
       ]
@@ -23,11 +19,14 @@
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "import",
+    "simple-import-sort"
   ],
   "root": true,
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
+    "import/order": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/control-has-associated-label": "off",
     "max-classes-per-file": "off",
@@ -38,6 +37,8 @@
       }
     ],
     "no-underscore-dangle": "off",
+    "simple-import-sort/sort": "error",
+    "sort-imports": "off",
     "unicorn/filename-case": [
       "error",
       {

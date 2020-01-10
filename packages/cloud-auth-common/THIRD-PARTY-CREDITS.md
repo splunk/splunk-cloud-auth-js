@@ -399,7 +399,7 @@ Repository: [https://github.com/tgreyuk/typedoc-plugin-markdown](https://github.
 
 Name: typedoc
 
-Version: 0.15.7
+Version: 0.15.8
 
 License: [Apache-2.0](https://github.com/TypeStrong/TypeDoc/raw/master/LICENSE)
 

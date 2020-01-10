@@ -1,12 +1,10 @@
 {
   "restoreMocks": true,
-  "moduleNameMapper": {
-  },
+  "moduleNameMapper": {},
   "testMatch": [
-    "**/src/tests/*.unit.js"
+    "**/src/tests/**/*.unit.js"
   ],
-  "testPathIgnorePatterns": [
-  ],
+  "testPathIgnorePatterns": [],
   "reporters": [
     "default",
     "jest-junit"
@@ -15,4 +13,3 @@
     ".*": "babel-jest"
   }
 }
-

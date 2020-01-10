@@ -45,31 +45,60 @@ License: [MIT](https://github.com/unshiftio/url-parse/raw/master/LICENSE)
 
 Repository: [https://github.com/unshiftio/url-parse](https://github.com/unshiftio/url-parse)
 
-## babel-cli
+## @babel/cli
 
-Name: babel-cli
+Name: @babel/cli
 
-Version: 6.26.0
+Version: 7.7.7
 
-License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-cli)
+License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-cli/raw/master/LICENSE)
 
 Repository: [https://github.com/babel/babel/tree/master/packages/babel-cli](https://github.com/babel/babel/tree/master/packages/babel-cli)
+
+## @babel/core
+
+Name: @babel/core
+
+Version: 7.7.7
+
+License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-core/raw/master/LICENSE)
+
+Repository: [https://github.com/babel/babel/tree/master/packages/babel-core](https://github.com/babel/babel/tree/master/packages/babel-core)
+
+## @babel/plugin-transform-runtime
+
+Name: @babel/plugin-transform-runtime
+
+Version: 7.7.6
+
+License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime/raw/master/LICENSE)
+
+Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime)
+
+## @babel/runtime
+
+Name: @babel/runtime
+
+Version: 7.7.7
+
+License: [MIT](https://github.com/babel/babel/raw/master/LICENSE)
+
+Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
 
 ## babel-core
 
 Name: babel-core
 
-Version: 6.26.3
+Version: 7.0.0-bridge.0
 
-License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-core)
+License: [MIT](undefined)
 
-Repository: [https://github.com/babel/babel/tree/master/packages/babel-core](https://github.com/babel/babel/tree/master/packages/babel-core)
 
 ## babel-eslint
 
 Name: babel-eslint
 
-Version: 7.2.3
+Version: 9.0.0
 
 License: [MIT](https://github.com/babel/babel-eslint/raw/master/LICENSE)
 
@@ -89,7 +118,7 @@ Repository: [https://github.com/facebook/jest](https://github.com/facebook/jest)
 
 Name: babel-loader
 
-Version: 7.1.5
+Version: 8.0.6
 
 License: [MIT](https://github.com/babel/babel-loader/raw/master/LICENSE)
 
@@ -99,9 +128,9 @@ Repository: [https://github.com/babel/babel-loader](https://github.com/babel/bab
 
 Name: chai
 
-Version: 3.5.0
+Version: 4.2.0
 
-License: [MIT](https://github.com/chaijs/chai)
+License: [MIT](https://github.com/chaijs/chai/raw/master/LICENSE)
 
 Repository: [https://github.com/chaijs/chai](https://github.com/chaijs/chai)
 
@@ -109,7 +138,7 @@ Repository: [https://github.com/chaijs/chai](https://github.com/chaijs/chai)
 
 Name: core-js
 
-Version: 2.6.10
+Version: 3.6.2
 
 License: [MIT](https://github.com/zloirock/core-js/raw/master/LICENSE)
 
@@ -119,9 +148,9 @@ Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/co
 
 Name: eslint-config-airbnb
 
-Version: 15.1.0
+Version: 18.0.1
 
-License: [MIT](https://github.com/airbnb/javascript)
+License: [MIT](https://github.com/airbnb/javascript/raw/master/LICENSE.md)
 
 Repository: [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript)
 
@@ -129,7 +158,7 @@ Repository: [https://github.com/airbnb/javascript](https://github.com/airbnb/jav
 
 Name: eslint-config-prettier
 
-Version: 2.10.0
+Version: 6.9.0
 
 License: [MIT](https://github.com/prettier/eslint-config-prettier/raw/master/LICENSE)
 
@@ -139,7 +168,7 @@ Repository: [https://github.com/prettier/eslint-config-prettier](https://github.
 
 Name: eslint-import-resolver-webpack
 
-Version: 0.10.1
+Version: 0.12.0
 
 License: [MIT](https://github.com/benmosher/eslint-plugin-import)
 
@@ -149,7 +178,7 @@ Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.c
 
 Name: eslint-plugin-import
 
-Version: 2.18.2
+Version: 2.19.1
 
 License: [MIT](https://github.com/benmosher/eslint-plugin-import/raw/master/LICENSE)
 
@@ -169,17 +198,27 @@ Repository: [https://github.com/evcohen/eslint-plugin-jsx-a11y](https://github.c
 
 Name: eslint-plugin-react
 
-Version: 7.16.0
+Version: 7.17.0
 
 License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICENSE)
 
 Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react)
 
+## eslint-plugin-unicorn
+
+Name: eslint-plugin-unicorn
+
+Version: 15.0.1
+
+License: [MIT](https://github.com/sindresorhus/eslint-plugin-unicorn/raw/master/license)
+
+Repository: [https://github.com/sindresorhus/eslint-plugin-unicorn](https://github.com/sindresorhus/eslint-plugin-unicorn)
+
 ## eslint
 
 Name: eslint
 
-Version: 4.19.1
+Version: 6.8.0
 
 License: [MIT](https://github.com/eslint/eslint/raw/master/LICENSE)
 
@@ -189,7 +228,7 @@ Repository: [https://github.com/eslint/eslint](https://github.com/eslint/eslint)
 
 Name: inject-loader
 
-Version: 3.0.1
+Version: 4.0.1
 
 License: [MIT](https://github.com/plasticine/inject-loader/raw/master/LICENSE.md)
 
@@ -199,7 +238,7 @@ Repository: [https://github.com/plasticine/inject-loader](https://github.com/pla
 
 Name: jest-junit
 
-Version: 6.4.0
+Version: 10.0.0
 
 License: [Apache-2.0](https://github.com/jest-community/jest-junit/raw/master/LICENSE)
 
@@ -209,7 +248,7 @@ Repository: [https://github.com/jest-community/jest-junit](https://github.com/je
 
 Name: jest
 
-Version: 23.6.0
+Version: 24.9.0
 
 License: [MIT](https://github.com/facebook/jest)
 
@@ -229,7 +268,7 @@ Repository: [https://github.com/DavidAnson/markdownlint](https://github.com/Davi
 
 Name: mocha
 
-Version: 6.2.2
+Version: 7.0.0
 
 License: [MIT](https://github.com/mochajs/mocha/raw/master/LICENSE)
 
@@ -249,7 +288,7 @@ Repository: [http://github.com/mwittig/npm-license-crawler](http://github.com/mw
 
 Name: sinon
 
-Version: 3.3.0
+Version: 8.0.4
 
 License: [BSD-3-Clause](http://github.com/sinonjs/sinon/raw/master/LICENSE)
 

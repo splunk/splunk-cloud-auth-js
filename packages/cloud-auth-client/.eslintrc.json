@@ -1,0 +1,35 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "@splunk/eslint-config/browser-prettier",
+    "plugin:unicorn/recommended"
+  ],
+  "root": true,
+  "rules": {
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/control-has-associated-label": "off",
+    "max-classes-per-file": "off",
+    "max-len": [
+      "off",
+      {
+        "ignoreUrls": true
+      },
+      "error",
+      {
+        "code": 120
+      }
+    ],
+    "no-underscore-dangle": "off",
+    "prefer-destructuring": "off", // TODO: update code,
+    "unicorn/catch-error-name": "off", // TODO: update code
+    "unicorn/consistent-function-scoping": "off", // TODO: update code
+    "unicorn/explicit-length-check": "off", // TODO: update code
+    "unicorn/filename-case": "off", // TODO: update code
+    "unicorn/prefer-includes": "off", // TODO: update code
+    "unicorn/prefer-string-slice": "off", // TODO: update code
+    "unicorn/prevent-abbreviations": "off" // TODO: update code
+  }
+}

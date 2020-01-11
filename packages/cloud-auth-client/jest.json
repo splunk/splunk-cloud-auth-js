@@ -1,14 +1,32 @@
 {
-  "restoreMocks": true,
-  "moduleNameMapper": {},
-  "testMatch": [
-    "**/test/**/*.unit.js"
+  "collectCoverageFrom": [
+    "src/**/*.js"
   ],
-  "testPathIgnorePatterns": [],
+  "coverageDirectory": "coverage",
+  "coverageReporters": [
+    "lcov",
+    "text-summary",
+    "text",
+    "html"
+  ],
+  "coverageThreshold": {
+    "global": {
+      "branches": 0,
+      "functions": 0,
+      "lines": 0,
+      "statements": 0
+    }
+  },
+  "moduleNameMapper": {},
   "reporters": [
     "default",
     "jest-junit"
   ],
+  "restoreMocks": true,
+  "testMatch": [
+    "**/test/**/*.unit.js"
+  ],
+  "testPathIgnorePatterns": [],
   "transform": {
     ".*": "babel-jest"
   }

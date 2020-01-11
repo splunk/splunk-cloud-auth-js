@@ -8,8 +8,10 @@
   "scripts": {
     "build": "babel src -d . --ignore \"**/test/*\"",
     "clean": "rimraf lib *.js || true",
+    "clean:coverage": "rm -rf coverage",
     "clean:modules": "rimraf node_modules || true",
     "commit": "yarn git-cz",
+    "cover": "yarn run clean:coverage && jest --config ./jest.json --coverage",
     "lint": "eslint src && yarn lint:tests",
     "lint:fix": "eslint src --fix && yarn lint:fix:tests",
     "lint:tests": "eslint test",

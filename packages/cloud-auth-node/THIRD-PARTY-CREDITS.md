@@ -89,7 +89,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @typescript-eslint/eslint-plugin
 
-Version: 2.15.0
+Version: 2.16.0
 
 License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -99,7 +99,7 @@ Repository: [https://github.com/typescript-eslint/typescript-eslint](https://git
 
 Name: @typescript-eslint/parser
 
-Version: 2.15.0
+Version: 2.16.0
 
 License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -159,9 +159,9 @@ Repository: [https://github.com/prettier/eslint-config-prettier](https://github.
 
 Name: eslint-import-resolver-webpack
 
-Version: 0.12.0
+Version: 0.12.1
 
-License: [MIT](https://github.com/benmosher/eslint-plugin-import)
+License: [MIT](https://github.com/benmosher/eslint-plugin-import/raw/master/LICENSE)
 
 Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.com/benmosher/eslint-plugin-import)
 
@@ -169,7 +169,7 @@ Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.c
 
 Name: eslint-plugin-import
 
-Version: 2.19.1
+Version: 2.20.0
 
 License: [MIT](https://github.com/benmosher/eslint-plugin-import/raw/master/LICENSE)
 

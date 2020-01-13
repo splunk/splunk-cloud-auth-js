@@ -1,9 +1,14 @@
+/*.d.ts
 /*.js
+/*.js.map
+/lib/
+/src/**/*.d.ts
+/src/**/*.js
+/src/**/*.js.map
 !/.eslintrc.js
 !/karma.conf.js
 !/webpack.test.config.js
 /test-reports/
-/lib/
 junit.xml
 
 # Hide compiled test folders, these appear to be webstorm generated

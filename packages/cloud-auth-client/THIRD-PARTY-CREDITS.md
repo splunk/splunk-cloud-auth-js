@@ -49,7 +49,7 @@ Repository: [https://github.com/unshiftio/url-parse](https://github.com/unshifti
 
 Name: @babel/cli
 
-Version: 7.7.7
+Version: 7.8.0
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-cli/raw/master/LICENSE)
 
@@ -59,31 +59,91 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-cli](http
 
 Name: @babel/core
 
-Version: 7.7.7
+Version: 7.8.0
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-core/raw/master/LICENSE)
 
 Repository: [https://github.com/babel/babel/tree/master/packages/babel-core](https://github.com/babel/babel/tree/master/packages/babel-core)
 
+## @babel/plugin-proposal-class-properties
+
+Name: @babel/plugin-proposal-class-properties
+
+Version: 7.8.0
+
+License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties/raw/master/LICENSE)
+
+Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties)
+
+## @babel/plugin-proposal-object-rest-spread
+
+Name: @babel/plugin-proposal-object-rest-spread
+
+Version: 7.8.0
+
+License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread/raw/master/LICENSE)
+
+Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread)
+
 ## @babel/plugin-transform-runtime
 
 Name: @babel/plugin-transform-runtime
 
-Version: 7.7.6
+Version: 7.8.0
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime/raw/master/LICENSE)
 
 Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime)
 
+## @babel/preset-env
+
+Name: @babel/preset-env
+
+Version: 7.8.2
+
+License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-preset-env/raw/master/LICENSE)
+
+Repository: [https://github.com/babel/babel/tree/master/packages/babel-preset-env](https://github.com/babel/babel/tree/master/packages/babel-preset-env)
+
+## @babel/preset-typescript
+
+Name: @babel/preset-typescript
+
+Version: 7.8.0
+
+License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-preset-typescript/raw/master/LICENSE)
+
+Repository: [https://github.com/babel/babel/tree/master/packages/babel-preset-typescript](https://github.com/babel/babel/tree/master/packages/babel-preset-typescript)
+
 ## @babel/runtime
 
 Name: @babel/runtime
 
-Version: 7.7.7
+Version: 7.8.0
 
 License: [MIT](https://github.com/babel/babel/raw/master/LICENSE)
 
 Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
+
+## @typescript-eslint/eslint-plugin
+
+Name: @typescript-eslint/eslint-plugin
+
+Version: 2.16.0
+
+License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
+
+Repository: [https://github.com/typescript-eslint/typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+
+## @typescript-eslint/parser
+
+Name: @typescript-eslint/parser
+
+Version: 2.16.0
+
+License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
+
+Repository: [https://github.com/typescript-eslint/typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
 
 ## babel-core
 
@@ -168,9 +228,9 @@ Repository: [https://github.com/prettier/eslint-config-prettier](https://github.
 
 Name: eslint-import-resolver-webpack
 
-Version: 0.12.0
+Version: 0.12.1
 
-License: [MIT](https://github.com/benmosher/eslint-plugin-import)
+License: [MIT](https://github.com/benmosher/eslint-plugin-import/raw/master/LICENSE)
 
 Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.com/benmosher/eslint-plugin-import)
 
@@ -178,7 +238,7 @@ Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.c
 
 Name: eslint-plugin-import
 
-Version: 2.19.1
+Version: 2.20.0
 
 License: [MIT](https://github.com/benmosher/eslint-plugin-import/raw/master/LICENSE)
 
@@ -203,6 +263,16 @@ Version: 7.17.0
 License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICENSE)
 
 Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react)
+
+## eslint-plugin-simple-import-sort
+
+Name: eslint-plugin-simple-import-sort
+
+Version: 5.0.0
+
+License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
+
+Repository: [https://github.com/lydell/eslint-plugin-simple-import-sort](https://github.com/lydell/eslint-plugin-simple-import-sort)
 
 ## eslint-plugin-unicorn
 
@@ -303,6 +373,26 @@ Version: 8.0.4
 License: [BSD-3-Clause](http://github.com/sinonjs/sinon/raw/master/LICENSE)
 
 Repository: [http://github.com/sinonjs/sinon](http://github.com/sinonjs/sinon)
+
+## tsc
+
+Name: tsc
+
+Version: 1.20150623.0
+
+License: [MIT](https://github.com/basarat/tsc)
+
+Repository: [https://github.com/basarat/tsc](https://github.com/basarat/tsc)
+
+## typescript
+
+Name: typescript
+
+Version: 3.7.4
+
+License: [Apache-2.0](https://github.com/Microsoft/TypeScript/raw/master/LICENSE.txt)
+
+Repository: [https://github.com/Microsoft/TypeScript](https://github.com/Microsoft/TypeScript)
 
 ## webpack-cli
 

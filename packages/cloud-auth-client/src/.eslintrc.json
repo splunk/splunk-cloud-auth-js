@@ -3,27 +3,35 @@
     "browser": true
   },
   "extends": [
-    "eslint:recommended",
     "@splunk/eslint-config/browser-prettier",
-    "plugin:import/errors",
-    "plugin:import/warnings",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:unicorn/recommended"
   ],
+  "overrides": [
+    {
+      "excludedFiles": "src/version.ts",
+      "files": [
+        "src/**/*.ts"
+      ]
+    }
+  ],
+  "parser": "@typescript-eslint/parser",
   "plugins": [
+    "@typescript-eslint",
     "import",
     "simple-import-sort"
   ],
   "root": true,
   "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "import/order": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/control-has-associated-label": "off",
     "max-classes-per-file": "off",
     "max-len": [
-      "off",
-      {
-        "ignoreUrls": true
-      },
       "error",
       {
         "code": 120

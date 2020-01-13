@@ -4,7 +4,7 @@ SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
 without a valid written license from Splunk Inc. is PROHIBITED.
 */
 /* eslint-env node */
-/* eslint-disable dot-notation */
+/* eslint-disable dot-notation, @typescript-eslint/camelcase */
 
 import Q from 'q';
 

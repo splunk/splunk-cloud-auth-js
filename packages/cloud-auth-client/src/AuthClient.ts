@@ -182,6 +182,7 @@ class AuthClient {
         window.history.replaceState(null, null, p);
     };
 
+    /* eslint-disable max-len */
     /**
      * Store window.location path information and initiate the Implicit Flow.
      * (see: https://developer.okta.com/authentication-guide/implementing-authentication/implicit#2-using-the-implicit-flow)
@@ -191,6 +192,7 @@ class AuthClient {
      * `config.redirectUri` (or `window.location.href` if not specified) and any tokens returned
      * will be parsed via `this.parseTokensFromRedirect`.
      */
+    /* eslint-enable max-len */
     redirectToLogin = () => {
         if (this.options.restorePathAfterLogin) {
             this.storePathBeforeLogin();

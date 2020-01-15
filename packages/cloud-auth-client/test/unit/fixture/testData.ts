@@ -19,7 +19,9 @@
  */
 export class TestData {
     public static CLIENT_ID = '0oajhsdnegG6pgNoU0h7';
+
     public static AUTHORIZE_URL = 'https://auth.scp.splunk.com/authorize';
+
     public static ACCESS_TOKEN =
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2ZXIiOjEsImp0aSI6I' +
         'kFULjhQdm8yMzdmTVNJZ281am01VWpqeF9vV25yRkFRWFMzMk03Rklnal9' +
@@ -30,6 +32,7 @@ export class TestData {
         '3Iiwic2NwIjpbIm9wZW5pZCIsImVtYWlsIiwicHJvZmlsZSJdLCJzdWIiO' +
         'iJtZmh1YW5nQHRlc3QuY29tIn0.SD_s4Yu7UbrWdBqE066N_q_9BZ3to-V' +
         'SCSM0aKL6fMQ';
+
     public static ACCESS_TOKEN_PARSED = {
         accessToken: TestData.ACCESS_TOKEN,
         authorizeUrl: TestData.AUTHORIZE_URL,
@@ -37,6 +40,7 @@ export class TestData {
         scopes: ['openid', 'email', 'profile'],
         tokenType: 'Bearer',
     };
+
     public static REDIRECT_OAUTH_PARAMS = {
         responseType: 'id_token',
         state: 'XOR6wwQRB0LBqpfKRP6Dpf3pEfnhTLUQwl3SduatFu17Iuq1ByIv8zkIgd55W8DU',

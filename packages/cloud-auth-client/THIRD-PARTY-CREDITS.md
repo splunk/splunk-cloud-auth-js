@@ -5,6 +5,16 @@ The Splunk Cloud Services Web Application Authentication Library for JavaScript 
 
 We want to thank the contributors to these projects:
 
+## eslint-plugin-simple-import-sort
+
+Name: eslint-plugin-simple-import-sort
+
+Version: 5.0.0
+
+License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
+
+Repository: [https://github.com/lydell/eslint-plugin-simple-import-sort](https://github.com/lydell/eslint-plugin-simple-import-sort)
+
 ## js-cookie
 
 Name: js-cookie
@@ -49,7 +59,7 @@ Repository: [https://github.com/unshiftio/url-parse](https://github.com/unshifti
 
 Name: @babel/cli
 
-Version: 7.8.0
+Version: 7.8.3
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-cli/raw/master/LICENSE)
 
@@ -59,7 +69,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-cli](http
 
 Name: @babel/core
 
-Version: 7.8.0
+Version: 7.8.3
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-core/raw/master/LICENSE)
 
@@ -69,7 +79,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-core](htt
 
 Name: @babel/plugin-proposal-class-properties
 
-Version: 7.8.0
+Version: 7.8.3
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties/raw/master/LICENSE)
 
@@ -79,7 +89,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-pr
 
 Name: @babel/plugin-proposal-object-rest-spread
 
-Version: 7.8.0
+Version: 7.8.3
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread/raw/master/LICENSE)
 
@@ -89,7 +99,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-pr
 
 Name: @babel/plugin-transform-runtime
 
-Version: 7.8.0
+Version: 7.8.3
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime/raw/master/LICENSE)
 
@@ -99,7 +109,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-tr
 
 Name: @babel/preset-env
 
-Version: 7.8.2
+Version: 7.8.3
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-preset-env/raw/master/LICENSE)
 
@@ -109,7 +119,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-preset-en
 
 Name: @babel/preset-typescript
 
-Version: 7.8.0
+Version: 7.8.3
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-preset-typescript/raw/master/LICENSE)
 
@@ -119,11 +129,21 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-preset-ty
 
 Name: @babel/runtime
 
-Version: 7.8.0
+Version: 7.8.3
 
 License: [MIT](https://github.com/babel/babel/raw/master/LICENSE)
 
 Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
+
+## @types/jest
+
+Name: @types/jest
+
+Version: 24.9.0
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
 ## @typescript-eslint/eslint-plugin
 
@@ -198,7 +218,7 @@ Repository: [https://github.com/chaijs/chai](https://github.com/chaijs/chai)
 
 Name: core-js
 
-Version: 3.6.3
+Version: 3.6.4
 
 License: [MIT](https://github.com/zloirock/core-js/raw/master/LICENSE)
 
@@ -263,16 +283,6 @@ Version: 7.17.0
 License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICENSE)
 
 Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react)
-
-## eslint-plugin-simple-import-sort
-
-Name: eslint-plugin-simple-import-sort
-
-Version: 5.0.0
-
-License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
-
-Repository: [https://github.com/lydell/eslint-plugin-simple-import-sort](https://github.com/lydell/eslint-plugin-simple-import-sort)
 
 ## eslint-plugin-unicorn
 
@@ -373,6 +383,16 @@ Version: 8.0.4
 License: [BSD-3-Clause](http://github.com/sinonjs/sinon/raw/master/LICENSE)
 
 Repository: [http://github.com/sinonjs/sinon](http://github.com/sinonjs/sinon)
+
+## ts-jest
+
+Name: ts-jest
+
+Version: 24.3.0
+
+License: [MIT](https://github.com/kulshekhar/ts-jest/raw/master/LICENSE.md)
+
+Repository: [https://github.com/kulshekhar/ts-jest](https://github.com/kulshekhar/ts-jest)
 
 ## tsc
 

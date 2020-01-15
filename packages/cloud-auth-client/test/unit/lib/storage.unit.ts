@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import { assert, expect } from 'chai';
 
 import { cookies } from '../../../src/lib/cookies';

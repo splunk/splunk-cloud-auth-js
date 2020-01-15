@@ -1,30 +1,27 @@
-/* eslint-env mocha */
-/* eslint-disable arrow-body-style */
-
 import { assert, expect } from 'chai';
 
-import defaultOptions from '../../../src/auth.defaults';
-import AuthClient from '../../../src/AuthClient';
-import config from '../../../src/lib/config';
-import StorageManager from '../../../src/lib/storage';
-import token from '../../../src/lib/token';
-import testData from '../fixture/testData';
+import defaultOptions from '../../src/auth.defaults';
+import AuthClient from '../../src/AuthClient';
+import config from '../../src/lib/config';
+import StorageManager from '../../src/lib/storage';
+import token from '../../src/lib/token';
+import { TestData } from './fixture/testData';
 
 describe('token', () => {
     describe('parseFromUrl', () => {
         const authClient = new AuthClient({
-            clientId: testData.clientId,
+            clientId: TestData.CLIENT_ID,
             authorizeUrl: defaultOptions.authorizeUrl,
         });
         const storage = new StorageManager(config.REDIRECT_PARAMS_STORAGE_NAME);
 
         it('parses the access_token', () => {
-            const state = testData.redirectOAuthParams.state;
+            const state = TestData.REDIRECT_OAUTH_PARAMS.state;
             const testUrl = `https://localhost:9097/#access_token=${
-                testData.accessToken
-            }&state=${state}`;
+                TestData.ACCESS_TOKEN
+                }&state=${state}`;
             const redirectParams = {
-                ...testData.redirectOAuthParams,
+                ...TestData.REDIRECT_OAUTH_PARAMS,
                 responseType: 'token',
             };
 
@@ -35,7 +32,7 @@ describe('token', () => {
                 .parseFromUrl(authClient, testUrl)
                 .then(t => {
                     expect(t).to.not.equal(undefined);
-                    expect(t.authorizeUrl).to.equal(testData.authorizeUrl);
+                    expect(t.authorizeUrl).to.equal(TestData.AUTHORIZE_URL);
                 })
                 .catch(e => {
                     expect(e.message).to.equal('Unable to parse a token from the url');
@@ -49,7 +46,7 @@ describe('token', () => {
             // insert the redirect oauth param into session storage
             storage.add(
                 config.REDIRECT_OAUTH_PARAMS_NAME,
-                JSON.stringify(testData.redirectOAuthParams)
+                JSON.stringify(TestData.REDIRECT_OAUTH_PARAMS)
             );
 
             return token
@@ -65,10 +62,10 @@ describe('token', () => {
         });
 
         it('fails when redirectParams are missing', () => {
-            const state = testData.redirectOAuthParams.state;
+            const state = TestData.REDIRECT_OAUTH_PARAMS.state;
             const testUrl = `https://localhost:9097/#access_token=${
-                testData.accessToken
-            }&state=${state}`;
+                TestData.ACCESS_TOKEN
+                }&state=${state}`;
 
             return token
                 .parseFromUrl(authClient, testUrl)
@@ -84,7 +81,7 @@ describe('token', () => {
     describe('getWithRedirect', () => {
         it('sets the redirect params', () => {
             const authClient = new AuthClient({
-                clientId: testData.clientId,
+                clientId: TestData.CLIENT_ID,
             });
             const request = {
                 responseType: ['token', 'id_token'],
@@ -94,7 +91,7 @@ describe('token', () => {
             const storage = new StorageManager(config.REDIRECT_PARAMS_STORAGE_NAME);
             const params = storage.get(config.REDIRECT_OAUTH_PARAMS_NAME);
             const oauthParams = JSON.parse(params);
-            expect(oauthParams.urls.authorizeUrl).to.equal(testData.authorizeUrl);
+            expect(oauthParams.urls.authorizeUrl).to.equal(TestData.AUTHORIZE_URL);
             expect(oauthParams.responseType).to.deep.equal(request.responseType);
             expect(oauthParams.scopes).to.deep.equal(request.scopes);
         });

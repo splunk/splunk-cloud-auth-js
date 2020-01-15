@@ -8,15 +8,15 @@
   "scripts": {
     "build": "babel src -d . --extensions \".ts\"",
     "check-types": "tsc",
-    "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts lib *.js || true",
+    "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts lib *.js *.js.map *.d.ts .nyc_output *.log junit.xml && yarn run clean:coverage || true",
     "clean:coverage": "rm -rf coverage",
     "clean:modules": "rimraf node_modules || true",
     "commit": "yarn git-cz",
     "cover": "yarn run clean:coverage && jest --config ./jest.json --coverage",
     "lint": "eslint src/**/*.ts && yarn lint:tests",
     "lint:fix": "eslint src/**/*.ts --fix && yarn lint:fix:tests",
-    "lint:tests": "eslint test",
-    "lint:fix:tests": "eslint test --fix",
+    "lint:tests": "eslint test/**/*.ts",
+    "lint:fix:tests": "eslint test/**/*.ts --fix",
     "lint:ci": "yarn lint -- -f junit -o test-reports/lint-results.xml",
     "prepack": "yarn build",
     "start": "babel src -d . --watch",
@@ -38,6 +38,7 @@
     "@splunk/babel-preset": "^2.0.0",
     "@splunk/eslint-config": "^2.0.0",
     "@splunk/webpack-configs": "^4.0.0",
+    "@types/jest": "^24.0.25",
     "@typescript-eslint/eslint-plugin": "^2.15.0",
     "@typescript-eslint/parser": "^2.15.0",
     "babel-core": "^7.0.0-bridge.0",
@@ -63,6 +64,7 @@
     "npm-license-crawler": "^0.2.1",
     "rimraf": "^2.6.2",
     "sinon": "^8.0.4",
+    "ts-jest": "^24.3.0",
     "tsc": "^1.20150623.0",
     "typescript": "^3.7.2",
     "webpack": "^3.11.0",
@@ -72,6 +74,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "dependencies": {
+    "eslint-plugin-simple-import-sort": "^5.0.0",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.5",
     "q": "^1.5.1",
@@ -82,6 +85,13 @@
   },
   "jest-junit": {
     "output": "./test-reports/unit-results.xml"
+  },
+  "xjest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.test.json"
+      }
+    }
   },
   "config": {
     "commitizen": {

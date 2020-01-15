@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import { assert, expect } from 'chai';
 
 import defaultOptions from '../../src/auth.defaults';
@@ -7,7 +5,7 @@ import AuthClient from '../../src/AuthClient';
 import config from '../../src/lib/config';
 import { cookies } from '../../src/lib/cookies';
 import StorageManager from '../../src/lib/storage';
-import testData from './fixture/testData';
+import { TestData } from './fixture/testData';
 
 describe('CloudAuth', () => {
     const clientId = '12345678';
@@ -20,6 +18,7 @@ describe('CloudAuth', () => {
     it('should throw error if clientId is missing', () => {
         try {
             const authClient = new AuthClient({}); // eslint-disable-line no-unused-vars
+            assert.isNotNull(authClient);
         } catch (e) {
             expect(e.message).to.equal('missing required configuration option `clientId`');
         }
@@ -63,13 +62,13 @@ describe('CloudAuth', () => {
         it('should return false is access token is not present', () => {
             authClient.tokenManager.clear();
             const authenticated = authClient.isAuthenticated();
-            assert.isFalse(authenticated, false);
+            assert.isFalse(authenticated);
         });
 
         it('should return true if access token is present', () => {
             authClient.tokenManager.add('accessToken', accessToken);
             const authenticated = authClient.isAuthenticated();
-            assert.isTrue(authenticated, true);
+            assert.isTrue(authenticated);
         });
 
         it('checkAuthentication with existing access token', () => {
@@ -116,7 +115,7 @@ describe('CloudAuth', () => {
         it('custom restorePath function', () => {
             const client = new AuthClient({
                 clientId,
-                onRestorePath: () => {
+                onRestorePath: (): void => {
                     cookies.set('testKey', 'testValue');
                 },
             });
@@ -131,7 +130,7 @@ describe('CloudAuth', () => {
             authClient.redirectToLogin();
             const storage = new StorageManager(config.REDIRECT_PARAMS_STORAGE_NAME);
             const params = storage.get(config.REDIRECT_OAUTH_PARAMS_NAME);
-            expect(params).to.have.string(testData.authorizeUrl);
+            expect(params).to.have.string(TestData.AUTHORIZE_URL);
         });
     });
 
@@ -139,10 +138,10 @@ describe('CloudAuth', () => {
         it('clear the tokens', () => {
             const authClient = new AuthClient({ clientId });
             authClient.options.baseDomain = '';
-            authClient.tokenManager.add('accessToken', testData.accessTokenParsed);
+            authClient.tokenManager.add('accessToken', TestData.ACCESS_TOKEN_PARSED);
 
             expect(authClient.tokenManager.get('accessToken')).to.deep.equal(
-                testData.accessTokenParsed
+                TestData.ACCESS_TOKEN_PARSED
             );
 
             authClient.logout();

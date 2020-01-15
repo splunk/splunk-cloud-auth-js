@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import { expect } from 'chai';
 
 import { getCookieStorage, storageBuilder } from '../../../src/lib/util';

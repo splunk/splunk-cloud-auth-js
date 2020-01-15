@@ -1,15 +1,25 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "jest": true
   },
   "extends": [
-    "@splunk/eslint-config/browser-prettier",
     "eslint:recommended",
-    "plugin:import/errors",
-    "plugin:import/warnings",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "@splunk/eslint-config/browser-prettier",
     "plugin:unicorn/recommended"
   ],
+  "overrides": [
+    {
+      "files": [
+        "test/**/*.ts"
+      ]
+    }
+  ],
+  "parser": "@typescript-eslint/parser",
   "plugins": [
+    "@typescript-eslint",
     "import",
     "simple-import-sort"
   ],
@@ -40,15 +50,5 @@
     "unicorn/prefer-includes": "off", // TODO: update code
     "unicorn/prefer-string-slice": "off", // TODO: update code
     "unicorn/prevent-abbreviations": "off" // TODO: update code
-  },
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [
-          ".js",
-          ".ts"
-        ]
-      }
-    }
   }
 }

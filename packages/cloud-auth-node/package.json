@@ -26,7 +26,7 @@
     "docs": "yarn ts:docs",
     "build": "node ci/extract_version.js && tsc -p tsconfig.json",
     "build:tests": "tsc -p tsconfig.test.json",
-    "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts src/*.js src/*.js.map src/*.d.ts && yarn clean:coverage || true",
+    "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts src/*.js src/*.js.map src/*.d.ts .nyc_output *.log && yarn clean:coverage || true",
     "clean:coverage": "rm -rf coverage",
     "clean:modules": "rimraf node_modules || true",
     "cover": "yarn clean:coverage && nyc npm run test",

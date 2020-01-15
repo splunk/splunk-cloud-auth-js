@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import { assert, expect } from 'chai';
 
 import config from '../../../src/lib/config';

@@ -17,14 +17,21 @@
       "statements": 0
     }
   },
+  "globals": {
+    "ts-jest": {
+      "tsConfig": "tsconfig.test.json"
+    }
+  },
   "moduleNameMapper": {},
+  "preset": "ts-jest",
   "reporters": [
     "default",
     "jest-junit"
   ],
   "restoreMocks": true,
+  "testEnvironment": "jsdom",
   "testMatch": [
-    "**/test/**/*.unit.js"
+    "**/test/**/*.unit.ts"
   ],
   "testPathIgnorePatterns": [],
   "transform": {

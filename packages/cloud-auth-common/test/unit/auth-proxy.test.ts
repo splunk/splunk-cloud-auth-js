@@ -274,15 +274,12 @@ describe('AuthProxy', () => {
     describe('csrfToken', () => {
         it('should return a successful csrf token response promise', async () => {
             // Arrange
-            const COOKIE = 'abcdcookie';
-            const CSRF_TOKEN = 'csrf_token';
+            const CSRF_TOKEN = 'abcdcookie';
+            const COOKIE = `csrf=${CSRF_TOKEN}`;
 
             fetchMock.get(
                 `${MOCK_HOST}${PATH_TOKEN_CSRF}`,
                 {
-                    body: {
-                        csrf: CSRF_TOKEN
-                    },
                     headers: {
                         'set-cookie': COOKIE
                     },
@@ -299,7 +296,7 @@ describe('AuthProxy', () => {
             const result = await authProxy.csrfToken();
 
             // Assert
-            assert.equal(result.csrfToken, 'csrf_token');
+            assert.equal(result.csrfToken, CSRF_TOKEN);
             assert.equal(result.cookies, COOKIE);
         });
 
@@ -326,17 +323,42 @@ describe('AuthProxy', () => {
             return assert.isRejected(authProxy.csrfToken(), expectedErrorMessage);
         });
 
-        it('should throw SplunkAuthError when csrf token is not returned', async () => {
+        it('should throw SplunkAuthError when cookies are not returned', async () => {
             // Arrange
             const STATUS_CODE = 429;
             const STATUS_TEXT = 'statustext';
-            const expectedErrorMessage = 'Unable to retrieve CSRF token from csrfToken endpoint.';
+            const expectedErrorMessage = 'Unable to retrieve cookies from csrfToken endpoint.';
 
             fetchMock.get(
                 `${MOCK_HOST}${PATH_TOKEN_CSRF}`,
                 {
                     status: STATUS_CODE,
                     statusText: STATUS_TEXT
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+            // Act/Assert
+            return assert.isRejected(authProxy.csrfToken(), expectedErrorMessage);
+        });
+
+        it('should throw SplunkAuthError when csrf token is not returned', async () => {
+            // Arrange
+            const STATUS_CODE = 200;
+            const COOKIE = `sid=abcdsidsessioncookie`;
+            const expectedErrorMessage = 'Unable to retrieve CSRF token cookie from csrfToken endpoint.';
+
+            fetchMock.get(
+                `${MOCK_HOST}${PATH_TOKEN_CSRF}`,
+                {
+                    headers: {
+                        'set-cookie': COOKIE
+                    },
+                    status: STATUS_CODE,
                 },
                 {
                     headers: {

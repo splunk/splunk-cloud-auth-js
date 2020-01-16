@@ -5,6 +5,16 @@ The Splunk Cloud Services Common Authentication Library for JavaScript contains 
 
 We want to thank the contributors to these projects:
 
+## @types/set-cookie-parser
+
+Name: @types/set-cookie-parser
+
+Version: 0.0.6
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
 ## isomorphic-fetch
 
 Name: isomorphic-fetch
@@ -14,6 +24,16 @@ Version: 2.2.1
 License: [MIT](https://github.com/matthew-andrews/isomorphic-fetch/raw/master/LICENSE)
 
 Repository: [https://github.com/matthew-andrews/isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch)
+
+## set-cookie-parser
+
+Name: set-cookie-parser
+
+Version: 2.4.1
+
+License: [MIT](https://github.com/nfriedly/set-cookie-parser/raw/master/LICENSE)
+
+Repository: [https://github.com/nfriedly/set-cookie-parser](https://github.com/nfriedly/set-cookie-parser)
 
 ## @types/chai-as-promised
 

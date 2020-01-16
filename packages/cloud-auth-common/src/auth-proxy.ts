@@ -16,6 +16,8 @@
 
 import 'isomorphic-fetch';
 
+import cookieParser from 'set-cookie-parser';
+
 import { SplunkAuthError } from './splunk-auth-error';
 
 const HEADERS_APPLICATION_JSON = {
@@ -207,7 +209,6 @@ export class AuthProxy {
      * Gets a CSRF token to be passed to the (extended) 'primary' endpoint (/authn) for PKCE auth flow.
      */
     public async csrfToken(): Promise<CsrfTokenResponse> {
-        let cookie: any;
         const csrfTokenurl = new URL(this.PATH_TOKEN_CSRF, this.host);
         return fetch(
             csrfTokenurl.href,
@@ -220,14 +221,18 @@ export class AuthProxy {
                     throw new SplunkAuthError(
                         `CSRF token call failed with status='${response.status}', statusText='${response.statusText}'`);
                 }
-                cookie = response.headers.get('set-cookie');
-                return response.json();
-            })
-            .then(json => {
-                if (!json.csrf) {
-                    throw new SplunkAuthError(`Unable to retrieve CSRF token from csrfToken endpoint.`);
+                const cookies = response.headers.get('set-cookie');
+                if (!cookies) {
+                    throw new SplunkAuthError(`Unable to retrieve cookies from csrfToken endpoint.`);
                 }
-                return new CsrfTokenResponse(json.csrf, cookie);
+                const csrfCookie = cookieParser.parse(cookies, {
+                    decodeValues: true,
+                    map: true,
+                }).csrf;
+                if (!csrfCookie) {
+                    throw new SplunkAuthError(`Unable to retrieve CSRF token cookie from csrfToken endpoint.`);
+                }
+                return new CsrfTokenResponse(csrfCookie.value, cookies);
             });
     }
 

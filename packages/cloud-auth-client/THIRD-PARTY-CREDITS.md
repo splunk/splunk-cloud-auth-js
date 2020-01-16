@@ -278,7 +278,7 @@ Repository: [https://github.com/evcohen/eslint-plugin-jsx-a11y](https://github.c
 
 Name: eslint-plugin-react
 
-Version: 7.17.0
+Version: 7.18.0
 
 License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICENSE)
 
@@ -378,7 +378,7 @@ Repository: [https://github.com/isaacs/rimraf](https://github.com/isaacs/rimraf)
 
 Name: sinon
 
-Version: 8.0.4
+Version: 8.1.0
 
 License: [BSD-3-Clause](http://github.com/sinonjs/sinon/raw/master/LICENSE)
 
@@ -393,16 +393,6 @@ Version: 24.3.0
 License: [MIT](https://github.com/kulshekhar/ts-jest/raw/master/LICENSE.md)
 
 Repository: [https://github.com/kulshekhar/ts-jest](https://github.com/kulshekhar/ts-jest)
-
-## tsc
-
-Name: tsc
-
-Version: 1.20150623.0
-
-License: [MIT](https://github.com/basarat/tsc)
-
-Repository: [https://github.com/basarat/tsc](https://github.com/basarat/tsc)
 
 ## typescript
 

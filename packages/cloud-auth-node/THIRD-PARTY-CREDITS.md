@@ -189,7 +189,7 @@ Repository: [https://github.com/evcohen/eslint-plugin-jsx-a11y](https://github.c
 
 Name: eslint-plugin-react
 
-Version: 7.17.0
+Version: 7.18.0
 
 License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICENSE)
 
@@ -394,16 +394,6 @@ Version: 7.0.1
 License: [MIT](https://github.com/TypeStrong/ts-node/raw/master/LICENSE)
 
 Repository: [https://github.com/TypeStrong/ts-node](https://github.com/TypeStrong/ts-node)
-
-## tsc
-
-Name: tsc
-
-Version: 1.20150623.0
-
-License: [MIT](https://github.com/basarat/tsc)
-
-Repository: [https://github.com/basarat/tsc](https://github.com/basarat/tsc)
 
 ## typedoc-plugin-markdown
 

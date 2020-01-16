@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "build": "babel src -d . --extensions \".ts\"",
+    "build": "node ci/extract_version.js && babel src -d . --extensions \".ts\"",
     "check-types": "tsc",
     "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts lib *.js *.js.map *.d.ts .nyc_output *.log junit.xml && yarn run clean:coverage || true",
     "clean:coverage": "rm -rf coverage",
@@ -65,7 +65,6 @@
     "rimraf": "^2.6.2",
     "sinon": "^8.0.4",
     "ts-jest": "^24.3.0",
-    "tsc": "^1.20150623.0",
     "typescript": "^3.7.2",
     "webpack": "^3.11.0",
     "webpack-cli": "^3.3.5",

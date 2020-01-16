@@ -81,7 +81,6 @@
     "standard-version": "^4.4.0",
     "ts-mocha": "^2.0.0",
     "ts-node": "^7.0.0",
-    "tsc": "^1.20150623.0",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.2.1",
     "typescript": "^3.7.2"

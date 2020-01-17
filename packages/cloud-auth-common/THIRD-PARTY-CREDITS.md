@@ -429,7 +429,7 @@ Repository: [https://github.com/TypeStrong/TypeDoc](https://github.com/TypeStron
 
 Name: typescript
 
-Version: 3.7.4
+Version: 3.7.5
 
 License: [Apache-2.0](https://github.com/Microsoft/TypeScript/raw/master/LICENSE.txt)
 

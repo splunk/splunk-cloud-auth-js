@@ -7,14 +7,6 @@
   "license": "Apache-2.0",
   "private": false,
   "types": "./src/index.d.ts",
-  "files": [
-    "/src/*.js",
-    "/src/*.js.map",
-    "/src/*.d.ts",
-    "/src/**/*.js",
-    "/src/**/*.js.map",
-    "/src/**/*.d.ts"
-  ],
   "scripts": {
     "commit": "yarn git-cz",
     "lint": "eslint \"src/**/*.ts\" && yarn run lint:tests",

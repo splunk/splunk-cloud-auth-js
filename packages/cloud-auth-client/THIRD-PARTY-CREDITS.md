@@ -5,15 +5,15 @@ The Splunk Cloud Services Web Application Authentication Library for JavaScript 
 
 We want to thank the contributors to these projects:
 
-## eslint-plugin-simple-import-sort
+## cookie-storage
 
-Name: eslint-plugin-simple-import-sort
+Name: cookie-storage
 
-Version: 5.0.0
+Version: 5.0.3
 
-License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
+License: [MIT](https://github.com/bouzuya/cookie-storage/raw/master/LICENSE)
 
-Repository: [https://github.com/lydell/eslint-plugin-simple-import-sort](https://github.com/lydell/eslint-plugin-simple-import-sort)
+Repository: [https://github.com/bouzuya/cookie-storage](https://github.com/bouzuya/cookie-storage)
 
 ## js-cookie
 
@@ -284,6 +284,16 @@ License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICEN
 
 Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react)
 
+## eslint-plugin-simple-import-sort
+
+Name: eslint-plugin-simple-import-sort
+
+Version: 5.0.0
+
+License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
+
+Repository: [https://github.com/lydell/eslint-plugin-simple-import-sort](https://github.com/lydell/eslint-plugin-simple-import-sort)
+
 ## eslint-plugin-unicorn
 
 Name: eslint-plugin-unicorn
@@ -373,16 +383,6 @@ Version: 2.7.1
 License: [ISC](https://github.com/isaacs/rimraf/raw/master/LICENSE)
 
 Repository: [https://github.com/isaacs/rimraf](https://github.com/isaacs/rimraf)
-
-## sinon
-
-Name: sinon
-
-Version: 8.1.0
-
-License: [BSD-3-Clause](http://github.com/sinonjs/sinon/raw/master/LICENSE)
-
-Repository: [http://github.com/sinonjs/sinon](http://github.com/sinonjs/sinon)
 
 ## ts-jest
 

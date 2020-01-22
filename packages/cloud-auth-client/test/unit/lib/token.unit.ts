@@ -1,19 +1,23 @@
 import { assert, expect } from 'chai';
 
-import defaultOptions from '../../../src/auth.defaults';
+import { AuthClientSettings } from '../../../src/auth-client-settings';
 import AuthClient from '../../../src/AuthClient';
-import config from '../../../src/lib/config';
 import StorageManager from '../../../src/lib/storage';
 import token from '../../../src/lib/token';
 import { TestData } from '../fixture/testData';
 
+const REDIRECT_OAUTH_PARAMS_NAME = 'redirect-oauth-params';
+const REDIRECT_PARAMS_STORAGE_NAME = 'splunk-redirect-params-storage';
+
 describe('token', () => {
     describe('parseFromUrl', () => {
-        const authClient = new AuthClient({
-            clientId: TestData.CLIENT_ID,
-            authorizeUrl: defaultOptions.authorizeUrl,
-        });
-        const storage = new StorageManager(config.REDIRECT_PARAMS_STORAGE_NAME);
+        const settings = new AuthClientSettings(
+            TestData.CLIENT_ID,
+            '',
+            ''
+        );
+        const authClient = new AuthClient(settings);
+        const storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
 
         it('parses the access_token', () => {
             const state = TestData.REDIRECT_OAUTH_PARAMS.state;
@@ -26,7 +30,7 @@ describe('token', () => {
             };
 
             // insert the redirect oauth param into session storage
-            storage.add(config.REDIRECT_OAUTH_PARAMS_NAME, JSON.stringify(redirectParams));
+            storage.add(REDIRECT_OAUTH_PARAMS_NAME, JSON.stringify(redirectParams));
 
             return token
                 .parseFromUrl(authClient, testUrl)
@@ -45,7 +49,7 @@ describe('token', () => {
 
             // insert the redirect oauth param into session storage
             storage.add(
-                config.REDIRECT_OAUTH_PARAMS_NAME,
+                REDIRECT_OAUTH_PARAMS_NAME,
                 JSON.stringify(TestData.REDIRECT_OAUTH_PARAMS)
             );
 
@@ -80,16 +84,19 @@ describe('token', () => {
 
     describe('getWithRedirect', () => {
         it('sets the redirect params', () => {
-            const authClient = new AuthClient({
-                clientId: TestData.CLIENT_ID,
-            });
+            const settings = new AuthClientSettings(
+                TestData.CLIENT_ID,
+                '',
+                ''
+            );
+            const authClient = new AuthClient(settings);
             const request = {
                 responseType: ['token', 'id_token'],
                 scopes: ['openid', 'email', 'profile'],
             };
             token.getWithRedirect(authClient, {});
-            const storage = new StorageManager(config.REDIRECT_PARAMS_STORAGE_NAME);
-            const params = storage.get(config.REDIRECT_OAUTH_PARAMS_NAME);
+            const storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
+            const params = storage.get(REDIRECT_OAUTH_PARAMS_NAME);
             const oauthParams = JSON.parse(params);
             expect(oauthParams.urls.authorizeUrl).to.equal(TestData.AUTHORIZE_URL);
             expect(oauthParams.responseType).to.deep.equal(request.responseType);

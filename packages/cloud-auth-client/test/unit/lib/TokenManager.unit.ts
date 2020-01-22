@@ -1,7 +1,8 @@
 import { assert, expect } from 'chai';
 
-import config from '../../../src/lib/config';
 import TokenManager from '../../../src/lib/TokenManager';
+
+const TOKEN_STORAGE_NAME = 'splunk-token-storage';
 
 describe('TokenManager', () => {
     const manager = new TokenManager({ options: {} });
@@ -19,7 +20,7 @@ describe('TokenManager', () => {
 
     it('should set the token in the storage', () => {
         manager.add('accessToken', accessToken);
-        const tokens = JSON.parse(sessionStorage.getItem(config.TOKEN_STORAGE_NAME));
+        const tokens = JSON.parse(sessionStorage.getItem(TOKEN_STORAGE_NAME));
         expect(tokens.accessToken).to.deep.equal(
             accessToken,
             'compare with the content in the sessionStorage'
@@ -50,7 +51,7 @@ describe('TokenManager', () => {
         const token = manager.get('accessToken');
         assert.equal(token, undefined);
 
-        const content = sessionStorage.getItem(config.TOKEN_STORAGE_NAME);
+        const content = sessionStorage.getItem(TOKEN_STORAGE_NAME);
         expect(content).to.equal('{}');
     });
 });

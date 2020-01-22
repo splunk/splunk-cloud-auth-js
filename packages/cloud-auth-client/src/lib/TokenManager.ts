@@ -4,7 +4,7 @@ SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
 without a valid written license from Splunk Inc. is PROHIBITED.
 */
 
-import config from './config';
+import { TOKEN_STORAGE_NAME } from '../auth-client-settings';
 import AuthClientError from './errors/AuthClientError';
 import StorageManager from './storage';
 import token from './token';
@@ -12,7 +12,7 @@ import { isValidTokenObject, warn } from './util';
 
 class TokenManager extends StorageManager {
     constructor(client) {
-        super(config.TOKEN_STORAGE_NAME);
+        super(TOKEN_STORAGE_NAME);
         this.client = client;
     }
 
@@ -26,8 +26,7 @@ class TokenManager extends StorageManager {
         tokenStorage[key] = authToken;
         this.storage.setStorage(tokenStorage);
         // expiresIn is in seconds but we need milliseconds
-        const renewalBuffer =
-            this.client.options.autoTokenRenewalBuffer || config.DEFAULT_AUTO_TOKEN_RENEWAL_BUFFER;
+        const renewalBuffer = this.client.options.autoTokenRenewalBuffer;
         const refreshTime = authToken.expiresIn * 1000 - renewalBuffer * 1000;
         setTimeout(this.refreshToken, refreshTime);
     };

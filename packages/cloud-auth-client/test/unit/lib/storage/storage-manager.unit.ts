@@ -86,12 +86,12 @@ describe('StorageManager', () => {
             expect(sessionStorageMock.getItem).toBeCalledTimes(1);
         });
 
-        it('returns empty blob when key input is not present', () => {
+        it('returns undefined when key input is not present', () => {
             // Act
             const result = storageManager.get();
 
             // Assert
-            expect(result).toStrictEqual({});
+            expect(result).toStrictEqual(undefined);
             expect(sessionStorageMock.getItem).toBeCalledWith(STORAGE_NAME);
             expect(sessionStorageMock.getItem).toBeCalledTimes(1);
         });
@@ -210,7 +210,7 @@ describe('StorageManager', () => {
             // Assert
             expect(sessionStorageMock.getItem).toBeCalledWith(STORAGE_NAME);
             expect(sessionStorageMock.getItem).toBeCalledTimes(1);
-            expect(sessionStorageMock.setItem).toBeCalledWith(STORAGE_NAME, JSON.stringify({ key0: {} }));
+            expect(sessionStorageMock.setItem).toBeCalledWith(STORAGE_NAME, JSON.stringify({ key0: undefined }));
             expect(sessionStorageMock.setItem).toBeCalledTimes(1);
         });
 
@@ -220,7 +220,7 @@ describe('StorageManager', () => {
 
             // Assert
             expect(sessionStorageMock.getItem).not.toBeCalled();
-            expect(sessionStorageMock.setItem).toBeCalledWith(STORAGE_NAME, JSON.stringify({}));
+            expect(sessionStorageMock.setItem).toBeCalledWith(STORAGE_NAME, undefined);
             expect(sessionStorageMock.setItem).toBeCalledTimes(1);
         });
     });

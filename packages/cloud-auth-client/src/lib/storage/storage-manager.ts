@@ -48,8 +48,11 @@ export class StorageManager {
      * @param key Key reference.
      */
     public get(key?: string): any {
-        let storageString = this.storage.getItem(this.storageName);
-        storageString = storageString || '{}';
+        const storageString = this.storage.getItem(this.storageName);
+        if (!storageString) {
+            return undefined;
+        }
+
         let storageBlob;
         try {
             storageBlob = JSON.parse(storageString);
@@ -107,11 +110,11 @@ export class StorageManager {
     public clear(key?: string): void {
         if (key) {
             const data = this.get();
-            data[key] = {};
+            data[key] = undefined;
             this.set(data);
             return;
         }
 
-        this.set({});
+        this.set(undefined);
     }
 }

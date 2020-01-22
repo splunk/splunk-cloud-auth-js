@@ -8,13 +8,13 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 
 import Q from 'q';
 
-import config from './config';
+import { REDIRECT_OAUTH_PARAMS_NAME, REDIRECT_PARAMS_STORAGE_NAME } from '../auth-client-settings';
 import AuthClientError from './errors/AuthClientError';
 import OAuthError from './errors/OAuthError';
 import StorageManager from './storage';
 import * as util from './util';
 
-const storage = new StorageManager(config.REDIRECT_PARAMS_STORAGE_NAME);
+const storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
 
 function removeHash() {
     const nativeHistory = window.history;
@@ -100,7 +100,7 @@ function parseFromUrl(client, url) {
         return Q.reject(new AuthClientError('Unable to parse a token from the url'));
     }
 
-    const oauthParamsContent = storage.get(config.REDIRECT_OAUTH_PARAMS_NAME);
+    const oauthParamsContent = storage.get(REDIRECT_OAUTH_PARAMS_NAME);
     if (!oauthParamsContent) {
         return Q.reject(new AuthClientError('Unable to retrieve OAuth redirect params storage'));
     }
@@ -112,11 +112,11 @@ function parseFromUrl(client, url) {
         oauthParams = JSON.parse(oauthParamsContent);
         urls = oauthParams.urls;
         delete oauthParams.urls;
-        storage.remove(config.REDIRECT_OAUTH_PARAMS_NAME);
+        storage.remove(REDIRECT_OAUTH_PARAMS_NAME);
     } catch (e) {
         return Q.reject(
             new AuthClientError(
-                `Unable to parse the ${config.REDIRECT_OAUTH_PARAMS_NAME} param: ${e.message}`
+                `Unable to parse the ${REDIRECT_OAUTH_PARAMS_NAME} param: ${e.message}`
             )
         );
     }
@@ -210,7 +210,7 @@ function getAuthUrl(client, options) {
 
     // Set sessionStorage to store the oauthParams
     storage.add(
-        config.REDIRECT_OAUTH_PARAMS_NAME,
+        REDIRECT_OAUTH_PARAMS_NAME,
         JSON.stringify({
             responseType: oauthParams.responseType,
             state: oauthParams.state,

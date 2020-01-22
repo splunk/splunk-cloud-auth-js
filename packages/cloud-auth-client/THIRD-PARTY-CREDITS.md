@@ -145,11 +145,41 @@ License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LIC
 
 Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
+## @types/lodash
+
+Name: @types/lodash
+
+Version: 4.14.149
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
+## @types/q
+
+Name: @types/q
+
+Version: 1.5.2
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
+## @types/url-parse
+
+Name: @types/url-parse
+
+Version: 1.4.3
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
 ## @typescript-eslint/eslint-plugin
 
 Name: @typescript-eslint/eslint-plugin
 
-Version: 2.16.0
+Version: 2.17.0
 
 License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -159,7 +189,7 @@ Repository: [https://github.com/typescript-eslint/typescript-eslint](https://git
 
 Name: @typescript-eslint/parser
 
-Version: 2.16.0
+Version: 2.17.0
 
 License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 

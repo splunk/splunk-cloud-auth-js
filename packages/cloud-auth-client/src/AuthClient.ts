@@ -9,39 +9,69 @@ import has from 'lodash/has';
 import memoize from 'lodash/memoize';
 import urlParse from 'url-parse';
 
-import defaultConfig from './auth.defaults';
-import config from './lib/config';
+import { AuthClientSettings, REDIRECT_PARAMS_STORAGE_NAME, REDIRECT_PATH_PARAMS_NAME } from './auth-client-settings';
 import AuthClientError from './lib/errors/AuthClientError';
 import StorageManager from './lib/storage';
 import token from './lib/token';
 import TokenManager from './lib/TokenManager';
 import { warn } from './lib/util';
 
+/**
+ * AuthClient.
+ */
 class AuthClient {
-    constructor(args) {
-        if (!args.clientId) {
+    /**
+     * AuthClient constructor.
+     * @param settings AuthClientSettings.
+     */
+    public constructor(settings: AuthClientSettings) {
+        if (!settings.clientId) {
             throw new AuthClientError('missing required configuration option `clientId`');
         }
 
-        this.options = {
-            onRestorePath: this.restorePath,
-            ...defaultConfig,
-            ...args,
-        };
+        this._options = settings;
+        this._options.onRestorePath = this._options.onRestorePath ? this._options.onRestorePath : this.restorePath;
 
-        this.tokenManager = new TokenManager(this);
-        this.storage = new StorageManager(config.REDIRECT_PARAMS_STORAGE_NAME);
+        this._tokenManager = new TokenManager(this);
+        this._storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
 
         if (!this.isAuthenticated()) {
-            if (this.options.autoRedirectToLogin) {
+            if (this._options.autoRedirectToLogin) {
                 this.getToken();
             }
         }
     }
 
+    private _options: AuthClientSettings;
+
+    private _storage: StorageManager;
+
+    private _tokenManager: TokenManager;
+
+    /**
+     * AuthClientSettings.
+     */
+    public get options(): AuthClientSettings {
+        return this._options;
+    }
+
+    /**
+     * StorageManager.
+     */
+    public get storage(): StorageManager {
+        return this._storage;
+    }
+
+    /**
+     * TokenManager.
+     */
+    public get tokenManager(): TokenManager {
+        return this._tokenManager;
+    }
+
     getToken() {
         const autoRedirect = () => {
-            if (this.options.autoRedirectToLogin) {
+            if (this._options.autoRedirectToLogin) {
                 this.redirectToLogin();
             }
         };
@@ -82,7 +112,7 @@ class AuthClient {
         token
             .parseFromUrl(this)
             .then(tokens => {
-                if (this.options.restorePathAfterLogin) {
+                if (this._options.restorePathAfterLogin) {
                     this.restorePathAfterLogin();
                 }
                 return tokens;
@@ -106,25 +136,25 @@ class AuthClient {
         }
         tokens.forEach(item => {
             if (has(item, 'accessToken')) {
-                this.tokenManager.add('accessToken', item);
+                this._tokenManager.add('accessToken', item);
             }
         });
     };
 
     getAccessToken = () => {
         this.checkExpiration('accessToken');
-        return get(this.tokenManager.get('accessToken'), 'accessToken');
+        return get(this._tokenManager.get('accessToken'), 'accessToken');
     };
 
     isAuthenticated = () => !!this.getAccessToken();
 
     checkExpiration = tokenType => {
         const now = Math.floor(new Date().getTime() / 1000);
-        const expire = get(this.tokenManager.get(tokenType), 'expiresAt');
-        const expirationBuffer = this.options.maxClockSkew || config.MAX_CLOCK_SKEW;
+        const expire = get(this._tokenManager.get(tokenType), 'expiresAt');
+        const expirationBuffer = this._options.maxClockSkew;
         if (now - expirationBuffer > expire) {
             warn('The JWT expired and is no longer valid');
-            this.tokenManager.clear();
+            this._tokenManager.clear();
             this.redirectToLogin();
         }
     };
@@ -136,9 +166,9 @@ class AuthClient {
     storePathBeforeLogin = () => {
         try {
             const path = window.location.pathname + window.location.search + window.location.hash;
-            this.storage.add(config.REDIRECT_PATH_PARAMS_NAME, path);
+            this._storage.add(REDIRECT_PATH_PARAMS_NAME, path);
         } catch (e) {
-            warn(`Cannot store the path at  ${config.REDIRECT_PATH_PARAMS_NAME}`);
+            warn(`Cannot store the path at  ${REDIRECT_PATH_PARAMS_NAME}`);
         }
     };
 
@@ -147,9 +177,9 @@ class AuthClient {
      * This is used to pass additional information via query params to the log in page.
      */
     getQueryStringForLogin = () => {
-        if (this.options.queryParamsForLogin) {
+        if (this._options.queryParamsForLogin) {
             const urlQueryParams = new URLSearchParams(window.location.search);
-            const paramsFoundInUrl = Object.keys(this.options.queryParamsForLogin).filter(param =>
+            const paramsFoundInUrl = Object.keys(this._options.queryParamsForLogin).filter(param =>
                 urlQueryParams.has(param)
             );
             const queryParams = paramsFoundInUrl.map(
@@ -165,13 +195,13 @@ class AuthClient {
      */
     restorePathAfterLogin = () => {
         try {
-            const p = this.storage.get(config.REDIRECT_PATH_PARAMS_NAME);
-            this.storage.remove(config.REDIRECT_PATH_PARAMS_NAME);
-            if (p) {
-                this.options.onRestorePath(p);
+            const p = this._storage.get(REDIRECT_PATH_PARAMS_NAME);
+            this._storage.remove(REDIRECT_PATH_PARAMS_NAME);
+            if (p && this._options.onRestorePath) {
+                this._options.onRestorePath(p);
             }
         } catch (e) {
-            warn(`Cannot restore the path from ${config.REDIRECT_PATH_PARAMS_NAME}`);
+            warn(`Cannot restore the path from ${REDIRECT_PATH_PARAMS_NAME}`);
         }
     };
 
@@ -194,12 +224,12 @@ class AuthClient {
      */
     /* eslint-enable max-len */
     redirectToLogin = () => {
-        if (this.options.restorePathAfterLogin) {
+        if (this._options.restorePathAfterLogin) {
             this.storePathBeforeLogin();
         }
 
         let options = null;
-        if (this.options.queryParamsForLogin) {
+        if (this._options.queryParamsForLogin) {
             options = { additionalQueryString: this.getQueryStringForLogin() };
         }
 
@@ -211,7 +241,7 @@ class AuthClient {
      * If not, check if there is one returned from a redirect (e.g. in the query string).
      * If that fails due to consent or login being required then redirect to the login page.
      */
-    checkAuthentication = ({ redirect = this.options.autoRedirectToLogin } = {}) =>
+    checkAuthentication = ({ redirect = this._options.autoRedirectToLogin } = {}) =>
         new Promise((resolve, reject) => {
             if (this.isAuthenticated()) {
                 resolve(true);
@@ -257,9 +287,9 @@ class AuthClient {
      */
     logout = url => {
         const logoutRedirUrl =
-            typeof url === 'string' ? url : this.options.redirectUri || window.location.href;
-        const authUrl = urlParse(this.options.authorizeUrl).origin;
-        this.tokenManager.clear();
+            typeof url === 'string' ? url : this._options.redirectUri || window.location.href;
+        const authUrl = urlParse(this._options.authorizeUrl).origin;
+        this._tokenManager.clear();
         window.location = `${authUrl}/logout?redirect_uri=${encodeURIComponent(logoutRedirUrl)}`;
     };
 }

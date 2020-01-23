@@ -23,7 +23,6 @@ export class AuthClientSettings {
      * AuthClientSettings constructor.
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
-     * @param issuer Issuer.
      * @param onRestorePath OnRestorePath callback function.
      * @param authorizeUrl Authorize URL endpoint.
      * @param autoRedirectToLogin Auto-redirect to login boolean.
@@ -35,7 +34,6 @@ export class AuthClientSettings {
     public constructor(
         clientId: string,
         redirectUri: string,
-        issuer: string,
         onRestorePath: OnRestorePathFunction | undefined = undefined,
         authorizeUrl: string = DEFAULT_AUTHORIZE_URL,
         autoRedirectToLogin: boolean = DEFAULT_AUTO_REDIRECT_TO_LOGIN,
@@ -46,7 +44,6 @@ export class AuthClientSettings {
     ) {
         this.clientId = clientId;
         this.redirectUri = redirectUri;
-        this.issuer = issuer;
         this.onRestorePath = onRestorePath;
         this.authorizeUrl = authorizeUrl === '' ? DEFAULT_AUTHORIZE_URL : authorizeUrl;
         this.autoRedirectToLogin = autoRedirectToLogin;
@@ -69,11 +66,6 @@ export class AuthClientSettings {
      * This is used to redirect the user back to the web app after login. URI must be registered with the App Registry.
      */
     public redirectUri: string;
-
-    /**
-     * Issuer.
-     */
-    public issuer: string;
 
     /**
      * OnRestorePath callback function.

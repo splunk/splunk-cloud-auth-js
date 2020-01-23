@@ -162,12 +162,8 @@ export function getOAuthUrls(client, optionsIn) {
 
     // Get user-supplied arguments
     const authorizeUrl = removeTrailingSlash(options.authorizeUrl) || client.options.authorizeUrl;
-    let issuer = removeTrailingSlash(options.issuer) || client.options.issuer;
-
-    issuer = issuer || authorizeUrl;
 
     return {
-        issuer,
         authorizeUrl,
     };
 }

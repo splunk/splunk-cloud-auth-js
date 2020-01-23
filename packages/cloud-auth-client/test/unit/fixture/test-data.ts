@@ -48,7 +48,6 @@ export class TestData {
         scopes: ['openid', 'email', 'profile'],
         clientId: TestData.CLIENT_ID,
         urls: {
-            issuer: TestData.AUTHORIZE_URL,
             authorizeUrl: TestData.AUTHORIZE_URL,
         },
     };

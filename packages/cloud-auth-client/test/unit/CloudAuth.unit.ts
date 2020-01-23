@@ -4,7 +4,7 @@ import { AuthClientSettings } from '../../src/auth-client-settings';
 import AuthClient from '../../src/AuthClient';
 import { cookies } from '../../src/lib/cookies';
 import StorageManager from '../../src/lib/storage';
-import { TestData } from './fixture/testData';
+import { TestData } from './fixture/test-data';
 
 const DEFAULT_AUTHORIZE_URL = 'https://auth.scp.splunk.com/authorize';
 const REDIRECT_PATH_PARAMS_NAME = 'redirect-path';
@@ -16,7 +16,6 @@ describe('CloudAuth', () => {
     it('should initialize the client with clientId', () => {
         const settings = new AuthClientSettings(
             clientId,
-            '',
             ''
         );
         const authClient = new AuthClient(settings);
@@ -27,7 +26,6 @@ describe('CloudAuth', () => {
     it('should throw error if clientId is missing', () => {
         try {
             const settings = new AuthClientSettings(
-                '',
                 '',
                 ''
             );
@@ -41,7 +39,6 @@ describe('CloudAuth', () => {
     describe('getAccessToken', () => {
         const settings = new AuthClientSettings(
             clientId,
-            '',
             ''
         );
         const authClient = new AuthClient(settings);
@@ -74,7 +71,6 @@ describe('CloudAuth', () => {
     describe('authenticate', () => {
         const settings = new AuthClientSettings(
             clientId,
-            '',
             ''
         );
         const authClient = new AuthClient(settings);
@@ -112,7 +108,6 @@ describe('CloudAuth', () => {
                 new AuthClientSettings(
                     clientId,
                     '',
-                    '',
                     undefined,
                     '',
                     false
@@ -127,7 +122,6 @@ describe('CloudAuth', () => {
     describe('redirect', () => {
         const settings = new AuthClientSettings(
             clientId,
-            '',
             ''
         );
         const authClient = new AuthClient(settings);
@@ -150,7 +144,6 @@ describe('CloudAuth', () => {
             const client = new AuthClient(
                 new AuthClientSettings(
                     clientId,
-                    '',
                     '',
                     () => {
                         cookies.set('testKey', 'testValue');
@@ -176,7 +169,6 @@ describe('CloudAuth', () => {
         it('clear the tokens', () => {
             const settings = new AuthClientSettings(
                 clientId,
-                '',
                 ''
             );
             const authClient = new AuthClient(settings);

@@ -32,24 +32,28 @@ npm install --save @splunkdev/cloud-auth-client
 
 #### React web application
 
-This example demonstrates usage of the library in a React web application.
+This example demonstrates usage of the library in a React web application.  A runnable example exists at [examples/cloud-auth-client-react-example](examples/cloud-auth-client-react-example)
 
-```js
-"auth": {
-        "clientId": "your_client_id",
-}
-```
-
-```js
+```ts
 import AuthClient from '@splunkdev/cloud-auth-client/AuthClient';
-import { auth as authConfig } from '../config/config.json';
-export default new AuthClient({
-    ...authConfig,
-    redirectUri: window.location.origin, // eslint-disable-line
-});
-
-// ...
+import { AuthClientSettings } from '@splunkdev/cloud-auth-client/auth-client-settings';
 import React, { Component } from 'react';
+
+// Create settings
+const authClientSettings = new AuthClientSettings(
+  CLIENT_ID,
+  REDIRECT_URI,
+  ON_RESTORE_PATH,
+  AUTHORIZE_URL,
+  AUTO_REDIRECT_TO_LOGIN,
+  RESTORE_PATH_AFTER_LOGIN,
+  MAX_CLOCK_SKEW,
+  QUERY_PARAMS_FOR_LOGIN,
+  AUTO_TOKEN_RENEWAL_BUFFER
+);
+
+// Initialize AuthClient
+const authClient = new AuthClient(authClientSettings);
 
 class App extends Component {
     state = {
@@ -58,21 +62,22 @@ class App extends Component {
     };
 
     componentDidMount() {
+        // Authenticate on mount
         this.authenticate();
     }
 
     authenticate = async () => {
         try {
-            // authClient will redirect to login page if user is not authenticated.
-            const loggedIn = await authClient.checkAuthentication();
-            this.setState({
-                loggedIn,
-            });
+        // AuthClient will redirect to login page if user is not authenticated.
+        const loggedIn = await authClient.checkAuthentication();
+        this.setState({
+            loggedIn,
+        });
         } catch (e) {
-            this.setState({
-                loggedIn: false,
-                error: e.message,
-            });
+        this.setState({
+            loggedIn: false,
+            error: e,
+        });
         }
     };
 
@@ -80,14 +85,20 @@ class App extends Component {
         const { error, loggedIn } = this.state;
 
         if (error) {
-            return <div>Error: {error}</div>;
+        return (
+            <div>Error: {error}</div>
+        );
         }
 
         if (!loggedIn) {
-            return <div>Loading...</div>;
+        return (
+            <div>Loading ...</div>
+        );
         }
 
-        return <div>My App...</div>;
+        return (
+        <div>Authenticated: {String(loggedIn)}</div>
+        );
     }
 }
 ```

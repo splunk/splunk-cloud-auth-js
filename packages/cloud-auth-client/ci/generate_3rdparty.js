@@ -59,7 +59,7 @@ function createMarkdown(deps) {
 
 const crawlerOptions = {
     start: [path.join(__dirname, '..')],
-    exclude: [path.join(__dirname, '..', 'node_modules')],
+    exclude: [path.join(__dirname, '..', 'node_modules'), path.join(__dirname, '..', 'examples')],
     noColor: true,
     onlyDirectDependencies: true
 };

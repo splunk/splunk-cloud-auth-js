@@ -199,7 +199,7 @@ Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.co
 
 Name: eslint-plugin-simple-import-sort
 
-Version: 5.0.0
+Version: 5.0.1
 
 License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
 

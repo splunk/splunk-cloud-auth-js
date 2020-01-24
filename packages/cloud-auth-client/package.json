@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "build": "node ci/extract_version.js && babel src -d . --extensions \".ts\"",
+    "build": "node ci/extract_version.js && babel src -d . --extensions \".ts\" && (yarn tsc > /dev/null || true)",
     "check-types": "tsc",
     "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts lib *.js *.js.map *.d.ts .nyc_output *.log junit.xml && yarn run clean:coverage || true",
     "clean:coverage": "rm -rf coverage",
@@ -22,7 +22,7 @@
     "start": "babel src -d . --watch",
     "test": "jest --config ./jest.json",
     "test:ci": "yarn test --ci --reporters=default --reporters=jest-junit",
-    "test:watch": "yarn test --watch",
+    "test:examples": "sh ./ci/scripts/verify_example.sh",
     "third-party-licenses:generate": "node ./ci/generate_3rdparty.js",
     "third-party-licenses": "sh ./ci/scripts/generate_third_party_credits.sh"
   },

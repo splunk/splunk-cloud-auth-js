@@ -149,7 +149,7 @@ Repository: [https://github.com/chaijs/chai](https://github.com/chaijs/chai)
 
 Name: codecov
 
-Version: 3.6.1
+Version: 3.6.2
 
 License: [MIT](https://github.com/codecov/codecov-node/raw/master/LICENSE)
 
@@ -219,7 +219,7 @@ Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.co
 
 Name: eslint-plugin-simple-import-sort
 
-Version: 5.0.0
+Version: 5.0.1
 
 License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
 

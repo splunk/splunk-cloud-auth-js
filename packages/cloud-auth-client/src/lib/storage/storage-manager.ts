@@ -78,6 +78,9 @@ export class StorageManager {
         let dataBlob;
         if (key) {
             dataBlob = this.get();
+            if (dataBlob === undefined) {
+                dataBlob = {};
+            }
             dataBlob[key] = data;
         } else {
             dataBlob = data;

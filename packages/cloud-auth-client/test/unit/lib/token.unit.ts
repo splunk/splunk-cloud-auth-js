@@ -2,7 +2,7 @@ import { assert, expect } from 'chai';
 
 import { AuthClientSettings } from '../../../src/auth-client-settings';
 import AuthClient from '../../../src/AuthClient';
-import StorageManager from '../../../src/lib/storage';
+import { StorageManager } from '../../../src/lib/storage/storage-manager';
 import token from '../../../src/lib/token';
 import { TestData } from '../fixture/test-data';
 
@@ -16,7 +16,16 @@ describe('token', () => {
             ''
         );
         const authClient = new AuthClient(settings);
-        const storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
+
+        let storage: StorageManager;
+
+        beforeEach(() => {
+            storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
+        });
+
+        afterEach(() => {
+            storage.delete();
+        });
 
         it('parses the access_token', () => {
             const state = TestData.REDIRECT_OAUTH_PARAMS.state;
@@ -29,7 +38,7 @@ describe('token', () => {
             };
 
             // insert the redirect oauth param into session storage
-            storage.add(REDIRECT_OAUTH_PARAMS_NAME, JSON.stringify(redirectParams));
+            storage.set(JSON.stringify(redirectParams), REDIRECT_OAUTH_PARAMS_NAME);
 
             return token
                 .parseFromUrl(authClient, testUrl)
@@ -47,9 +56,9 @@ describe('token', () => {
                 'https://localhost:9097/#error=500&error_description=server%20internal%20error';
 
             // insert the redirect oauth param into session storage
-            storage.add(
-                REDIRECT_OAUTH_PARAMS_NAME,
-                JSON.stringify(TestData.REDIRECT_OAUTH_PARAMS)
+            storage.set(
+                JSON.stringify(TestData.REDIRECT_OAUTH_PARAMS),
+                REDIRECT_OAUTH_PARAMS_NAME
             );
 
             return token

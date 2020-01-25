@@ -134,6 +134,23 @@ describe('StorageManager', () => {
             expect(sessionStorageMock.setItem).toBeCalledTimes(1);
         });
 
+        it('with key reference and undefined initial storage sets a data blob at the given key property', () => {
+            // Arrange
+            sessionStorageMock.getItem = jest.fn().mockImplementation(() => {
+                return null;
+            });
+
+            // Act
+            storageManager.set(STORAGE_VALUE_1, STORAGE_KEY_1);
+
+            // Assert
+            expect(sessionStorageMock.getItem).toBeCalledWith(STORAGE_NAME);
+            expect(sessionStorageMock.getItem).toBeCalledTimes(1);
+            expect(sessionStorageMock.setItem)
+                .toBeCalledWith(STORAGE_NAME, JSON.stringify({ key1: STORAGE_VALUE_1 }));
+            expect(sessionStorageMock.setItem).toBeCalledTimes(1);
+        });
+
         it('without key reference sets the entire data blob', () => {
             // Act
             storageManager.set(STORAGE_VALUE_1);

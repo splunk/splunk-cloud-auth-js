@@ -2,8 +2,7 @@ import { assert, expect } from 'chai';
 
 import { AuthClientSettings } from '../../src/auth-client-settings';
 import AuthClient from '../../src/AuthClient';
-import { cookies } from '../../src/lib/cookies';
-import StorageManager from '../../src/lib/storage';
+import { StorageManager } from '../../src/lib/storage/storage-manager';
 import { TestData } from './fixture/test-data';
 
 const DEFAULT_AUTHORIZE_URL = 'https://auth.scp.splunk.com/authorize';
@@ -146,15 +145,15 @@ describe('CloudAuth', () => {
                     clientId,
                     '',
                     () => {
-                        cookies.set('testKey', 'testValue');
+                        authClient.storage.set('testValue', 'testKey');
                     }
                 )
             );
             client.storePathBeforeLogin();
             client.restorePathAfterLogin();
-            const p = cookies.get('testKey');
+            const p = authClient.storage.get('testKey');
             expect(p).to.equal('testValue', 'custom function is executed');
-            cookies.delete('testKey');
+            authClient.storage.clear('testKey');
         });
 
         it('redirect to login', () => {

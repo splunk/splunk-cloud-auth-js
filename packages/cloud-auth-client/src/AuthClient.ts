@@ -11,7 +11,7 @@ import urlParse from 'url-parse';
 
 import { AuthClientSettings, REDIRECT_PARAMS_STORAGE_NAME, REDIRECT_PATH_PARAMS_NAME } from './auth-client-settings';
 import AuthClientError from './lib/errors/AuthClientError';
-import StorageManager from './lib/storage';
+import { StorageManager } from './lib/storage/storage-manager';
 import token from './lib/token';
 import { TokenManager, TokenManagerSettings } from './lib/TokenManager';
 import { warn } from './lib/util';
@@ -173,7 +173,7 @@ class AuthClient {
     storePathBeforeLogin = () => {
         try {
             const path = window.location.pathname + window.location.search + window.location.hash;
-            this._storage.add(REDIRECT_PATH_PARAMS_NAME, path);
+            this._storage.set(path, REDIRECT_PATH_PARAMS_NAME);
         } catch (e) {
             warn(`Cannot store the path at  ${REDIRECT_PATH_PARAMS_NAME}`);
         }
@@ -203,7 +203,7 @@ class AuthClient {
     restorePathAfterLogin = () => {
         try {
             const p = this._storage.get(REDIRECT_PATH_PARAMS_NAME);
-            this._storage.remove(REDIRECT_PATH_PARAMS_NAME);
+            this._storage.clear(REDIRECT_PATH_PARAMS_NAME);
             if (p && this._options.onRestorePath) {
                 this._options.onRestorePath(p);
             }
@@ -292,7 +292,7 @@ class AuthClient {
     /**
      * Clear any tokens saved to sessionStorage. Note that session cookies are not cleared.
      */
-    logout = url => {
+    logout = (url: any | string) => {
         const logoutRedirUrl =
             typeof url === 'string' ? url : this._options.redirectUri || window.location.href;
         const authUrl = urlParse(this._options.authorizeUrl).origin;

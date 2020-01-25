@@ -8,7 +8,7 @@
   "scripts": {
     "build": "node ci/extract_version.js && babel src -d . --extensions \".ts\" && (yarn tsc > /dev/null || true)",
     "check-types": "tsc",
-    "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts lib *.js *.js.map *.d.ts .nyc_output *.log junit.xml && yarn run clean:coverage || true",
+    "clean": "rimraf src/**/*.js src/**/*.js.map src/**/*.d.ts lib *.js *.js.map *.d.ts .nyc_output *.log junit.xml && yarn run clean:coverage && cd examples/cloud-auth-client-react-example && yarn clean || true",
     "clean:coverage": "rm -rf coverage",
     "clean:modules": "rimraf node_modules || true",
     "commit": "yarn git-cz",

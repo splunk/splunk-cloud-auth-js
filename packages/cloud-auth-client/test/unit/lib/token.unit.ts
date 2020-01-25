@@ -13,7 +13,6 @@ describe('token', () => {
     describe('parseFromUrl', () => {
         const settings = new AuthClientSettings(
             TestData.CLIENT_ID,
-            '',
             ''
         );
         const authClient = new AuthClient(settings);
@@ -86,7 +85,6 @@ describe('token', () => {
         it('sets the redirect params', () => {
             const settings = new AuthClientSettings(
                 TestData.CLIENT_ID,
-                '',
                 ''
             );
             const authClient = new AuthClient(settings);
@@ -94,7 +92,12 @@ describe('token', () => {
                 responseType: ['token', 'id_token'],
                 scopes: ['openid', 'email', 'profile'],
             };
-            token.getWithRedirect(authClient, {});
+            token.getWithRedirect(
+                authClient.options.clientId,
+                authClient.options.redirectUri,
+                authClient.options.authorizeUrl,
+                {}
+            );
             const storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
             const params = storage.get(REDIRECT_OAUTH_PARAMS_NAME);
             const oauthParams = JSON.parse(params);

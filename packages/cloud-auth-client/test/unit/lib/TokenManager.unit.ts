@@ -1,11 +1,12 @@
 import { assert, expect } from 'chai';
 
-import TokenManager from '../../../src/lib/TokenManager';
+import { TokenManager, TokenManagerSettings } from '../../../src/lib/TokenManager';
 
 const TOKEN_STORAGE_NAME = 'splunk-token-storage';
 
 describe('TokenManager', () => {
-    const manager = new TokenManager({ options: {} });
+    const settings = new TokenManagerSettings('', '', '', 0);
+    const manager = new TokenManager(settings);
     const accessToken = {
         accessToken: 'abc',
         scopes: ['openid'],

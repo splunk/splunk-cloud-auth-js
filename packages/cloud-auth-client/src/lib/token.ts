@@ -175,10 +175,10 @@ function buildAuthorizeParams(oauthParams) {
     return util.toQueryParams(oauthQueryParams);
 }
 
-function getDefaultOAuthParams(client, options) {
+function getDefaultOAuthParams(clientId: string, redirectUri: string, options: any) {
     let defaults = {
-        clientId: client.options.clientId,
-        redirectUri: client.options.redirectUri || window.location.href,
+        clientId,
+        redirectUri: redirectUri || window.location.href,
         responseType: ['token', 'id_token'],
         state: util.genRandomString(64),
         nonce: util.genRandomString(64),
@@ -189,9 +189,9 @@ function getDefaultOAuthParams(client, options) {
     return defaults;
 }
 
-function getAuthUrl(client, options) {
-    const oauthParams = getDefaultOAuthParams(client, options);
-    const urls = util.getOAuthUrls(client, options);
+function getAuthUrl(clientId: string, redirectUri: string, authorizeUrl: string, options?: any) {
+    const oauthParams = getDefaultOAuthParams(clientId, redirectUri, options);
+    const urls = util.getOAuthUrls(authorizeUrl, options);
 
     let allQueryParams = '';
     const authorizeQueryParams = buildAuthorizeParams(oauthParams);
@@ -224,8 +224,8 @@ function getAuthUrl(client, options) {
     return requestUrl;
 }
 
-function getWithRedirect(client, options) {
-    window.location = getAuthUrl(client, options);
+function getWithRedirect(clientId: string, redirectUri: string, authorizeUrl: string, options: any) {
+    window.location = getAuthUrl(clientId, redirectUri, authorizeUrl, options);
 }
 
 const token = {

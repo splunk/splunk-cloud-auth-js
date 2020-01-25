@@ -157,14 +157,14 @@ export function hashToObject(hash) {
     return obj;
 }
 
-export function getOAuthUrls(client, optionsIn) {
+export function getOAuthUrls(authorizeUrl: string, optionsIn: any) {
     const options = optionsIn || {};
 
     // Get user-supplied arguments
-    const authorizeUrl = removeTrailingSlash(options.authorizeUrl) || client.options.authorizeUrl;
+    const sanitizedAurhorizeUrl = removeTrailingSlash(options.authorizeUrl) || authorizeUrl;
 
     return {
-        authorizeUrl,
+        authorizeUrl: sanitizedAurhorizeUrl,
     };
 }
 

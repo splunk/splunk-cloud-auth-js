@@ -13,7 +13,7 @@ import { AuthClientSettings, REDIRECT_PARAMS_STORAGE_NAME, REDIRECT_PATH_PARAMS_
 import AuthClientError from './lib/errors/AuthClientError';
 import StorageManager from './lib/storage';
 import token from './lib/token';
-import TokenManager from './lib/TokenManager';
+import { TokenManager, TokenManagerSettings } from './lib/TokenManager';
 import { warn } from './lib/util';
 
 /**
@@ -31,8 +31,15 @@ class AuthClient {
 
         this._options = settings;
         this._options.onRestorePath = this._options.onRestorePath ? this._options.onRestorePath : this.restorePath;
-
-        this._tokenManager = new TokenManager(this);
+        this._tokenManager =
+            new TokenManager(
+                new TokenManagerSettings(
+                    this._options.clientId,
+                    this._options.redirectUri,
+                    this._options.authorizeUrl,
+                    this._options.autoTokenRenewalBuffer
+                )
+            );
         this._storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
 
         if (!this.isAuthenticated()) {
@@ -233,7 +240,7 @@ class AuthClient {
             options = { additionalQueryString: this.getQueryStringForLogin() };
         }
 
-        token.getWithRedirect(this, options);
+        token.getWithRedirect(this._options.clientId, this._options.redirectUri, this._options.authorizeUrl, options);
     };
 
     /**

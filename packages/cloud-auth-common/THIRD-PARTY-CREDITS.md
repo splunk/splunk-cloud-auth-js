@@ -249,7 +249,7 @@ Repository: [https://github.com/eslint/eslint](https://github.com/eslint/eslint)
 
 Name: fetch-mock
 
-Version: 8.3.1
+Version: 8.3.2
 
 License: [MIT](https://github.com/wheresrhys/fetch-mock/raw/master/LICENSE)
 

@@ -8,7 +8,7 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 import { cookies } from './cookies';
 import { AuthClientError } from './errors/auth-client-error';
 
-export function clone(obj) {
+export function clone(obj: any) {
     if (obj) {
         const str = JSON.stringify(obj);
         if (str) {
@@ -18,8 +18,8 @@ export function clone(obj) {
     return obj;
 }
 
-export function removeNils(obj) {
-    const cleaned = {};
+export function removeNils(obj: any) {
+    const cleaned: any = {};
     Object.keys(obj).forEach(prop => {
         if (Object.prototype.hasOwnProperty.call(obj, prop)) {
             const value = obj[prop];
@@ -31,15 +31,15 @@ export function removeNils(obj) {
     return cleaned;
 }
 
-export function isString(obj) {
+export function isString(obj: any) {
     return Object.prototype.toString.call(obj) === '[object String]';
 }
 
-export function isObject(obj) {
+export function isObject(obj: any) {
     return Object.prototype.toString.call(obj) === '[object Object]';
 }
 
-export function genRandomString(length) {
+export function genRandomString(length: number) {
     const randomCharset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklnopqrstuvwxyz0123456789';
     let random = '';
     for (let c = 0, cl = randomCharset.length; c < length; c += 1) {
@@ -48,11 +48,11 @@ export function genRandomString(length) {
     return random;
 }
 
-export function base64UrlToBase64(b64u) {
+export function base64UrlToBase64(b64u: string) {
     return b64u.replace(/-/g, '+').replace(/_/g, '/');
 }
 
-export function base64UrlToString(b64u) {
+export function base64UrlToString(b64u: string) {
     let b64 = base64UrlToBase64(b64u);
     switch (b64.length % 4) {
         case 0:
@@ -74,8 +74,8 @@ export function base64UrlToString(b64u) {
     }
 }
 
-export function toQueryParams(obj) {
-    const str = [];
+export function toQueryParams(obj: any) {
+    const queryString: string[] = [];
     if (obj !== null) {
         Object.keys(obj).forEach(key => {
             if (
@@ -83,17 +83,17 @@ export function toQueryParams(obj) {
                 obj[key] !== undefined &&
                 obj[key] !== null
             ) {
-                str.push(`${key}=${encodeURIComponent(obj[key])}`);
+                queryString.push(`${key}=${encodeURIComponent(obj[key])}`);
             }
         });
     }
-    if (str.length) {
-        return `?${str.join('&')}`;
+    if (queryString.length) {
+        return `?${queryString.join('&')}`;
     }
     return '';
 }
 
-export function removeTrailingSlash(path) {
+export function removeTrailingSlash(path: string) {
     if (!path) {
         return '';
     }
@@ -105,27 +105,27 @@ export function removeTrailingSlash(path) {
     return trimmed;
 }
 
-export function warn(text) {
+export function warn(text: string) {
     const nativeConsole = typeof window !== 'undefined' && window.console;
     if (nativeConsole && nativeConsole.log) {
         nativeConsole.log(`[splunk-cloud-auth] WARN: ${text}`);
     }
 }
 
-export function getBaseDomain(url) {
+export function getBaseDomain(url: string) {
     const hostname = new URL(url).hostname;
     return hostname.slice(hostname.indexOf('.') + 1);
 }
 
 // OauthUtil
-export function isValidTokenObject(token) {
+export function isValidTokenObject(token: any) {
     if (!isObject(token) || (!token.expiresAt && token.expiresAt !== 0) || !token.accessToken) {
         return false;
     }
     return true;
 }
 
-export function hashToObject(hash) {
+export function hashToObject(hash: string) {
     // Predefine regexs for parsing hash
     const plus2space = /\+/g;
     const paramSplit = /([^&=]+)=?([^&]*)/g;
@@ -133,7 +133,7 @@ export function hashToObject(hash) {
     // Remove the leading hash
     const fragment = hash.substring(1);
 
-    const obj = {};
+    const obj: any = {};
 
     // Loop until we have no more params
     let param;
@@ -169,7 +169,7 @@ export function getOAuthUrls(authorizeUrl: string, optionsIn: any) {
 }
 
 // storage util
-export function checkStorage(storage) {
+export function checkStorage(storage: any) {
     const key = 'splunk-test-storage';
     try {
         storage.setItem(key, key);
@@ -191,7 +191,7 @@ export function browserHasSessionStorage() {
 export function getCookieStorage() {
     return {
         getItem: cookies.get,
-        setItem: (key, value) => {
+        setItem: (key: string, value: any) => {
             // Cookie shouldn't expire
             cookies.set(key, value, '2050-01-01T00:00:00.000Z');
         },
@@ -199,7 +199,7 @@ export function getCookieStorage() {
     };
 }
 
-export function storageBuilder(webstorage, storageName) {
+export function storageBuilder(webstorage: any, storageName: string) {
     function getStorage() {
         let storageString = webstorage.getItem(storageName);
         storageString = storageString || '{}';
@@ -210,7 +210,7 @@ export function storageBuilder(webstorage, storageName) {
         }
     }
 
-    function setStorage(storage) {
+    function setStorage(storage: any) {
         try {
             const storageString = JSON.stringify(storage);
             webstorage.setItem(storageName, storageString);
@@ -219,7 +219,7 @@ export function storageBuilder(webstorage, storageName) {
         }
     }
 
-    function clearStorage(key) {
+    function clearStorage(key: string) {
         if (!key) {
             setStorage({});
         }
@@ -228,7 +228,7 @@ export function storageBuilder(webstorage, storageName) {
         setStorage(storage);
     }
 
-    function updateStorage(key, value) {
+    function updateStorage(key: string, value: any) {
         const storage = getStorage();
         storage[key] = value;
         setStorage(storage);

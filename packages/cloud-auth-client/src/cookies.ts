@@ -7,11 +7,12 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 
 import Cookies from 'js-cookie';
 
-const cookieOptions = { path: '/' };
+const cookieOptions: any = {
+    path: '/'
+};
 const cookies = {
-    set(name, value, expiresAt) {
-        // eslint-disable-next-line no-extra-boolean-cast
-        if (!!Date.parse(expiresAt)) {
+    set(name: string, value: any, expiresAt?: string) {
+        if (expiresAt && Date.parse(expiresAt)) {
             // Expires value can be converted to a Date object.
             //
             // If the 'expiresAt' value is not provided, or the value cannot be
@@ -23,11 +24,11 @@ const cookies = {
         return cookies.get(name);
     },
 
-    get(name) {
+    get(name: string) {
         return Cookies.get(name);
     },
 
-    delete(name) {
+    delete(name: string) {
         return Cookies.remove(name, cookieOptions);
     },
 };

@@ -145,6 +145,16 @@ License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LIC
 
 Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
+## @types/js-cookie
+
+Name: @types/js-cookie
+
+Version: 2.2.4
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
 ## @types/lodash
 
 Name: @types/lodash

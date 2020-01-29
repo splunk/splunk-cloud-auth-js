@@ -60,7 +60,7 @@ describe('CloudAuth', () => {
         });
 
         it('should return undefined if access token expired', () => {
-            accessToken.expiresAt = '1552607417';
+            accessToken.expiresAt = 1552607417;
             authClient.tokenManager.add('accessToken', accessToken);
             const token = authClient.getAccessToken();
             assert.equal(token, undefined);

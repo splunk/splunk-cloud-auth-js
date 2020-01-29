@@ -41,9 +41,8 @@ class App extends Component {
         error: null,
     };
 
-    componentDidMount() {
-        // Authenticate on mount
-        this.authenticate();
+    componentDidMount = async () => {
+        await this.authenticate();
     }
 
     authenticate = async () => {
@@ -77,7 +76,7 @@ class App extends Component {
         }
 
         return (
-            <div>Authenticated: {String(loggedIn)}</div>
+            <div>Authenticated!</div>
         );
     }
 }

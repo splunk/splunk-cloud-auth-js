@@ -27,47 +27,50 @@ function removeHash() {
     }
 }
 
-function handleOAuthResponse(client, oauthParams, res, urls) {
+function handleOAuthResponse(oauthParams: any, res: any, urls: any): any {
     const tokenTypes = oauthParams.responseType;
     const scopes = util.clone(oauthParams.scopes);
 
     return new Q()
         .then(() => {
-            if (res['error'] || res['error_description']) {
-                throw new OAuthError(res['error'], res['error_description'] || 'OAuth error');
+            if (res.error || res.error_description) {
+                throw new OAuthError(res.error_description, res.error || 'OAuth error');
             }
 
             if (res.state !== oauthParams.state) {
                 throw new AuthClientError("OAuth flow response state doesn't match request state");
             }
 
-            const tokenDict = {};
+            const tokenDict = {
+                token: {},
+                code: {}
+            };
 
-            if (res['access_token']) {
-                tokenDict['token'] = {
-                    accessToken: res['access_token'],
-                    expiresAt: Number(res['expires_in']) + Math.floor(Date.now() / 1000),
-                    expiresIn: res['expires_in'],
-                    tokenType: res['token_type'],
+            if (res.access_token) {
+                tokenDict.token = {
+                    accessToken: res.access_token,
+                    expiresAt: Number(res.expires_in) + Math.floor(Date.now() / 1000),
+                    expiresIn: res.expires_in,
+                    tokenType: res.token_type,
                     scopes,
                     authorizeUrl: urls.authorizeUrl,
                 };
             }
 
-            if (res['code']) {
-                tokenDict['code'] = {
-                    authorizationCode: res['code'],
+            if (res.code) {
+                tokenDict.code = {
+                    authorizationCode: res.code,
                 };
             }
 
             return tokenDict;
         })
-        .then(tokenDict => {
+        .then((tokenDict: any) => {
             if (!Array.isArray(tokenTypes)) {
                 return tokenDict[tokenTypes];
             }
 
-            if (!tokenDict['token']) {
+            if (!tokenDict.token) {
                 throw new AuthClientError('Unable to parse OAuth flow response');
             }
 
@@ -76,25 +79,26 @@ function handleOAuthResponse(client, oauthParams, res, urls) {
         });
 }
 
-function hashOAuthSuccessParams(rawHash) {
+function hashOAuthSuccessParams(rawHash: string) {
     const hash = rawHash.toLowerCase();
     return hash.indexOf('access_token=') > -1;
 }
 
-function hasOAuthErrorParams(rawHash) {
+function hasOAuthErrorParams(rawHash: string) {
     const hash = rawHash.toLowerCase();
     return hash.indexOf('error=') > -1 || hash.indexOf('error_description=') > -1;
 }
 
-function hasOAuthParams(rawHash) {
+function hasOAuthParams(rawHash: string) {
     return hashOAuthSuccessParams(rawHash) || hasOAuthErrorParams(rawHash);
 }
 
-function parseFromUrl(client, url) {
+function parseFromUrl(url?: string) {
     const nativeLoc = window.location;
     let hash = nativeLoc.hash;
-    if (url) {
-        hash = url.substring(url.indexOf('#'));
+    if (url !== undefined && url !== null) {
+        const s = url.toString();
+        hash = s.substring(s.indexOf('#'));
     }
     if (!hash || !hasOAuthParams(hash)) {
         return Q.reject(new AuthClientError('Unable to parse a token from the url'));
@@ -105,8 +109,8 @@ function parseFromUrl(client, url) {
         return Q.reject(new AuthClientError('Unable to retrieve OAuth redirect params storage'));
     }
 
-    let oauthParams;
-    let urls;
+    let oauthParams: any;
+    let urls: any;
 
     try {
         oauthParams = JSON.parse(oauthParamsContent);
@@ -126,11 +130,11 @@ function parseFromUrl(client, url) {
             // Remove the hash from the url
             removeHash();
         }
-        return handleOAuthResponse(client, oauthParams, res, urls);
+        return handleOAuthResponse(oauthParams, res, urls);
     });
 }
 
-function convertOAuthParamsToQueryParams(oauthParams) {
+function convertOAuthParamsToQueryParams(oauthParams: any): any {
     // Quick validation
     if (!oauthParams.clientId) {
         throw new AuthClientError(
@@ -170,7 +174,7 @@ function convertOAuthParamsToQueryParams(oauthParams) {
     return oauthQueryParams;
 }
 
-function buildAuthorizeParams(oauthParams) {
+function buildAuthorizeParams(oauthParams: any) {
     const oauthQueryParams = convertOAuthParamsToQueryParams(oauthParams);
     return util.toQueryParams(oauthQueryParams);
 }
@@ -225,7 +229,7 @@ function getAuthUrl(clientId: string, redirectUri: string, authorizeUrl: string,
 }
 
 function getWithRedirect(clientId: string, redirectUri: string, authorizeUrl: string, options: any) {
-    window.location = getAuthUrl(clientId, redirectUri, authorizeUrl, options);
+    window.location.href = getAuthUrl(clientId, redirectUri, authorizeUrl, options);
 }
 
 const token = {

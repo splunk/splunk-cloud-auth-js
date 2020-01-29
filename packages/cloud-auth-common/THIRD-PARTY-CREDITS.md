@@ -49,7 +49,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @types/chai
 
-Version: 4.2.7
+Version: 4.2.8
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 

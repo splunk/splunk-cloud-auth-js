@@ -76,7 +76,10 @@ export class AuthClient {
         return this._tokenManager;
     }
 
-    getToken() {
+    /**
+     * Gets Token.
+     */
+    public getToken() {
         const autoRedirect = () => {
             if (this._options.autoRedirectToLogin) {
                 this.redirectToLogin();
@@ -84,15 +87,15 @@ export class AuthClient {
         };
 
         this.requestTokens()
-            .then(tokens => {
+            .then((tokens: any) => {
                 if (tokens) {
                     this.applyTokens(tokens);
                 } else {
                     autoRedirect();
                 }
             })
-            .catch(e => {
-                if (this.loginOrConsentRequired(e)) {
+            .catch((e: any) => {
+                if (AuthClient.loginOrConsentRequired(e)) {
                     autoRedirect();
                 }
             });
@@ -115,10 +118,10 @@ export class AuthClient {
      * For cases where no token is present, failure to verify claims, or state mismatches an
      * AuthClientError is thrown.
      */
-    parseTokensFromRedirect = () =>
-        token
-            .parseFromUrl(this)
-            .then(tokens => {
+    public parseTokensFromRedirect(): any {
+        return token
+            .parseFromUrl()
+            .then((tokens: any) => {
                 if (this._options.restorePathAfterLogin) {
                     this.restorePathAfterLogin();
                 }
@@ -133,29 +136,32 @@ export class AuthClient {
                 // For OAuth errors, failure to validate claims, etc. re-throw
                 throw e;
             });
+    }
 
     /**
      * Add any tokens found to the tokenManager which stores them in sessionStorage.
      */
-    applyTokens = tokens => {
+    public applyTokens(tokens: any) {
         if (tokens === null) {
             return;
         }
-        tokens.forEach(item => {
+        tokens.forEach((item: any) => {
             if (has(item, 'accessToken')) {
                 this._tokenManager.add('accessToken', item);
             }
         });
-    };
+    }
 
-    getAccessToken = () => {
+    public getAccessToken() {
         this.checkExpiration('accessToken');
         return get(this._tokenManager.get('accessToken'), 'accessToken');
-    };
+    }
 
-    isAuthenticated = () => !!this.getAccessToken();
+    public isAuthenticated() {
+        return !!this.getAccessToken();
+    }
 
-    checkExpiration = tokenType => {
+    public checkExpiration(tokenType: any) {
         const now = Math.floor(new Date().getTime() / 1000);
         const expire = get(this._tokenManager.get(tokenType), 'expiresAt');
         const expirationBuffer = this._options.maxClockSkew;
@@ -164,26 +170,26 @@ export class AuthClient {
             this._tokenManager.clear();
             this.redirectToLogin();
         }
-    };
+    }
 
     /**
      * Store the complete window.location information so that the state can be restored after the
      * browser is redirected to the login page and then back here.
      */
-    storePathBeforeLogin = () => {
+    public storePathBeforeLogin(): void {
         try {
             const path = window.location.pathname + window.location.search + window.location.hash;
             this._storage.set(path, REDIRECT_PATH_PARAMS_NAME);
         } catch (e) {
             warn(`Cannot store the path at  ${REDIRECT_PATH_PARAMS_NAME}`);
         }
-    };
+    }
 
     /**
      * Get the query string information for the params specified in queryParamsForLogin.
      * This is used to pass additional information via query params to the log in page.
      */
-    getQueryStringForLogin = () => {
+    public getQueryStringForLogin(): string {
         if (this._options.queryParamsForLogin) {
             const urlQueryParams = new URLSearchParams(window.location.search);
             const paramsFoundInUrl = Object.keys(this._options.queryParamsForLogin).filter(param =>
@@ -195,7 +201,7 @@ export class AuthClient {
             return queryParams.join('&');
         }
         return '';
-    };
+    }
 
     /**
      * Retrieve the information stored in storePathBeforeLogin to restore the state of this page.
@@ -215,9 +221,10 @@ export class AuthClient {
     /**
      * The default function to restore path if config.onRestorePath is not specified.
      */
-    restorePath = p => {
-        window.history.replaceState(null, null, p);
-    };
+    // eslint-disable-next-line class-methods-use-this
+    public restorePath(path: string): void {
+        window.history.replaceState(null, '', path);
+    }
 
     /* eslint-disable max-len */
     /**
@@ -257,7 +264,7 @@ export class AuthClient {
                 return;
             }
             this.requestTokens().then(
-                tokens => {
+                (tokens: any) => {
                     if (tokens != null) {
                         this.applyTokens(tokens);
                         resolve(true);
@@ -269,8 +276,8 @@ export class AuthClient {
                     }
                     resolve(false);
                 },
-                e => {
-                    if (this.loginOrConsentRequired(e) && shouldRedirect) {
+                (e: any) => {
+                    if (AuthClient.loginOrConsentRequired(e) && shouldRedirect) {
                         this.redirectToLogin();
                         // Change the error.message to indicate that a redirect is being performed
                         e.message = 'Redirecting to the login page...';
@@ -284,22 +291,18 @@ export class AuthClient {
     /**
      * Determine if the error indicates an OAuth error where consent or login are required.
      */
-    loginOrConsentRequired = e =>
-        e.errorCode === 'login_required' || e.errorCode === 'consent_required';
-
-    /**
-     * Return information contained in the JWT id_token.
-     */
-    getUserInfo = () => token.decode(this.getIdToken());
+    private static loginOrConsentRequired(e: any) {
+        return e.code === 'login_required' || e.code === 'consent_required';
+    }
 
     /**
      * Clear any tokens saved to sessionStorage. Note that session cookies are not cleared.
      */
-    logout = (url: any | string) => {
+    logout = (url?: any | string) => {
         const logoutRedirUrl =
             typeof url === 'string' ? url : this._options.redirectUri || window.location.href;
         const authUrl = urlParse(this._options.authorizeUrl).origin;
         this._tokenManager.clear();
-        window.location = `${authUrl}/logout?redirect_uri=${encodeURIComponent(logoutRedirUrl)}`;
+        window.location.href = `${authUrl}/logout?redirect_uri=${encodeURIComponent(logoutRedirUrl)}`;
     };
 }

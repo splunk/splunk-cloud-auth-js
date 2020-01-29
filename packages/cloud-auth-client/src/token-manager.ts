@@ -81,7 +81,7 @@ export class TokenManager extends StorageManager {
      * TokenManager.
      * @param settings TokenManagerSettings.
      */
-    constructor(settings: TokenManagerSettings) {
+    public constructor(settings: TokenManagerSettings) {
         super(settings.storageName);
         this.settings = settings;
     }
@@ -91,7 +91,7 @@ export class TokenManager extends StorageManager {
     /**
      * Add.
      */
-    add = (key: string, authToken: string) => {
+    public add(key: string, authToken: any): void {
         const tokenStorage = this.storage.getStorage();
         if (!isValidTokenObject(authToken)) {
             throw new AuthClientError(
@@ -104,12 +104,12 @@ export class TokenManager extends StorageManager {
         const renewalBuffer = this.settings.autoTokenRenewalBuffer;
         const refreshTime = authToken.expiresIn * 1000 - renewalBuffer * 1000;
         setTimeout(this.refreshToken, refreshTime);
-    };
+    }
 
     /**
      * Refresh Token.
      */
-    refreshToken = () => {
+    public refreshToken(): void {
         const authUrl =
             `${token.getAuthUrl(
                 this.settings.clientId, this.settings.redirectUri, this.settings.authorizeUrl)}&response_mode=json`;
@@ -129,7 +129,7 @@ export class TokenManager extends StorageManager {
             .catch(err => {
                 warn(err);
             });
-    };
+    }
 }
 
 export default TokenManager;

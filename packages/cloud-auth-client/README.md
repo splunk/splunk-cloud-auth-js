@@ -12,6 +12,8 @@ This library can be used alone or in conjunction with the [Splunk Cloud Services
 The following authorization flows are supported by this library:
 * Implicit
 
+Documentation for all supported authorization flows by Splunk Cloud Services can be found in [plan documentation](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow).
+
 ## Terms of Service (TOS)
 [Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
 
@@ -159,9 +161,9 @@ Configuration Options for `AuthClient`:
 ```
 
 ## Documentation
-For general documentation, see the [Splunk Developer Portal](https://developer.splunk.com/scs/).
+For general documentation, see the [Splunk Developer Portal](https://dev.splunk.com/scs/).
 
-For JavaScript SDK documentation, see the [Splunk Cloud Services SDK for JavaScript API Reference](https://developer.splunk.com/scs/reference/sdk/splunk-cloud-sdk-js).
+For JavaScript SDK documentation, see the [Splunk Cloud Services SDK for JavaScript API Reference](https://dev.splunk.com/scs/reference/sdk/splunk-cloud-sdk-js).
 
 ## Contact
 If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.

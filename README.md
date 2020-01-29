@@ -62,7 +62,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-See [CODEOWNERS](https://github.com/splunk/js-cloud-auth/blob/master/CODEOWNERS).
+See [CODEOWNERS](CODEOWNERS).
 
 ## License
 

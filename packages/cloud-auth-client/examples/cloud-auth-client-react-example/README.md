@@ -6,7 +6,7 @@ This directory contains a sample application of usage of the `@splunkdev/cloud-a
 
 ### Configuring settings
 
-The file [config.ts](config.ts) contains the necessary fields for configuration.  Configuration can be set either via node environment variables or within the file itself.
+The file [config.ts](src/config.ts) contains the necessary fields for configuration.  Configuration can be set either via node environment variables or within the file itself.
 
 One additional configuration variable that can only be set via node environment variables is the port. To do this you can execute the following commands:
 

@@ -139,7 +139,7 @@ Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
 
 Name: @types/jest
 
-Version: 25.1.0
+Version: 24.9.1
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -218,9 +218,9 @@ Repository: [https://github.com/babel/babel-eslint](https://github.com/babel/bab
 
 Name: babel-jest
 
-Version: 25.1.0
+Version: 24.9.0
 
-License: [MIT](https://github.com/facebook/jest/raw/master/LICENSE)
+License: [MIT](https://github.com/facebook/jest)
 
 Repository: [https://github.com/facebook/jest](https://github.com/facebook/jest)
 
@@ -368,7 +368,7 @@ Repository: [https://github.com/jest-community/jest-junit](https://github.com/je
 
 Name: jest
 
-Version: 25.1.0
+Version: 24.9.0
 
 License: [MIT](https://github.com/facebook/jest)
 
@@ -418,7 +418,7 @@ Repository: [https://github.com/isaacs/rimraf](https://github.com/isaacs/rimraf)
 
 Name: ts-jest
 
-Version: 25.0.0
+Version: 24.3.0
 
 License: [MIT](https://github.com/kulshekhar/ts-jest/raw/master/LICENSE.md)
 

@@ -29,7 +29,7 @@ Repository: [https://github.com/matthew-andrews/isomorphic-fetch](https://github
 
 Name: set-cookie-parser
 
-Version: 2.4.1
+Version: 2.4.3
 
 License: [MIT](https://github.com/nfriedly/set-cookie-parser/raw/master/LICENSE)
 

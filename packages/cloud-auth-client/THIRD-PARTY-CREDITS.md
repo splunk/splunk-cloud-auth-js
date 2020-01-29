@@ -179,7 +179,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @typescript-eslint/eslint-plugin
 
-Version: 2.17.0
+Version: 2.18.0
 
 License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -189,7 +189,7 @@ Repository: [https://github.com/typescript-eslint/typescript-eslint](https://git
 
 Name: @typescript-eslint/parser
 
-Version: 2.17.0
+Version: 2.18.0
 
 License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -268,7 +268,7 @@ Repository: [https://github.com/airbnb/javascript](https://github.com/airbnb/jav
 
 Name: eslint-config-prettier
 
-Version: 6.9.0
+Version: 6.10.0
 
 License: [MIT](https://github.com/prettier/eslint-config-prettier/raw/master/LICENSE)
 
@@ -388,7 +388,7 @@ Repository: [https://github.com/DavidAnson/markdownlint](https://github.com/Davi
 
 Name: mocha
 
-Version: 7.0.0
+Version: 7.0.1
 
 License: [MIT](https://github.com/mochajs/mocha/raw/master/LICENSE)
 

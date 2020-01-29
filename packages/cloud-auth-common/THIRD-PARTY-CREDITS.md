@@ -79,7 +79,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @types/node
 
-Version: 12.12.25
+Version: 12.12.26
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -109,7 +109,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @typescript-eslint/eslint-plugin
 
-Version: 2.17.0
+Version: 2.18.0
 
 License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -119,7 +119,7 @@ Repository: [https://github.com/typescript-eslint/typescript-eslint](https://git
 
 Name: @typescript-eslint/parser
 
-Version: 2.17.0
+Version: 2.18.0
 
 License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -169,7 +169,7 @@ Repository: [https://github.com/airbnb/javascript](https://github.com/airbnb/jav
 
 Name: eslint-config-prettier
 
-Version: 6.9.0
+Version: 6.10.0
 
 License: [MIT](https://github.com/prettier/eslint-config-prettier/raw/master/LICENSE)
 
@@ -319,7 +319,7 @@ Repository: [https://github.com/istanbuljs/nyc](https://github.com/istanbuljs/ny
 
 Name: pem
 
-Version: 1.14.3
+Version: 1.14.4
 
 License: [MIT](https://github.com/Dexus/pem/raw/master/LICENSE)
 

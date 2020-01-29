@@ -3,9 +3,14 @@
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-The Splunk Cloud Services Web Application Authentication Library contains code and examples to enable you to authenticate with Splunk Cloud Services in a web application using the JavaScript programming language.
+The Splunk Cloud Services authentication library for front-end web applications contains code and examples to enable you to authenticate with Splunk Cloud Services in a web application using the JavaScript programming language.
 
 This library can be used alone or in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to programmatically access Splunk Cloud Services.
+
+## Supported Authorization Flows
+
+The following authorization flows are supported by this library:
+* Implicit
 
 ## Terms of Service (TOS)
 [Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)

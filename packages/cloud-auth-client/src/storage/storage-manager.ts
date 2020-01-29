@@ -14,7 +14,7 @@
  * under the License.
  */
 
-import AuthClientError from '../errors/AuthClientError';
+import { AuthClientError } from '../errors/auth-client-error';
 import { StorageFactory } from './storage-factory';
 
 /**

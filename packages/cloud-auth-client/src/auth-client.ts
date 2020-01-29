@@ -10,16 +10,16 @@ import memoize from 'lodash/memoize';
 import urlParse from 'url-parse';
 
 import { AuthClientSettings, REDIRECT_PARAMS_STORAGE_NAME, REDIRECT_PATH_PARAMS_NAME } from './auth-client-settings';
-import AuthClientError from './lib/errors/AuthClientError';
-import { StorageManager } from './lib/storage/storage-manager';
-import token from './lib/token';
-import { TokenManager, TokenManagerSettings } from './lib/TokenManager';
-import { warn } from './lib/util';
+import { AuthClientError } from './errors/auth-client-error';
+import { StorageManager } from './storage/storage-manager';
+import token from './token';
+import { TokenManager, TokenManagerSettings } from './token-manager';
+import { warn } from './util';
 
 /**
  * AuthClient.
  */
-class AuthClient {
+export class AuthClient {
     /**
      * AuthClient constructor.
      * @param settings AuthClientSettings.
@@ -248,8 +248,10 @@ class AuthClient {
      * If not, check if there is one returned from a redirect (e.g. in the query string).
      * If that fails due to consent or login being required then redirect to the login page.
      */
-    checkAuthentication = ({ redirect = this._options.autoRedirectToLogin } = {}) =>
-        new Promise((resolve, reject) => {
+    checkAuthentication = (redirect?: boolean) => {
+        const shouldRedirect = redirect === undefined ? this._options.autoRedirectToLogin : redirect;
+
+        return new Promise((resolve, reject) => {
             if (this.isAuthenticated()) {
                 resolve(true);
                 return;
@@ -261,14 +263,14 @@ class AuthClient {
                         resolve(true);
                         return;
                     }
-                    if (redirect) {
-                        reject(AuthClientError('token not found'));
+                    if (shouldRedirect) {
+                        reject(new AuthClientError('token not found'));
                         return;
                     }
                     resolve(false);
                 },
                 e => {
-                    if (this.loginOrConsentRequired(e) && redirect) {
+                    if (this.loginOrConsentRequired(e) && shouldRedirect) {
                         this.redirectToLogin();
                         // Change the error.message to indicate that a redirect is being performed
                         e.message = 'Redirecting to the login page...';
@@ -277,6 +279,7 @@ class AuthClient {
                 }
             );
         });
+    };
 
     /**
      * Determine if the error indicates an OAuth error where consent or login are required.
@@ -300,5 +303,3 @@ class AuthClient {
         window.location = `${authUrl}/logout?redirect_uri=${encodeURIComponent(logoutRedirUrl)}`;
     };
 }
-
-export default AuthClient;

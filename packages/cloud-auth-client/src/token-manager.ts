@@ -14,8 +14,8 @@
  * under the License.
  */
 
-import { TOKEN_STORAGE_NAME } from '../auth-client-settings';
-import AuthClientError from './errors/AuthClientError';
+import { TOKEN_STORAGE_NAME } from './auth-client-settings';
+import { AuthClientError } from './errors/auth-client-error';
 import StorageManager from './storage';
 import token from './token';
 import { isValidTokenObject, warn } from './util';

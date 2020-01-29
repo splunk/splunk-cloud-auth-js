@@ -8,9 +8,9 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 
 import Q from 'q';
 
-import { REDIRECT_OAUTH_PARAMS_NAME, REDIRECT_PARAMS_STORAGE_NAME } from '../auth-client-settings';
-import AuthClientError from './errors/AuthClientError';
-import OAuthError from './errors/OAuthError';
+import { REDIRECT_OAUTH_PARAMS_NAME, REDIRECT_PARAMS_STORAGE_NAME } from './auth-client-settings';
+import { AuthClientError } from './errors/auth-client-error';
+import { OAuthError } from './errors/oauth-error';
 import StorageManager from './storage';
 import * as util from './util';
 

@@ -12,7 +12,6 @@ docs/
 env/
 examples/
 integration/
-src/**/*
 test/
 tmp/
 okta/
@@ -44,6 +43,7 @@ jest.json
 jsdoc.json
 junit.xml
 sonar-project.properties
+src/**/*.ts
 tsconfig.json
 tsconfig.test.json
 

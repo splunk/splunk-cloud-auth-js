@@ -1,10 +1,10 @@
 import { assert, expect } from 'chai';
 
-import { AuthClientSettings } from '../../../src/auth-client-settings';
-import AuthClient from '../../../src/AuthClient';
-import { StorageManager } from '../../../src/lib/storage/storage-manager';
-import token from '../../../src/lib/token';
-import { TestData } from '../fixture/test-data';
+import { AuthClient } from '../../src/auth-client';
+import { AuthClientSettings } from '../../src/auth-client-settings';
+import { StorageManager } from '../../src/storage/storage-manager';
+import token from '../../src/token';
+import { TestData } from './fixture/test-data';
 
 const REDIRECT_OAUTH_PARAMS_NAME = 'redirect-oauth-params';
 const REDIRECT_PARAMS_STORAGE_NAME = 'splunk-redirect-params-storage';

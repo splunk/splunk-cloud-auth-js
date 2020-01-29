@@ -1,8 +1,8 @@
 import { assert, expect } from 'chai';
 
-import { cookies } from '../../../src/lib/cookies';
-import StorageManager from '../../../src/lib/storage';
-import { storageBuilder } from '../../../src/lib/util';
+import { cookies } from '../../src/cookies';
+import StorageManager from '../../src/storage';
+import { storageBuilder } from '../../src/util';
 
 describe('Browser storage', () => {
     describe('storage builder', () => {

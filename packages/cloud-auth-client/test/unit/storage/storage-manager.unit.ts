@@ -1,7 +1,7 @@
 
-import AuthClientError from '../../../../src/lib/errors/AuthClientError';
-import { StorageFactory } from '../../../../src/lib/storage/storage-factory';
-import { StorageManager } from '../../../../src/lib/storage/storage-manager';
+import { AuthClientError } from '../../../src/errors/auth-client-error';
+import { StorageFactory } from '../../../src/storage/storage-factory';
+import { StorageManager } from '../../../src/storage/storage-manager';
 
 const STORAGE_NAME = 'some-storage-name';
 const STORAGE_KEY_0 = 'key0';

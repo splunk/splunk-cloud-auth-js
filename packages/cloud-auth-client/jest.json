@@ -1,5 +1,10 @@
 {
   "collectCoverageFrom": [
+    "!src/**/*.d.js",
+    "!src/**/*.d.ts",
+    "!src/index.{ts,js}",
+    "!src/**/*.js.map",
+    "!src/**/*.ts.map",
     "src/**/*.ts"
   ],
   "coverageDirectory": "coverage",

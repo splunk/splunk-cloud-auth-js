@@ -1,8 +1,8 @@
 import { assert, expect } from 'chai';
 
+import { AuthClient } from '../../src/auth-client';
 import { AuthClientSettings } from '../../src/auth-client-settings';
-import AuthClient from '../../src/AuthClient';
-import { StorageManager } from '../../src/lib/storage/storage-manager';
+import { StorageManager } from '../../src/storage/storage-manager';
 import { TestData } from './fixture/test-data';
 
 const DEFAULT_AUTHORIZE_URL = 'https://auth.scp.splunk.com/authorize';

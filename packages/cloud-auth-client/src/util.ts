@@ -6,7 +6,7 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 /* eslint-env node */
 /* eslint-disable prefer-rest-params */
 import { cookies } from './cookies';
-import AuthClientError from './errors/AuthClientError';
+import { AuthClientError } from './errors/auth-client-error';
 
 export function clone(obj) {
     if (obj) {

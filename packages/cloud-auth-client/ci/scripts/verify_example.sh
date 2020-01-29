@@ -38,8 +38,8 @@ then
     print_major_header_line
     echo "Failed to build example ..."
     print_major_header_line
-    exit $EXAMPLE_BUILD_EXIT_CODE
 fi
 
 cp $EXAMPLE_WORKING_DIR/package.json.orig $EXAMPLE_WORKING_DIR/package.json
 rm -rf $EXAMPLE_WORKING_DIR/package.json.orig
+exit $EXAMPLE_BUILD_EXIT_CODE

@@ -4,7 +4,7 @@ SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
 without a valid written license from Splunk Inc. is PROHIBITED.
 */
 
-class AuthClientError implements Error {
+export class AuthClientError implements Error {
     public constructor(message: string) {
         this.name = 'AuthClientError';
         this.message = message;
@@ -17,5 +17,3 @@ class AuthClientError implements Error {
 
     public errorCode: string;
 }
-
-export default AuthClientError;

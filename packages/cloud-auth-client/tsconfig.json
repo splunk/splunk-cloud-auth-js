@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "declarationDir": ".",
+    "declarationDir": "./src",
     "declarationMap": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
@@ -19,7 +19,7 @@
     "noImplicitAny": true,
     // comment this out to avoid compile error in generated files
     // "noUnusedLocals": true,
-    "outDir": ".",
+    "outDir": "./src",
     "removeComments": false,
     "resolveJsonModule": true,
     "sourceMap": true,

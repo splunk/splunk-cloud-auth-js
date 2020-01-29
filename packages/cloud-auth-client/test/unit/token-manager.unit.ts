@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai';
 
-import { TokenManager, TokenManagerSettings } from '../../../src/lib/TokenManager';
+import { TokenManager, TokenManagerSettings } from '../../src/token-manager';
 
 const TOKEN_STORAGE_NAME = 'splunk-token-storage';
 

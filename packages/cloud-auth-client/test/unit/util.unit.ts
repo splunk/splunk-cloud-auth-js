@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { getCookieStorage, storageBuilder } from '../../../src/lib/util';
+import { getCookieStorage, storageBuilder } from '../../src/util';
 
 describe('util', () => {
     describe('storageBuilder', () => {

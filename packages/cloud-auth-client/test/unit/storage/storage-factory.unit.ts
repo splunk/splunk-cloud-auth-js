@@ -2,8 +2,8 @@
 
 import { CookieStorage } from 'cookie-storage';
 
-import { StorageFactory } from '../../../../src/lib/storage/storage-factory';
-import { mockWindowProperty } from '../../fixture/test-setup';
+import { StorageFactory } from '../../../src/storage/storage-factory';
+import { mockWindowProperty } from '../fixture/test-setup';
 
 const DUMMY_STORAGE_KEY = 'splunk-test-storage';
 

@@ -30,7 +30,8 @@ export class AuthClient {
         }
 
         this._options = settings;
-        this._options.onRestorePath = this._options.onRestorePath ? this._options.onRestorePath : this.restorePath;
+        this._options.onRestorePath =
+            this._options.onRestorePath ? this._options.onRestorePath : AuthClient.defaultRestorePath;
         this._tokenManager =
             new TokenManager(
                 new TokenManagerSettings(
@@ -206,7 +207,7 @@ export class AuthClient {
     /**
      * Retrieve the information stored in storePathBeforeLogin to restore the state of this page.
      */
-    restorePathAfterLogin = () => {
+    public restorePathAfterLogin(): void {
         try {
             const p = this._storage.get(REDIRECT_PATH_PARAMS_NAME);
             this._storage.clear(REDIRECT_PATH_PARAMS_NAME);
@@ -216,14 +217,6 @@ export class AuthClient {
         } catch (e) {
             warn(`Cannot restore the path from ${REDIRECT_PATH_PARAMS_NAME}`);
         }
-    };
-
-    /**
-     * The default function to restore path if config.onRestorePath is not specified.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    public restorePath(path: string): void {
-        window.history.replaceState(null, '', path);
     }
 
     /* eslint-disable max-len */
@@ -237,7 +230,7 @@ export class AuthClient {
      * will be parsed via `this.parseTokensFromRedirect`.
      */
     /* eslint-enable max-len */
-    redirectToLogin = () => {
+    public redirectToLogin() {
         if (this._options.restorePathAfterLogin) {
             this.storePathBeforeLogin();
         }
@@ -248,61 +241,70 @@ export class AuthClient {
         }
 
         token.getWithRedirect(this._options.clientId, this._options.redirectUri, this._options.authorizeUrl, options);
-    };
+    }
 
     /**
      * Check if we already have an access token in the tokenManager (sessionStorage).
      * If not, check if there is one returned from a redirect (e.g. in the query string).
      * If that fails due to consent or login being required then redirect to the login page.
      */
-    checkAuthentication = (redirect?: boolean) => {
+    public checkAuthentication(redirect?: boolean): Promise<boolean> {
         const shouldRedirect = redirect === undefined ? this._options.autoRedirectToLogin : redirect;
 
-        return new Promise((resolve, reject) => {
+        return new Promise<boolean>((resolve, reject) => {
             if (this.isAuthenticated()) {
                 resolve(true);
                 return;
             }
-            this.requestTokens().then(
-                (tokens: any) => {
+
+            this.requestTokens()
+                .then((tokens: any) => {
                     if (tokens != null) {
                         this.applyTokens(tokens);
                         resolve(true);
                         return;
                     }
+
                     if (shouldRedirect) {
-                        reject(new AuthClientError('token not found'));
+                        reject(new AuthClientError('Token not found'));
                         return;
                     }
+
                     resolve(false);
-                },
-                (e: any) => {
+                }, (e: any) => {
                     if (AuthClient.loginOrConsentRequired(e) && shouldRedirect) {
                         this.redirectToLogin();
                         // Change the error.message to indicate that a redirect is being performed
                         e.message = 'Redirecting to the login page...';
                     }
-                    reject(e);
-                }
-            );
-        });
-    };
 
-    /**
-     * Determine if the error indicates an OAuth error where consent or login are required.
-     */
-    private static loginOrConsentRequired(e: any) {
-        return e.code === 'login_required' || e.code === 'consent_required';
+                    reject(e);
+                });
+        });
     }
 
     /**
      * Clear any tokens saved to sessionStorage. Note that session cookies are not cleared.
      */
-    logout = (url?: any | string) => {
+    public logout(url?: any | string) {
         const logoutRedirUrl =
             typeof url === 'string' ? url : this._options.redirectUri || window.location.href;
         const authUrl = urlParse(this._options.authorizeUrl).origin;
         this._tokenManager.clear();
         window.location.href = `${authUrl}/logout?redirect_uri=${encodeURIComponent(logoutRedirUrl)}`;
-    };
+    }
+
+    /**
+     * The default function to restore path if config.onRestorePath is not specified.
+     */
+    private static defaultRestorePath(path: string): void {
+        window.history.replaceState(null, '', path);
+    }
+
+    /**
+     * Determine if the error indicates an OAuth error where consent or login are required.
+     */
+    private static loginOrConsentRequired(e: any): boolean {
+        return e.code === 'login_required' || e.code === 'consent_required';
+    }
 }

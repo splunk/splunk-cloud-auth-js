@@ -16,7 +16,7 @@ export class AuthClientError implements Error {
     public constructor(message: string, stack?: string) {
         this.name = 'AuthClientError';
         this.message = message;
-        this.code = 500;
+        this.code = 'internal_error';
         this.stack = stack;
     }
 
@@ -33,7 +33,7 @@ export class AuthClientError implements Error {
     /**
      * Error code.
      */
-    public code: number;
+    public code: string;
 
     /**
      * Error stack trace.

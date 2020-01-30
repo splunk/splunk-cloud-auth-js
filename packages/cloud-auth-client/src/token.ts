@@ -34,7 +34,7 @@ function handleOAuthResponse(oauthParams: any, res: any, urls: any): any {
     return new Q()
         .then(() => {
             if (res.error || res.error_description) {
-                throw new OAuthError(res.error_description, res.error || 'OAuth error');
+                throw new OAuthError(res.error_description || 'OAuth error', res.error);
             }
 
             if (res.state !== oauthParams.state) {

@@ -59,7 +59,7 @@ Repository: [https://github.com/unshiftio/url-parse](https://github.com/unshifti
 
 Name: @babel/cli
 
-Version: 7.8.3
+Version: 7.8.4
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-cli/raw/master/LICENSE)
 
@@ -69,7 +69,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-cli](http
 
 Name: @babel/core
 
-Version: 7.8.3
+Version: 7.8.4
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-core/raw/master/LICENSE)
 
@@ -109,7 +109,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-tr
 
 Name: @babel/preset-env
 
-Version: 7.8.3
+Version: 7.8.4
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-preset-env/raw/master/LICENSE)
 
@@ -129,7 +129,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-preset-ty
 
 Name: @babel/runtime
 
-Version: 7.8.3
+Version: 7.8.4
 
 License: [MIT](https://github.com/babel/babel/raw/master/LICENSE)
 

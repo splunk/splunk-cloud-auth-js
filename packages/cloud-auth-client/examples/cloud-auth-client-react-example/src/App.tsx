@@ -36,16 +36,17 @@ const authClientSettings = new AuthClientSettings(
 const authClient = new AuthClient(authClientSettings);
 
 class App extends Component {
+
     state = {
         loggedIn: false,
         error: null,
     };
 
-    componentDidMount = async () => {
+    public async componentDidMount() {
         await this.authenticate();
     }
 
-    authenticate = async () => {
+    public async authenticate() {
         try {
             // AuthClient will redirect to login page if user is not authenticated.
             const loggedIn = await authClient.checkAuthentication();
@@ -55,12 +56,12 @@ class App extends Component {
         } catch (e) {
             this.setState({
                 loggedIn: false,
-                error: e,
+                error: e.message ? e.message : e.toString(),
             });
         }
-    };
+    }
 
-    render() {
+    public render() {
         const { error, loggedIn } = this.state;
 
         if (error) {

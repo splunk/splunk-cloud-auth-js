@@ -5,7 +5,7 @@
 
 Splunk Cloud Services Cloud-Auth-Client contains an authentication library for front-end web applications, along with code and examples to enable you to authenticate with Splunk Cloud Services in a web application using the JavaScript programming language.
 
-You can use the `@splunkdev/cloud-auth-client` library alone or in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to programmatically access Splunk Cloud Services.
+You can use the `@splunkdev/cloud-auth-client` library alone or with the [Splunk Cloud Services SDK for JavaScript](https://github.com/splunk/splunk-cloud-sdk-js/) to programatically access Splunk Cloud Services.
 
 ## Terms of Service
 

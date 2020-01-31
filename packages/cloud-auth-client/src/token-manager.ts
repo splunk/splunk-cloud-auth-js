@@ -15,10 +15,9 @@
  */
 
 import { TOKEN_STORAGE_NAME } from './auth-client-settings';
-import { AuthClientError } from './errors/auth-client-error';
-import StorageManager from './storage';
+import { StorageManager } from './storage/storage-manager';
 import token from './token';
-import { isValidTokenObject, warn } from './util';
+import { warn } from './util';
 
 /**
  * TokenManagerSettings.
@@ -73,37 +72,60 @@ export class TokenManagerSettings {
 }
 
 /**
+ * AccessToken interface.
+ */
+export interface AccessToken {
+    accessToken: string;
+    expiresAt: number;
+    expiresIn: number;
+    tokenType: string;
+    scopes?: string[];
+}
+
+/**
  * TokenManager.
  */
-export class TokenManager extends StorageManager {
+export class TokenManager {
 
     /**
      * TokenManager.
      * @param settings TokenManagerSettings.
      */
     public constructor(settings: TokenManagerSettings) {
-        super(settings.storageName);
         this.settings = settings;
+        this.storage = new StorageManager(this.settings.storageName);
     }
 
     private settings: TokenManagerSettings;
 
+    private storage: StorageManager;
+
     /**
-     * Add.
+     * Puts the access token in storage.
      */
-    public add(key: string, authToken: any): void {
-        const tokenStorage = this.storage.getStorage();
-        if (!isValidTokenObject(authToken)) {
-            throw new AuthClientError(
-                'Token must be an Object with scopes, expiresAt, and an idToken or accessToken properties'
-            );
-        }
-        tokenStorage[key] = authToken;
-        this.storage.setStorage(tokenStorage);
-        // expiresIn is in seconds but we need milliseconds
+    public set(accessToken: AccessToken): void {
+        this.storage.set(accessToken, 'accessToken');
+
+        // expiresIn is in seconds but we need milliseconds.
         const renewalBuffer = this.settings.autoTokenRenewalBuffer;
-        const refreshTime = authToken.expiresIn * 1000 - renewalBuffer * 1000;
+        const refreshTime = accessToken.expiresIn * 1000 - renewalBuffer * 1000;
+
+        // trigger auto-refresh.
         setTimeout(this.refreshToken, refreshTime);
+    }
+
+    /**
+     * Gets the access token from storage.
+     */
+    public get(): any {
+        return this.storage.get('accessToken');
+    }
+
+    /**
+     * Clears the access token in storage.
+     */
+    public clear() {
+        this.storage.clear();
     }
 
     /**
@@ -120,16 +142,14 @@ export class TokenManager extends StorageManager {
                 const accessToken = {
                     accessToken: data.access_token,
                     expiresAt: Number(data.expires_in) + Math.floor(Date.now() / 1000),
-                    expiresIn: data.expires_in,
-                    tokenType: data.token_type,
+                    expiresIn: Number(data.expires_in),
+                    tokenType: data.token_type
                 };
 
-                this.add('accessToken', accessToken);
+                this.set(accessToken);
             })
             .catch(err => {
                 warn(err);
             });
     }
 }
-
-export default TokenManager;

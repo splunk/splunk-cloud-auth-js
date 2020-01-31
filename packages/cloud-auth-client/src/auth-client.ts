@@ -103,11 +103,6 @@ export class AuthClient {
     }
 
     /**
-     * Check for tokens returned from a previous redirect, if none then call the /authorize
-     */
-    requestTokens = memoize(() => this.parseTokensFromRedirect());
-
-    /**
      * Attempt to read the token(s) returned from a redirect.
      *
      * For successful authentication requests `access_token`, `id_token`, and `code` are read from
@@ -148,23 +143,23 @@ export class AuthClient {
         }
         tokens.forEach((item: any) => {
             if (has(item, 'accessToken')) {
-                this._tokenManager.add('accessToken', item);
+                this._tokenManager.set(item);
             }
         });
     }
 
     public getAccessToken() {
-        this.checkExpiration('accessToken');
-        return get(this._tokenManager.get('accessToken'), 'accessToken');
+        this.checkExpiration();
+        return this._tokenManager.get();
     }
 
     public isAuthenticated() {
         return !!this.getAccessToken();
     }
 
-    public checkExpiration(tokenType: any) {
+    public checkExpiration() {
         const now = Math.floor(new Date().getTime() / 1000);
-        const expire = get(this._tokenManager.get(tokenType), 'expiresAt');
+        const expire = get(this._tokenManager.get(), 'expiresAt');
         const expirationBuffer = this._options.maxClockSkew;
         if (now - expirationBuffer > expire) {
             warn('The JWT expired and is no longer valid');
@@ -210,7 +205,8 @@ export class AuthClient {
     public restorePathAfterLogin(): void {
         try {
             const p = this._storage.get(REDIRECT_PATH_PARAMS_NAME);
-            this._storage.clear(REDIRECT_PATH_PARAMS_NAME);
+            // this._storage.clear(REDIRECT_PATH_PARAMS_NAME);
+            this._storage.delete(REDIRECT_PATH_PARAMS_NAME);
             if (p && this._options.onRestorePath) {
                 this._options.onRestorePath(p);
             }
@@ -291,7 +287,7 @@ export class AuthClient {
             typeof url === 'string' ? url : this._options.redirectUri || window.location.href;
         const authUrl = urlParse(this._options.authorizeUrl).origin;
         this._tokenManager.clear();
-        window.location.href = `${authUrl}/logout?redirect_uri=${encodeURIComponent(logoutRedirUrl)}`;
+        window.location = `${authUrl}/logout?redirect_uri=${encodeURIComponent(logoutRedirUrl)}`;
     }
 
     /**
@@ -307,4 +303,9 @@ export class AuthClient {
     private static loginOrConsentRequired(e: any): boolean {
         return e.code === 'login_required' || e.code === 'consent_required';
     }
+
+    /**
+     * Check for tokens returned from a previous redirect, if none then call the /authorize
+     */
+    private requestTokens = memoize(() => this.parseTokensFromRedirect());
 }

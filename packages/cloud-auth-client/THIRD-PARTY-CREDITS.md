@@ -15,16 +15,6 @@ License: [MIT](https://github.com/bouzuya/cookie-storage/raw/master/LICENSE)
 
 Repository: [https://github.com/bouzuya/cookie-storage](https://github.com/bouzuya/cookie-storage)
 
-## js-cookie
-
-Name: js-cookie
-
-Version: 2.2.1
-
-License: [MIT](https://github.com/js-cookie/js-cookie/raw/master/LICENSE)
-
-Repository: [https://github.com/js-cookie/js-cookie](https://github.com/js-cookie/js-cookie)
-
 ## lodash
 
 Name: lodash
@@ -140,16 +130,6 @@ Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
 Name: @types/jest
 
 Version: 24.9.1
-
-License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
-
-Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-
-## @types/js-cookie
-
-Name: @types/js-cookie
-
-Version: 2.2.4
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 

@@ -11,7 +11,7 @@ import Q from 'q';
 import { REDIRECT_OAUTH_PARAMS_NAME, REDIRECT_PARAMS_STORAGE_NAME } from './auth-client-settings';
 import { AuthClientError } from './errors/auth-client-error';
 import { OAuthError } from './errors/oauth-error';
-import StorageManager from './storage';
+import { StorageManager } from './storage/storage-manager';
 import * as util from './util';
 
 const storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
@@ -116,7 +116,7 @@ function parseFromUrl(url?: string) {
         oauthParams = JSON.parse(oauthParamsContent);
         urls = oauthParams.urls;
         delete oauthParams.urls;
-        storage.remove(REDIRECT_OAUTH_PARAMS_NAME);
+        storage.delete(REDIRECT_OAUTH_PARAMS_NAME);
     } catch (e) {
         return Q.reject(
             new AuthClientError(
@@ -213,8 +213,7 @@ function getAuthUrl(clientId: string, redirectUri: string, authorizeUrl: string,
     const requestUrl = `${urls.authorizeUrl}${allQueryParams}`;
 
     // Set sessionStorage to store the oauthParams
-    storage.add(
-        REDIRECT_OAUTH_PARAMS_NAME,
+    storage.set(
         JSON.stringify({
             responseType: oauthParams.responseType,
             state: oauthParams.state,
@@ -222,14 +221,15 @@ function getAuthUrl(clientId: string, redirectUri: string, authorizeUrl: string,
             scopes: oauthParams.scopes,
             clientId: oauthParams.clientId,
             urls,
-        })
+        }),
+        REDIRECT_OAUTH_PARAMS_NAME
     );
 
     return requestUrl;
 }
 
 function getWithRedirect(clientId: string, redirectUri: string, authorizeUrl: string, options: any) {
-    window.location.href = getAuthUrl(clientId, redirectUri, authorizeUrl, options);
+    window.location = getAuthUrl(clientId, redirectUri, authorizeUrl, options);
 }
 
 const token = {

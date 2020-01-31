@@ -39,7 +39,6 @@
     "@splunk/eslint-config": "^2.0.0",
     "@splunk/webpack-configs": "^4.0.0",
     "@types/jest": "^24.9.0",
-    "@types/js-cookie": "^2.2.4",
     "@types/lodash": "^4.14.149",
     "@types/q": "^1.5.2",
     "@types/url-parse": "^1.4.3",
@@ -77,7 +76,6 @@
   },
   "dependencies": {
     "cookie-storage": "^5.0.3",
-    "js-cookie": "^2.2.0",
     "lodash": "^4.17.5",
     "q": "^1.5.1",
     "url-parse": "^1.4.7"

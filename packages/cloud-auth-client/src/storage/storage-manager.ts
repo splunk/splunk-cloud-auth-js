@@ -95,13 +95,23 @@ export class StorageManager {
     }
 
     /**
-     * Removes data blob from Storage.
+     * Removes an entry in the data blob in Storage by key reference.
+     * When the key reference is not specified, the entire data blob in Storage is deleted.
+     * @param key Key reference.
      */
-    public delete(): void {
-        try {
-            this.storage.removeItem(this.storageName);
-        } catch (e) {
-            throw new AuthClientError(`Unable to remove storage: ${this.storageName}`);
+    public delete(key?: string): void {
+        if (key) {
+            const dataBlob = this.get();
+            if (dataBlob) {
+                delete dataBlob[key];
+                this.set(dataBlob);
+            }
+        } else {
+            try {
+                this.storage.removeItem(this.storageName);
+            } catch (e) {
+                throw new AuthClientError(`Unable to remove storage: ${this.storageName}`);
+            }
         }
     }
 
@@ -113,11 +123,10 @@ export class StorageManager {
     public clear(key?: string): void {
         if (key) {
             const data = this.get();
-            data[key] = undefined;
+            data[key] = {};
             this.set(data);
-            return;
+        } else {
+            this.set({});
         }
-
-        this.set(undefined);
     }
 }

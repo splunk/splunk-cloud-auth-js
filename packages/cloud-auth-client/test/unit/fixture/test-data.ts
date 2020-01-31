@@ -37,6 +37,7 @@ export class TestData {
         accessToken: TestData.ACCESS_TOKEN,
         authorizeUrl: TestData.AUTHORIZE_URL,
         expiresAt: 1742425555,
+        expiresIn: 99999,
         scopes: ['openid', 'email', 'profile'],
         tokenType: 'Bearer',
     };

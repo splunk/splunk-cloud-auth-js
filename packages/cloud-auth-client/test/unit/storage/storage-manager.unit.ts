@@ -194,6 +194,34 @@ describe('StorageManager', () => {
             expect(sessionStorageMock.removeItem).toBeCalledTimes(1);
         });
 
+        it('with key reference and datablob removes data at given key property', () => {
+            // Arrange
+            sessionStorageMock.getItem = jest.fn().mockImplementation(() => {
+                return JSON.stringify(dataBlob);
+            });
+
+            // Act
+            storageManager.delete(STORAGE_KEY_0);
+
+            // Assert
+            expect(sessionStorageMock.setItem)
+                .toBeCalledWith(STORAGE_NAME, JSON.stringify({}));
+            expect(sessionStorageMock.setItem).toBeCalledTimes(1);
+        });
+
+        it('with key reference and no datablob does nothing', () => {
+            // Arrange
+            sessionStorageMock.getItem = jest.fn().mockImplementation(() => {
+                return JSON.stringify(undefined);
+            });
+
+            // Act
+            storageManager.delete(STORAGE_KEY_0);
+
+            // Assert
+            expect(sessionStorageMock.setItem).not.toBeCalled();
+        });
+
         it('throws AuthClientError when Storage.removeItem fails', () => {
             // Arrange
             sessionStorageMock.removeItem = jest.fn().mockImplementation(() => {
@@ -227,7 +255,7 @@ describe('StorageManager', () => {
             // Assert
             expect(sessionStorageMock.getItem).toBeCalledWith(STORAGE_NAME);
             expect(sessionStorageMock.getItem).toBeCalledTimes(1);
-            expect(sessionStorageMock.setItem).toBeCalledWith(STORAGE_NAME, JSON.stringify({ key0: undefined }));
+            expect(sessionStorageMock.setItem).toBeCalledWith(STORAGE_NAME, JSON.stringify({ key0: {} }));
             expect(sessionStorageMock.setItem).toBeCalledTimes(1);
         });
 
@@ -237,7 +265,7 @@ describe('StorageManager', () => {
 
             // Assert
             expect(sessionStorageMock.getItem).not.toBeCalled();
-            expect(sessionStorageMock.setItem).toBeCalledWith(STORAGE_NAME, undefined);
+            expect(sessionStorageMock.setItem).toBeCalledWith(STORAGE_NAME, '{}');
             expect(sessionStorageMock.setItem).toBeCalledTimes(1);
         });
     });

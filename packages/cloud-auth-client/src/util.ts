@@ -5,7 +5,6 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 */
 /* eslint-env node */
 /* eslint-disable prefer-rest-params */
-import { cookies } from './cookies';
 import { AuthClientError } from './errors/auth-client-error';
 
 export function clone(obj: any) {
@@ -165,88 +164,5 @@ export function getOAuthUrls(authorizeUrl: string, optionsIn: any) {
 
     return {
         authorizeUrl: sanitizedAurhorizeUrl,
-    };
-}
-
-// storage util
-export function checkStorage(storage: any) {
-    const key = 'splunk-test-storage';
-    try {
-        storage.setItem(key, key);
-        storage.removeItem(key);
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
-export function browserHasSessionStorage() {
-    try {
-        return window.sessionStorage && checkStorage(sessionStorage);
-    } catch (e) {
-        return false;
-    }
-}
-
-export function getCookieStorage() {
-    return {
-        getItem: cookies.get,
-        setItem: (key: string, value: any) => {
-            // Cookie shouldn't expire
-            cookies.set(key, value, '2050-01-01T00:00:00.000Z');
-        },
-        removeItem: cookies.delete,
-    };
-}
-
-export function storageBuilder(webstorage: any, storageName: string) {
-    function getStorage() {
-        let storageString = webstorage.getItem(storageName);
-        storageString = storageString || '{}';
-        try {
-            return JSON.parse(storageString);
-        } catch (e) {
-            throw new AuthClientError(`Unable to parse storage string: ${storageName}`);
-        }
-    }
-
-    function setStorage(storage: any) {
-        try {
-            const storageString = JSON.stringify(storage);
-            webstorage.setItem(storageName, storageString);
-        } catch (e) {
-            throw new AuthClientError(`Unable to set storage: ${storageName}`);
-        }
-    }
-
-    function clearStorage(key: string) {
-        if (!key) {
-            setStorage({});
-        }
-        const storage = getStorage();
-        delete storage[key];
-        setStorage(storage);
-    }
-
-    function updateStorage(key: string, value: any) {
-        const storage = getStorage();
-        storage[key] = value;
-        setStorage(storage);
-    }
-
-    function removeStorage() {
-        try {
-            webstorage.removeItem(storageName);
-        } catch (e) {
-            throw new AuthClientError(`Unable to remove storage: ${storageName}`);
-        }
-    }
-
-    return {
-        getStorage,
-        setStorage,
-        clearStorage,
-        updateStorage,
-        removeStorage,
     };
 }

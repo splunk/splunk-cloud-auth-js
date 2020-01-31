@@ -77,7 +77,7 @@ yarn
 
 ### Developing with dependent packages
 
-When working with packages within the mono-repo that depend on each other, you will need to symlink the packages.  This can be done using the [@lerna/link](https://github.com/lerna/lerna/tree/master/commands/link#readme) command.
+When working with packages within the mono-repo that depend on each other, you must symlink the packages using the [@lerna/link](https://github.com/lerna/lerna/tree/master/commands/link#readme) command as follows:
 
 
 ```

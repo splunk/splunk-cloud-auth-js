@@ -1,52 +1,52 @@
-# @splunkdev/cloud-auth-client
+# Splunk Cloud Services Cloud-Auth-Client
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-The Splunk Cloud Services authentication library for front-end web applications contains code and examples to enable you to authenticate with Splunk Cloud Services in a web application using the JavaScript programming language.
+Splunk Cloud Services Cloud-Auth-Client contains an authentication library for front-end web applications, along with code and examples to enable you to authenticate with Splunk Cloud Services in a web application using the JavaScript programming language.
 
-This library can be used alone or in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to programmatically access Splunk Cloud Services.
+You can use the `@splunkdev/cloud-auth-client` library alone or in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to programmatically access Splunk Cloud Services.
 
-## Supported Authorization Flows
+## Terms of Service
 
-The following authorization flows are supported by this library:
-* Implicit
-
-Documentation for all supported authorization flows by Splunk Cloud Services can be found in [plan documentation](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow).
-
-## Terms of Service (TOS)
 [Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
 
-Log in to [Splunk Investigate](https://si.scp.splunk.com/) and accept the Terms of Service when prompted.
+## Authorization flows
+
+This library supports the following authorization flows:
+* Implicit
+
+For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 
 ## Get started
 
-### Install the Library
+Install the `@splunkdev/cloud-auth-client` package to enable your project to authenticate with Splunk Cloud Services.
 
-Install the library to enable your project to authenticate with Splunk Cloud Services services.
-
-Run the following command from your project directory:
+Run the following command from your project directory if you use Yarn:
 
 ```sh-session
 yarn add @splunkdev/cloud-auth-client
+```
+Run the following command from your project directory if you use npm:
 
-# or
-
+```sh-session
 npm install --save @splunkdev/cloud-auth-client
 ```
 
-### Example usage
+## Example
 
-#### React web application
+The following example shows how to work with the `@splunkdev/cloud-auth-client` library.
 
-This example demonstrates usage of the library in a React web application.  A runnable example exists at [examples/cloud-auth-client-react-example](examples/cloud-auth-client-react-example)
+### React web application
+
+This example demonstrates how to use the `@splunkdev/cloud-auth-client` library in a React web application. For an example that you can run, see [examples/cloud-auth-client-react-example](examples/cloud-auth-client-react-example).
 
 ```ts
 import AuthClient from '@splunkdev/cloud-auth-client/AuthClient';
 import { AuthClientSettings } from '@splunkdev/cloud-auth-client/auth-client-settings';
 import React, { Component } from 'react';
 
-// Create settings
+// Create settings.
 const authClientSettings = new AuthClientSettings(
   CLIENT_ID,
   REDIRECT_URI,
@@ -59,7 +59,7 @@ const authClientSettings = new AuthClientSettings(
   AUTO_TOKEN_RENEWAL_BUFFER
 );
 
-// Initialize AuthClient
+// Initialize AuthClient.
 const authClient = new AuthClient(authClientSettings);
 
 class App extends Component {
@@ -75,7 +75,7 @@ class App extends Component {
 
     authenticate = async () => {
         try {
-        // AuthClient will redirect to login page if user is not authenticated.
+        // AuthClient redirects to a login page if the user is not authenticated.
         const loggedIn = await authClient.checkAuthentication();
         this.setState({
             loggedIn,
@@ -112,58 +112,59 @@ class App extends Component {
 
 #### AuthClient configuration
 
-Configuration Options for `AuthClient`:
+The following example sets configuration options for `AuthClient`.
 
 ```js
 {
-    // Client ID is used to identify the app registred with the App Registry
+    // The clientId setting identifies the app that is registered with the App Registry service.
     clientId: "...", // required
 
-    // The redirect URI is used to redirect the user back to the web app after
-    // login. This redirectUri must be registered with the App Registry
+    // The redirectUri function redirects the user to the web app after logging in.
+    // The value of redirectUri must be pre-registered with the App Registry service.
     redirectUri: window.location.origin, // required
 
-    // If enabled, then the @splunkdev/cloud-auth-client lib will restore the path of the web app
-    // after redirecting to login page
+    // When this setting is enabled, the cloud-auth-client library restores 
+    // the path of the web app after redirecting to the login page.
+    // This setting is enabled (true) by default.
     restorePathAfterLogin: true,
 
-    // This function is called (if provided) when the user was redirected back
-    // from login, after the auth callback was successfully applied.
-    // This function can be used to integrate with third-party client-side
-    // routers, such as react-router intead of calling `history.replaceState`.
+    // If provided, this function is called when the user is redirected from login
+    // after the auth callback is successfully applied.
+    // You can use this function to integrate with third-party client-side
+    // routers, such as react-router, rather than calling history.replaceState.
     onRestorePath: function(path) { /* ... */ },
 
-    // If enabled, the user is automatically redirected to login page when
-    // the AuthClient instance is created or when checkAuthentication is called
-    // and the user is no already logged in.
-    // This is enabled by default but can be disabled by setting it to `false`.
+    // When this setting is enabled, the user is automatically redirected to the
+    // login page when the AuthClient instance is created, or when checkAuthentication
+    // is called and the user is not already logged in.
+    // This setting is enabled (true) by default.
     autoRedirectToLogin: true,
 
-    // The url that is redirected to when using token.getWithRedirect.
-    // This must be pre-registered as part of client registration. If no redirectUri is provided, defaults to the current origin.
+    // The redirect URL is used for redirecting to when using token.getWithRedirect.
+    // This value must be pre-registered as part of client registration. 
+    // If redirectUri is not provided, the value defaults to the current origin.
     redirectUri: "...",
 
-    // authorizeUrl to perform the authorization flow. Defaults to Splunk authorize server.
+    // The authorize URL is used to perform the authorization flow. 
+    // The default value is the Splunk authorization server.
     authorizeUrl: "..."
 
-    // maxClockSkew specifies the duration buffer in seconds for token expiration
-    // (now > actualExpiration - maxClockSkew) will be considered expired
-    //
-    // Default value is 600
+    // This setting specifies the duration buffer, in seconds, for token expiration.
+    // (now > actualExpiration - maxClockSkew) is considered to be expired.
+    // The default value is 600.
     maxClockSkew: 600
 
-    // autoTokenRenewalBuffer specifies the duration buffer in seconds for token auto renewal.
-    // (now > actualExpiration - autoTokenRenewalBuffer) will trigger an auto renewal
-    //
-    // Default value is 120
+    // This setting specifies the duration buffer, in seconds, for token auto-renewal.
+    // (now > actualExpiration - autoTokenRenewalBuffer) triggers an auto renewal.
+    // The default value is 120.
     autoTokenRenewalBuffer: 120
 }
 ```
 
 ## Documentation
-For general documentation, see the [Splunk Developer Portal](https://dev.splunk.com/scs/).
 
-For JavaScript SDK documentation, see the [Splunk Cloud Services SDK for JavaScript API Reference](https://dev.splunk.com/scs/reference/sdk/splunk-cloud-sdk-js).
+For Splunk Cloud Services documentation, see the [Splunk Developer Portal](https://dev.splunk.com/scs/).
 
 ## Contact
+
 If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.

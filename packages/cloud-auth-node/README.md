@@ -1,53 +1,51 @@
-# @splunkdev/cloud-auth-node
+# Splunk Cloud Services Cloud-Auth-Node
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-The Splunk Cloud Services authentication library for Node.js applications contains code and examples to enable you to authenticate with Splunk Cloud Services in a Node.js-based application using the JavaScript programming language.
+Splunk Cloud Services Cloud-Auth-Node contains an authentication library for Node.js applications, along with code and examples to enable you to authenticate with Splunk Cloud Services in a Node.js-based application using the JavaScript programming language.
 
-This library can be used in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to programmatically access Splunk Cloud Services.
+You can use the `@splunkdev/cloud-auth-node` library in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to programmatically access Splunk Cloud Services.
 
-## Supported Authorization Flows
+## Terms of Service
 
-The following authorization flows are supported by this library:
+[Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
+
+## Authorization flows
+
+This library supports the following authorization flows:
 * Client Credentials
 * Proof Key for Code Exchange (PKCE)
 * Refresh token with PKCE
 
-Documentation for all supported authorization flows by Splunk Cloud Services can be found in [plan documentation](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow).
-
-## Terms of Service (TOS)
-[Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
-
-Log in to [Splunk Investigate](https://si.scp.splunk.com/) and accept the Terms of Service when prompted.
+For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 
 ## Get started
 
-### Install the Library
+Install the `@splunkdev/cloud-auth-node` package to enable your project to authenticate with Splunk Cloud Services.
 
-Install the library to enable your project to authenticate with Splunk Cloud Services services.
-
-Run the following command from your project directory:
+Run the following command from your project directory if you use Yarn:
 
 ```sh-session
 yarn add @splunkdev/cloud-auth-node
+```
+Run the following command from your project directory if you use npm:
 
-# or
-
+```sh-session
 npm install --save @splunkdev/cloud-auth-node
 ```
 
-### Example usage
+### Example
 
-This example demonstrates Client Credential authorization usage of the library with the SDK:
+This example demonstrates how to use this library and the Client Credential authorization flow with the Splunk Cloud Services SDK for JavaScript.
 
 ```js
-require('isomorphic-fetch'); // or a fetch polyfill of your choosing
+require('isomorphic-fetch'); // Or a fetch polyfill of your choosing
 
 const { SplunkCloud } = require('@splunkdev/cloud-sdk');
 const { ClientAuthManager, ClientAuthManagerSettings } = require('@splunkdev/cloud-auth-node');
 
-// initialize AuthManagerSettings
+// Initialize AuthManagerSettings
 const authSettings = new ClientAuthManagerSettings(
     host = SPLUNK_CLOUD_AUTH_HOST,
     scope = '',
@@ -55,22 +53,22 @@ const authSettings = new ClientAuthManagerSettings(
     clientSecret = CLIENT_CREDENTIAL_SECRET,
     grantType = 'client_credentials');
 
-// use AuthManagerSettings to initialize an AuthManager.
+// Use AuthManagerSettings to initialize an AuthManager.
 const authManager = new ClientAuthManager(authSettings);
 
-// use AuthManager as the tokenSource to initialize SplunkCloud.
+// Use AuthManager as the tokenSource to initialize SplunkCloud.
 const svc = new SplunkCloud({ tokenSource: authManager, defaultTenant: TENANT });
 
 ...
 
 ```
 
-Additional examples can be found under the [examples directory](examples).
+For additional examples, see the [examples directory](examples).
 
 ## Documentation
-For general documentation, see the [Splunk Developer Portal](https://dev.splunk.com/scs/).
 
-For JavaScript SDK documentation, see the [Splunk Cloud Services SDK for JavaScript API Reference](https://dev.splunk.com/scs/reference/sdk/splunk-cloud-sdk-js).
+For Splunk Cloud Services documentation, see the [Splunk Developer Portal](https://dev.splunk.com/scs/).
 
 ## Contact
+
 If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.

@@ -1,18 +1,16 @@
-# @splunkdev/cloud-auth-node Examples
+# Examples for Splunk Cloud Services Cloud-Auth-Node
 
-This directory contains a set of examples that utilize this library in conjunction with the [Splunk Cloud Services JavaScript SDK](https://github.com/splunk/splunk-cloud-sdk-js/) to authenticate with Splunk Cloud Services.
+This directory contains examples that demonstrate how to authenticate with Splunk Cloud Services using this library with the [Splunk Cloud Services SDK for JavaScript](https://github.com/splunk/splunk-cloud-sdk-js/).
 
-## Examples
+## Configure, build, and run the examples
 
-### Configuration
+1. Configure the variables defined in [config.js](config.js). 
+   
+    You can configure these variables using node environment variables or hard code the values directly in the file.
 
-To run the examples, configure the variable defined in [config.js](config.js).  This variables can be configured via node environment variables or directly hardcoded in the file.
+2. Use the npm scripts as follows to run build and run the examples:
 
-### Run examples
-
-Use the following npm scripts to run tests:
-
-```sh-session
-yarn && yarn build
-yarn run test:examples
-```
+    ```sh-session
+    yarn && yarn build
+    yarn run test:examples
+    ```

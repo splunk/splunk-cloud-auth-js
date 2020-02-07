@@ -14,7 +14,7 @@
  * under the License.
  */
 
-import { AuthClientError } from '../errors/auth-client-error';
+import { SplunkAuthClientError } from '../error/splunk-auth-client-error';
 import { StorageFactory } from './storage-factory';
 
 /**
@@ -28,10 +28,10 @@ export class StorageManager {
      */
     public constructor(storageName: string) {
         this._storageName = storageName;
-        this.storage = StorageFactory.get();
+        this._storage = StorageFactory.get();
     }
 
-    private storage: Storage;
+    private _storage: Storage;
 
     private _storageName: string;
 
@@ -48,7 +48,7 @@ export class StorageManager {
      * @param key Key reference.
      */
     public get(key?: string): any {
-        const storageString = this.storage.getItem(this.storageName);
+        const storageString = this._storage.getItem(this.storageName);
         if (!storageString) {
             return undefined;
         }
@@ -57,7 +57,7 @@ export class StorageManager {
         try {
             storageBlob = JSON.parse(storageString);
         } catch (e) {
-            throw new AuthClientError(`Unable to parse storage string: ${this.storageName}`);
+            throw new SplunkAuthClientError(`Unable to parse storage string: ${this.storageName}`);
         }
 
         if (key) {
@@ -88,9 +88,9 @@ export class StorageManager {
 
         try {
             const dataJsonString = JSON.stringify(dataBlob);
-            this.storage.setItem(this.storageName, dataJsonString);
+            this._storage.setItem(this.storageName, dataJsonString);
         } catch (e) {
-            throw new AuthClientError(`Unable to set storage: ${this.storageName}`);
+            throw new SplunkAuthClientError(`Unable to set storage: ${this.storageName}`);
         }
     }
 
@@ -108,9 +108,9 @@ export class StorageManager {
             }
         } else {
             try {
-                this.storage.removeItem(this.storageName);
+                this._storage.removeItem(this.storageName);
             } catch (e) {
-                throw new AuthClientError(`Unable to remove storage: ${this.storageName}`);
+                throw new SplunkAuthClientError(`Unable to remove storage: ${this.storageName}`);
             }
         }
     }

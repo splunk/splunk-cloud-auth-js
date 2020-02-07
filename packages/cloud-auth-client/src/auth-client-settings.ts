@@ -1,7 +1,7 @@
-export const DEFAULT_AUTHORIZE_URL = 'https://auth.scp.splunk.com/authorize';
+export const DEFAULT_AUTH_HOST = 'https://auth.scp.splunk.com/';
 export const DEFAULT_AUTO_REDIRECT_TO_LOGIN = true;
 export const DEFAULT_RESTORE_PATH_AFTER_LOGIN = true;
-export const DEFAULT_QUERY_PARAMS_FOR_LOGIN = '';
+export const DEFAULT_QUERY_PARAMS_FOR_LOGIN = undefined;
 export const DEFAULT_MAX_CLOCK_SKEW = 600; // maximum clock skew allowed when validating JWT
 export const DEFAULT_AUTO_TOKEN_RENEWAL_BUFFER = 720; // Auto renew tokens 720 seconds before the token expires
 
@@ -24,7 +24,7 @@ export class AuthClientSettings {
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
      * @param onRestorePath OnRestorePath callback function.
-     * @param authorizeUrl Authorize URL endpoint.
+     * @param authHost Auth host.
      * @param autoRedirectToLogin Auto-redirect to login boolean.
      * @param restorePathAfterLogin Restore path after login boolean.
      * @param maxClockSkew Maximum clock skew in seconds.
@@ -35,17 +35,17 @@ export class AuthClientSettings {
         clientId: string,
         redirectUri: string,
         onRestorePath: OnRestorePathFunction | undefined = undefined,
-        authorizeUrl: string = DEFAULT_AUTHORIZE_URL,
+        authHost: string = DEFAULT_AUTH_HOST,
         autoRedirectToLogin: boolean = DEFAULT_AUTO_REDIRECT_TO_LOGIN,
         restorePathAfterLogin: boolean = DEFAULT_RESTORE_PATH_AFTER_LOGIN,
         maxClockSkew: number = DEFAULT_MAX_CLOCK_SKEW,
-        queryParamsForLogin: string = DEFAULT_QUERY_PARAMS_FOR_LOGIN,
+        queryParamsForLogin: any = DEFAULT_QUERY_PARAMS_FOR_LOGIN,
         autoTokenRenewalBuffer: number = DEFAULT_AUTO_TOKEN_RENEWAL_BUFFER
     ) {
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.onRestorePath = onRestorePath;
-        this.authorizeUrl = authorizeUrl === '' ? DEFAULT_AUTHORIZE_URL : authorizeUrl;
+        this.authHost = authHost === '' ? DEFAULT_AUTH_HOST : authHost;
         this.autoRedirectToLogin = autoRedirectToLogin;
         this.restorePathAfterLogin = restorePathAfterLogin;
         this.maxClockSkew = maxClockSkew;
@@ -77,11 +77,11 @@ export class AuthClientSettings {
     public onRestorePath: OnRestorePathFunction | undefined;
 
     /**
-     * Authorize URL endpoint.
+     * Authorize host.
      *
-     * This URL endpoint performs the authorization flow. Defaults to Splunk authorize server.
+     * This host performs the authorization flow. Defaults to Splunk authorize server.
      */
-    public authorizeUrl: string;
+    public authHost: string;
 
     /**
      * Auto-redirect to login boolean.
@@ -111,7 +111,7 @@ export class AuthClientSettings {
     /**
      * Query parameters for logging in.
      */
-    public queryParamsForLogin: string;
+    public queryParamsForLogin: any;
 
     /**
      * Auto token renewal buffer.

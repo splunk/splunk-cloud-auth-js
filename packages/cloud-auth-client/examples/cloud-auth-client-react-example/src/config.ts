@@ -17,7 +17,7 @@
 const {
     REACT_APP_CLIENT_ID,
     REACT_APP_REDIRECT_URI,
-    REACT_APP_AUTHORIZE_URL,
+    REACT_APP_AUTH_HOST,
     REACT_APP_AUTO_REDIRECT_TO_LOGIN,
     REACT_APP_RESTORE_PATH_AFTER_LOGIN,
     REACT_APP_MAX_CLOCK_SKEW,
@@ -35,7 +35,7 @@ export const Config = {
     ON_RESTORE_PATH: (path: string) => {
         console.log(path);
     },
-    AUTHORIZE_URL: REACT_APP_AUTHORIZE_URL || 'https://auth.scp.splunk.com/authorize',
+    AUTH_HOST: REACT_APP_AUTH_HOST || 'https://auth.scp.splunk.com/',
     AUTO_REDIRECT_TO_LOGIN: (REACT_APP_AUTO_REDIRECT_TO_LOGIN === 'true'), // default is true
     RESTORE_PATH_AFTER_LOGIN: (REACT_APP_RESTORE_PATH_AFTER_LOGIN === 'true'), // default is true
     MAX_CLOCK_SKEW: Number(REACT_APP_MAX_CLOCK_SKEW) || 600,

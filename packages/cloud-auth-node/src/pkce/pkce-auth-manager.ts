@@ -43,7 +43,7 @@ export class PKCECodeFlowHelper {
 
     /**
      * Creates a code verifier.
-     * A code verifier is a high-entropy cryptographic random STRING using the
+     * A code verifier is a high-entropy cryptographic random STRING usig the
      * unreserved characters [A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~"
      * from Section 2.3 of [RFC3986], with a minimum length of 43 characters
      * and a maximum length of 128 characters.

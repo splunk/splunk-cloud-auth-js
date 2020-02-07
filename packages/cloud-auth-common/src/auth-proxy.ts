@@ -45,29 +45,32 @@ export interface AccessTokenResponse {
 /* eslint-enable camelcase */
 
 /**
+ * AuthorizationTokenResponse.
+ */
+/* eslint-disable camelcase */
+export interface AuthorizationTokenResponse {
+    access_token: string;
+    expires_in: number;
+    id_token: string;
+    scope: string;
+    token_type: string;
+}
+/* eslint-enable camelcase */
+
+/**
  * CsrfTokenResponse.
  */
-export class CsrfTokenResponse {
+export interface CsrfTokenResponse {
 
     /**
      * Cookies.
      */
-    public cookies: any;
+    cookies: any;
 
     /**
      * CSRF token.
      */
-    public csrfToken: string;
-
-    /**
-     * CsrfTokenResponse constructor.
-     * @param csrfToken CSRF token.
-     * @param cookies Cookies.
-     */
-    constructor(csrfToken: string, cookies: any) {
-        this.csrfToken = csrfToken;
-        this.cookies = cookies;
-    }
+    csrfToken: string;
 }
 
 /**
@@ -82,15 +85,17 @@ export class AuthProxy {
         this.host = host;
     }
 
-    private host: string;
+    public host: string;
 
-    private readonly PATH_AUTHN: string = '/authn';
+    public static readonly PATH_AUTHN: string = '/authn';
 
-    private readonly PATH_AUTHORIZATION: string = '/authorize';
+    public static readonly PATH_AUTHORIZATION: string = '/authorize';
 
-    private readonly PATH_TOKEN: string = '/token';
+    public static readonly PATH_LOGOUT: string = '/logout';
 
-    private readonly PATH_TOKEN_CSRF: string = '/csrfToken';
+    public static readonly PATH_TOKEN: string = '/token';
+
+    public static readonly PATH_TOKEN_CSRF: string = '/csrfToken';
 
     /**
      * Retrieves an access token using auth code and code verifier.
@@ -155,7 +160,7 @@ export class AuthProxy {
             queryParameterString += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
         });
 
-        const authorizeBaseUrl = new URL(this.PATH_AUTHORIZATION, this.host);
+        const authorizeBaseUrl = new URL(AuthProxy.PATH_AUTHORIZATION, this.host);
         const authorizeUrl = new URL(queryParameterString, authorizeBaseUrl.href);
         return fetch(
             authorizeUrl.href,
@@ -176,6 +181,72 @@ export class AuthProxy {
                     throw new SplunkAuthError(`Unable to retrieve authorization code from Authorize response URL.`);
                 }
                 return code.toString();
+            });
+    }
+
+    /**
+     * Gets an authorization token for PKCE auth flow.
+     * @param clientId Client Id.
+     * @param maxAge Max age.
+     * @param nonce Nonce.
+     * @param redirectUri Redirect URI.
+     * @param responseMode Response mode.
+     * @param responseType Response type.
+     * @param scope Scope.
+     * @param state State.
+     */
+    public async authorizationToken(
+        clientId: string,
+        maxAge: string,
+        nonce: string,
+        redirectUri: string,
+        responseMode: string,
+        responseType: string,
+        scope: string,
+        state: string
+    ): Promise<AuthorizationTokenResponse> {
+        const queryParameterMap = new Map([
+            ['client_id', clientId],
+            ['max_age', maxAge],
+            ['nonce', nonce],
+            ['redirect_uri', redirectUri],
+            ['response_mode', responseMode],
+            ['response_type', responseType],
+            ['scope', scope],
+            ['state', state]
+        ]);
+        let queryParameterString = '?';
+        queryParameterMap.forEach((value, key) => {
+            const stringValue = String(value);
+            if (stringValue !== 'undefined' && stringValue !== 'null') {
+                queryParameterString += `${encodeURIComponent(key)}=${encodeURIComponent(stringValue)}&`;
+            }
+        });
+
+        const authorizeBaseUrl = new URL(AuthProxy.PATH_AUTHORIZATION, this.host);
+        const authorizeUrl = new URL(queryParameterString, authorizeBaseUrl.href);
+
+        return fetch(
+            authorizeUrl.href,
+            {
+                credentials: 'include',
+                ...HEADERS_APPLICATION_JSON
+            })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new SplunkAuthError(
+                        `authorization token call failed with status='${response.status}', ` +
+                        `statusText='${response.statusText}'`);
+                }
+                return response.json();
+            })
+            .then(json => {
+                if (!json.access_token) {
+                    throw new SplunkAuthError(
+                        `Unable to retrieve access_token from response.`);
+                }
+
+                return json;
             });
     }
 
@@ -209,7 +280,7 @@ export class AuthProxy {
      * Gets a CSRF token to be passed to the (extended) 'primary' endpoint (/authn) for PKCE auth flow.
      */
     public async csrfToken(): Promise<CsrfTokenResponse> {
-        const csrfTokenurl = new URL(this.PATH_TOKEN_CSRF, this.host);
+        const csrfTokenurl = new URL(AuthProxy.PATH_TOKEN_CSRF, this.host);
         return fetch(
             csrfTokenurl.href,
             {
@@ -232,7 +303,11 @@ export class AuthProxy {
                 if (!csrfCookie) {
                     throw new SplunkAuthError(`Unable to retrieve CSRF token cookie from csrfToken endpoint.`);
                 }
-                return new CsrfTokenResponse(csrfCookie.value, cookies);
+                const data: CsrfTokenResponse = {
+                    cookies,
+                    csrfToken: csrfCookie.value
+                };
+                return data;
             });
     }
 
@@ -281,7 +356,7 @@ export class AuthProxy {
             csrftoken: csrfToken
         });
 
-        const authnUrl = new URL(this.PATH_AUTHN, this.host);
+        const authnUrl = new URL(AuthProxy.PATH_AUTHN, this.host);
         return fetch(
             authnUrl.href,
             {
@@ -308,7 +383,7 @@ export class AuthProxy {
     }
 
     private async _token(headers: any, body: Map<string, any>): Promise<AccessTokenResponse> {
-        const tokenUrl = new URL(this.PATH_TOKEN, this.host);
+        const tokenUrl = new URL(AuthProxy.PATH_TOKEN, this.host);
         let formUrlEncodedBody = '';
         body.forEach((value, key) => {
             formUrlEncodedBody += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;

@@ -16,5 +16,5 @@
 
 export { AuthClient } from './auth-client';
 export * from './auth-client-settings';
-export { AuthClientError } from './errors/auth-client-error';
-export { OAuthError } from './errors/oauth-error';
+export { SplunkAuthClientError } from './error/splunk-auth-client-error';
+export { SplunkOAuthError } from './error/splunk-oauth-error';

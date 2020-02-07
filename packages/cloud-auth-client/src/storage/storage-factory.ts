@@ -17,7 +17,7 @@
 import { CookieStorage } from 'cookie-storage';
 import { CookieOptions } from 'cookie-storage/lib/cookie-options';
 
-import { warn } from '../util';
+import { Logger } from '../common/logger';
 
 const DUMMY_STORAGE_KEY = 'splunk-test-storage';
 
@@ -55,7 +55,7 @@ export class StorageFactory {
             return window.sessionStorage;
         }
 
-        warn("This browser doesn't support sessionStorage. Switching to cookie-based storage.");
+        Logger.warn("This browser doesn't support sessionStorage. Switching to cookie-based storage.");
         return new CookieStorage(new DefaultCookieOptions());
     }
 

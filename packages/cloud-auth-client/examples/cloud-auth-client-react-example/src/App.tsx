@@ -24,7 +24,7 @@ const authClientSettings = new AuthClientSettings(
     Config.CLIENT_ID,
     Config.REDIRECT_URI,
     Config.ON_RESTORE_PATH,
-    Config.AUTHORIZE_URL,
+    Config.AUTH_HOST,
     Config.AUTO_REDIRECT_TO_LOGIN,
     Config.RESTORE_PATH_AFTER_LOGIN,
     Config.MAX_CLOCK_SKEW,
@@ -49,7 +49,7 @@ class App extends Component {
     public async authenticate() {
         try {
             // AuthClient will redirect to login page if user is not authenticated.
-            const loggedIn = await authClient.checkAuthentication();
+            const loggedIn = await authClient.authenticate();
             this.setState({
                 loggedIn,
             });
@@ -61,12 +61,35 @@ class App extends Component {
         }
     }
 
+    public login() {
+        authClient.redirectToLogin();
+    }
+
+    public logout() {
+        authClient.logout();
+    }
+
+    public async getToken() {
+        await authClient.getAccessToken();
+    }
+
     public render() {
         const { error, loggedIn } = this.state;
 
         if (error) {
             return (
-                <div>Error: {error}</div>
+                <div>
+                    <div>Error: {error}</div>
+                    <div>
+                        <button id='login' onClick={this.login}> Login </button>
+                    </div>
+                    <div>
+                        <button id='logout' onClick={this.logout}> Logout </button>
+                    </div>
+                    <div>
+                        <button id='get-token' onClick={this.getToken}> Get Token </button>
+                    </div>
+                </div >
             );
         }
 
@@ -77,7 +100,18 @@ class App extends Component {
         }
 
         return (
-            <div>Authenticated!</div>
+            <div>
+                <div>Authenticated!</div>
+                <div>
+                    <button id='login' onClick={this.login}> Login </button>
+                </div>
+                <div>
+                    <button id='logout' onClick={this.logout}> Logout </button>
+                </div>
+                <div>
+                    <button id='get-token' onClick={this.getToken}> Get Token </button>
+                </div>
+            </div >
         );
     }
 }

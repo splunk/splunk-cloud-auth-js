@@ -109,7 +109,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @typescript-eslint/eslint-plugin
 
-Version: 2.18.0
+Version: 2.19.0
 
 License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -119,7 +119,7 @@ Repository: [https://github.com/typescript-eslint/typescript-eslint](https://git
 
 Name: @typescript-eslint/parser
 
-Version: 2.18.0
+Version: 2.19.0
 
 License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -149,7 +149,7 @@ Repository: [https://github.com/chaijs/chai](https://github.com/chaijs/chai)
 
 Name: codecov
 
-Version: 3.6.3
+Version: 3.6.5
 
 License: [MIT](https://github.com/codecov/codecov-node/raw/master/LICENSE)
 
@@ -189,7 +189,7 @@ Repository: [https://github.com/benmosher/eslint-plugin-import](https://github.c
 
 Name: eslint-plugin-import
 
-Version: 2.20.0
+Version: 2.20.1
 
 License: [MIT](https://github.com/benmosher/eslint-plugin-import/raw/master/LICENSE)
 
@@ -209,7 +209,7 @@ Repository: [https://github.com/evcohen/eslint-plugin-jsx-a11y](https://github.c
 
 Name: eslint-plugin-react
 
-Version: 7.18.0
+Version: 7.18.3
 
 License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICENSE)
 

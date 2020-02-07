@@ -5,16 +5,13 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 */
 
 import get from 'lodash/get';
-import has from 'lodash/has';
 import memoize from 'lodash/memoize';
-import urlParse from 'url-parse';
 
-import { AuthClientSettings, REDIRECT_PARAMS_STORAGE_NAME, REDIRECT_PATH_PARAMS_NAME } from './auth-client-settings';
-import { AuthClientError } from './errors/auth-client-error';
-import { StorageManager } from './storage/storage-manager';
-import token from './token';
-import { TokenManager, TokenManagerSettings } from './token-manager';
-import { warn } from './util';
+import { AuthClientSettings, REDIRECT_PATH_PARAMS_NAME } from './auth-client-settings';
+import { Logger } from './common/logger';
+import { SplunkAuthClientError } from './error/splunk-auth-client-error';
+import { OAuthParamManager, OAuthParamManagerSettings } from './oauth-param-manager';
+import { AccessToken, TokenManager, TokenManagerSettings } from './token-manager';
 
 /**
  * AuthClient.
@@ -26,80 +23,60 @@ export class AuthClient {
      */
     public constructor(settings: AuthClientSettings) {
         if (!settings.clientId) {
-            throw new AuthClientError('missing required configuration option `clientId`');
+            throw new SplunkAuthClientError('Missing required configuration option "clientId".');
         }
 
-        this._options = settings;
-        this._options.onRestorePath =
-            this._options.onRestorePath ? this._options.onRestorePath : AuthClient.defaultRestorePath;
+        this._settings = settings;
+        this._settings.onRestorePath =
+            this._settings.onRestorePath ? this._settings.onRestorePath : AuthClient.defaultRestorePath;
         this._tokenManager =
             new TokenManager(
                 new TokenManagerSettings(
-                    this._options.clientId,
-                    this._options.redirectUri,
-                    this._options.authorizeUrl,
-                    this._options.autoTokenRenewalBuffer
+                    this._settings.authHost,
+                    this._settings.autoTokenRenewalBuffer,
+                    this._settings.clientId,
+                    this._settings.redirectUri
                 )
             );
-        this._storage = new StorageManager(REDIRECT_PARAMS_STORAGE_NAME);
+        this._oauthParamManager =
+            new OAuthParamManager(
+                new OAuthParamManagerSettings(
+                    this._settings.authHost,
+                    this._settings.clientId,
+                    this._settings.redirectUri
+                ));
 
-        if (!this.isAuthenticated()) {
-            if (this._options.autoRedirectToLogin) {
-                this.getToken();
-            }
+        if (this._settings.autoRedirectToLogin) {
+            setTimeout(() => this.authenticate(), 0);
         }
     }
 
-    private _options: AuthClientSettings;
-
-    private _storage: StorageManager;
+    private _settings: AuthClientSettings;
 
     private _tokenManager: TokenManager;
 
+    private _oauthParamManager: OAuthParamManager;
+
     /**
-     * AuthClientSettings.
+     * Gets the access token.
      */
-    public get options(): AuthClientSettings {
-        return this._options;
+    public async getAccessToken(): Promise<AccessToken> {
+        try {
+            await this.authenticate();
+        } catch {
+            this.redirectToLogin();
+        }
+        return new Promise<AccessToken>((resolve) => resolve(this._tokenManager.get()));
     }
 
     /**
-     * StorageManager.
+     * Checks whether the client is authenticated by checking for a token in storage
+     * and comparing against the expiration time.
      */
-    public get storage(): StorageManager {
-        return this._storage;
-    }
-
-    /**
-     * TokenManager.
-     */
-    public get tokenManager(): TokenManager {
-        return this._tokenManager;
-    }
-
-    /**
-     * Gets Token.
-     */
-    public getToken() {
-        const autoRedirect = () => {
-            if (this._options.autoRedirectToLogin) {
-                this.redirectToLogin();
-            }
-        };
-
-        this.requestTokens()
-            .then((tokens: any) => {
-                if (tokens) {
-                    this.applyTokens(tokens);
-                } else {
-                    autoRedirect();
-                }
-            })
-            .catch((e: any) => {
-                if (AuthClient.loginOrConsentRequired(e)) {
-                    autoRedirect();
-                }
-            });
+    public isAuthenticated() {
+        const accessToken = this._tokenManager.get();
+        return accessToken
+            && get(accessToken, 'expiresAt') + this._settings.maxClockSkew > Math.floor(new Date().getTime() / 1000);
     }
 
     /**
@@ -109,21 +86,21 @@ export class AuthClient {
      * the url itself.
      *
      * For authentication errors (e.g. login or consent are required), the `error` and
-     * `error_description` are read from the url and used to populate and throw an OAuthError.
+     * `error_description` are read from the url and used to populate and throw an SplunkOAuthError.
      *
      * For cases where no token is present, failure to verify claims, or state mismatches an
      * AuthClientError is thrown.
      */
-    public parseTokensFromRedirect(): any {
-        return token
-            .parseFromUrl()
-            .then((tokens: any) => {
-                if (this._options.restorePathAfterLogin) {
+    public async parseTokenFromRedirect(): Promise<AccessToken | null> {
+        return this._oauthParamManager
+            .getAccessTokenFromUrl()
+            .then((accessToken: AccessToken) => {
+                if (this._settings.restorePathAfterLogin) {
                     this.restorePathAfterLogin();
                 }
-                return tokens;
+                return accessToken;
             })
-            .catch(e => {
+            .catch((e: any) => {
                 if (e.message === 'Unable to parse a token from the url') {
                     // If there is no token nor any error messages in the url string (e.g. the page was
                     // visited for the first time) then simply return null
@@ -135,83 +112,38 @@ export class AuthClient {
     }
 
     /**
-     * Add any tokens found to the tokenManager which stores them in sessionStorage.
+     * Check if we already have an access token in the tokenManager (sessionStorage).
+     * If not, check if there is one returned from a redirect (e.g. in the query string).
+     * If that fails due to consent or login being required then redirect to the login page.
      */
-    public applyTokens(tokens: any) {
-        if (tokens === null) {
-            return;
+    public async authenticate(redirect?: boolean): Promise<boolean> {
+        const shouldRedirect = redirect === undefined ? this._settings.autoRedirectToLogin : redirect;
+
+        if (this.isAuthenticated()) {
+            return true;
         }
-        tokens.forEach((item: any) => {
-            if (has(item, 'accessToken')) {
-                this._tokenManager.set(item);
-            }
-        });
-    }
 
-    public getAccessToken() {
-        this.checkExpiration();
-        return this._tokenManager.get();
-    }
-
-    public isAuthenticated() {
-        return !!this.getAccessToken();
-    }
-
-    public checkExpiration() {
-        const now = Math.floor(new Date().getTime() / 1000);
-        const expire = get(this._tokenManager.get(), 'expiresAt');
-        const expirationBuffer = this._options.maxClockSkew;
-        if (now - expirationBuffer > expire) {
-            warn('The JWT expired and is no longer valid');
-            this._tokenManager.clear();
-            this.redirectToLogin();
-        }
-    }
-
-    /**
-     * Store the complete window.location information so that the state can be restored after the
-     * browser is redirected to the login page and then back here.
-     */
-    public storePathBeforeLogin(): void {
         try {
-            const path = window.location.pathname + window.location.search + window.location.hash;
-            this._storage.set(path, REDIRECT_PATH_PARAMS_NAME);
-        } catch (e) {
-            warn(`Cannot store the path at  ${REDIRECT_PATH_PARAMS_NAME}`);
-        }
-    }
+            const token = await this.requestToken();
 
-    /**
-     * Get the query string information for the params specified in queryParamsForLogin.
-     * This is used to pass additional information via query params to the log in page.
-     */
-    public getQueryStringForLogin(): string {
-        if (this._options.queryParamsForLogin) {
-            const urlQueryParams = new URLSearchParams(window.location.search);
-            const paramsFoundInUrl = Object.keys(this._options.queryParamsForLogin).filter(param =>
-                urlQueryParams.has(param)
-            );
-            const queryParams = paramsFoundInUrl.map(
-                param => `${param}=${urlQueryParams.get(param)}`
-            );
-            return queryParams.join('&');
-        }
-        return '';
-    }
-
-    /**
-     * Retrieve the information stored in storePathBeforeLogin to restore the state of this page.
-     */
-    public restorePathAfterLogin(): void {
-        try {
-            const p = this._storage.get(REDIRECT_PATH_PARAMS_NAME);
-            // this._storage.clear(REDIRECT_PATH_PARAMS_NAME);
-            this._storage.delete(REDIRECT_PATH_PARAMS_NAME);
-            if (p && this._options.onRestorePath) {
-                this._options.onRestorePath(p);
+            if (!token || !token.accessToken) {
+                throw new SplunkAuthClientError('Token not found.', 'token_not_found');
             }
+
+            this._tokenManager.set(token);
+            return true;
         } catch (e) {
-            warn(`Cannot restore the path from ${REDIRECT_PATH_PARAMS_NAME}`);
+            if ((e.code === 'login_required'
+                || e.code === 'consent_required'
+                || e.code === 'token_not_found')
+                && shouldRedirect) {
+                this.redirectToLogin();
+                // Change the error.message to indicate that a redirect is being performed
+                Logger.warn(`${e.message} Redirecting to the login page...`);
+                return false;
+            }
+
+            throw e;
         }
     }
 
@@ -227,67 +159,21 @@ export class AuthClient {
      */
     /* eslint-enable max-len */
     public redirectToLogin() {
-        if (this._options.restorePathAfterLogin) {
+        if (this._settings.restorePathAfterLogin) {
             this.storePathBeforeLogin();
         }
 
-        let options = null;
-        if (this._options.queryParamsForLogin) {
-            options = { additionalQueryString: this.getQueryStringForLogin() };
-        }
-
-        token.getWithRedirect(this._options.clientId, this._options.redirectUri, this._options.authorizeUrl, options);
-    }
-
-    /**
-     * Check if we already have an access token in the tokenManager (sessionStorage).
-     * If not, check if there is one returned from a redirect (e.g. in the query string).
-     * If that fails due to consent or login being required then redirect to the login page.
-     */
-    public checkAuthentication(redirect?: boolean): Promise<boolean> {
-        const shouldRedirect = redirect === undefined ? this._options.autoRedirectToLogin : redirect;
-
-        return new Promise<boolean>((resolve, reject) => {
-            if (this.isAuthenticated()) {
-                resolve(true);
-                return;
-            }
-
-            this.requestTokens()
-                .then((tokens: any) => {
-                    if (tokens != null) {
-                        this.applyTokens(tokens);
-                        resolve(true);
-                        return;
-                    }
-
-                    if (shouldRedirect) {
-                        reject(new AuthClientError('Token not found'));
-                        return;
-                    }
-
-                    resolve(false);
-                }, (e: any) => {
-                    if (AuthClient.loginOrConsentRequired(e) && shouldRedirect) {
-                        this.redirectToLogin();
-                        // Change the error.message to indicate that a redirect is being performed
-                        e.message = 'Redirecting to the login page...';
-                    }
-
-                    reject(e);
-                });
-        });
+        const additionalLoginQueryParams = this.getQueryStringForLogin();
+        window.location.href = this._oauthParamManager.generateAuthUrl(additionalLoginQueryParams).href;
     }
 
     /**
      * Clear any tokens saved to sessionStorage. Note that session cookies are not cleared.
      */
     public logout(url?: any | string) {
-        const logoutRedirUrl =
-            typeof url === 'string' ? url : this._options.redirectUri || window.location.href;
-        const authUrl = urlParse(this._options.authorizeUrl).origin;
         this._tokenManager.clear();
-        window.location = `${authUrl}/logout?redirect_uri=${encodeURIComponent(logoutRedirUrl)}`;
+        window.location.href =
+            this._oauthParamManager.generateLogoutUrl(url || this._settings.redirectUri || window.location.href).href;
     }
 
     /**
@@ -298,14 +184,56 @@ export class AuthClient {
     }
 
     /**
-     * Determine if the error indicates an OAuth error where consent or login are required.
+     * Check for token returned from a previous redirect, if none then call the /authorize
      */
-    private static loginOrConsentRequired(e: any): boolean {
-        return e.code === 'login_required' || e.code === 'consent_required';
+    private requestToken = memoize(() => this.parseTokenFromRedirect());
+
+    /**
+     * Store the complete window.location information so that the state can be restored after the
+     * browser is redirected to the login page and then back here.
+     */
+    private storePathBeforeLogin(): void {
+        try {
+            const path = window.location.pathname + window.location.search + window.location.hash;
+            this._oauthParamManager.setRedirectPath(path);
+        } catch {
+            Logger.warn(`Cannot store the path at ${REDIRECT_PATH_PARAMS_NAME}`);
+        }
     }
 
     /**
-     * Check for tokens returned from a previous redirect, if none then call the /authorize
+     * Retrieve the information stored in storePathBeforeLogin to restore the state of this page.
      */
-    private requestTokens = memoize(() => this.parseTokensFromRedirect());
+    private restorePathAfterLogin(): void {
+        try {
+            const path = this._oauthParamManager.getRedirectPath();
+            this._oauthParamManager.deleteRedirectPath();
+            if (path && this._settings.onRestorePath) {
+                this._settings.onRestorePath(path);
+            }
+        } catch {
+            Logger.warn(`Cannot restore the path from ${REDIRECT_PATH_PARAMS_NAME}`);
+        }
+    }
+
+    /**
+     * Get the query string information for the params specified in queryParamsForLogin.
+     * This is used to pass additional information via query params to the log in page.
+     */
+    private getQueryStringForLogin(): Map<string, string> {
+        if (!this._settings.queryParamsForLogin) {
+            return new Map();
+        }
+
+        const urlQueryParams = new URLSearchParams(window.location.search);
+        return new Map(
+            Object.entries(this._settings.queryParamsForLogin)
+                .filter(
+                    ([key,]) => urlQueryParams.has(key)
+                )
+                .map(
+                    ([key, value]) => [key, String(value)]
+                )
+        );
+    }
 }

@@ -1,5 +1,5 @@
 
-import { AuthClientError } from '../../../src/errors/auth-client-error';
+import { SplunkAuthClientError } from '../../../src/error/splunk-auth-client-error';
 import { StorageFactory } from '../../../src/storage/storage-factory';
 import { StorageManager } from '../../../src/storage/storage-manager';
 
@@ -9,12 +9,22 @@ const STORAGE_KEY_1 = 'key1';
 const STORAGE_VALUE_0 = '{"key_0":"value_0"}';
 const STORAGE_VALUE_1 = '{"key_1":"value_1"}';
 
+let mockLoggerWarn: jest.Mock;
+jest.mock('../../../src/common/logger', () => ({
+    Logger: class {
+        public static warn(message: string): void {
+            mockLoggerWarn(message);
+        }
+    }
+}));
+
 describe('StorageManager', () => {
     let sessionStorageMock: Storage;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let dataBlob: any;
 
     beforeEach(() => {
+        mockLoggerWarn = jest.fn();
         jest.spyOn(StorageFactory, 'get').mockImplementation(() => { return sessionStorageMock; });
         dataBlob = {
             key0: STORAGE_VALUE_0
@@ -27,6 +37,10 @@ describe('StorageManager', () => {
             removeItem: jest.fn(),
             setItem: jest.fn(),
         };
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     describe('constructor', () => {
@@ -96,7 +110,7 @@ describe('StorageManager', () => {
             expect(sessionStorageMock.getItem).toBeCalledTimes(1);
         });
 
-        it('throws AuthClientError when unable to parse storage string', () => {
+        it('throws SplunkAuthClientError when unable to parse storage string', () => {
             // Arrange
             sessionStorageMock.getItem = jest.fn().mockImplementation(() => {
                 return 'malformedJson';
@@ -104,7 +118,7 @@ describe('StorageManager', () => {
 
             // Act/Assert
             expect(() => { storageManager.get(); })
-                .toThrow(new AuthClientError('Unable to parse storage string: some-storage-name'));
+                .toThrow(new SplunkAuthClientError('Unable to parse storage string: some-storage-name'));
             expect(sessionStorageMock.getItem).toBeCalledWith(STORAGE_NAME);
             expect(sessionStorageMock.getItem).toBeCalledTimes(1);
         });
@@ -162,7 +176,7 @@ describe('StorageManager', () => {
             expect(sessionStorageMock.setItem).toBeCalledTimes(1);
         });
 
-        it('throws AuthClientError when Storage.setItem fails', () => {
+        it('throws SplunkAuthClientError when Storage.setItem fails', () => {
             // Arrange
             sessionStorageMock.setItem = jest.fn().mockImplementation(() => {
                 throw new Error('error in setItem');
@@ -170,7 +184,7 @@ describe('StorageManager', () => {
 
             // Act/Assert
             expect(() => { storageManager.set(STORAGE_VALUE_1); })
-                .toThrow(new AuthClientError('Unable to set storage: some-storage-name'));
+                .toThrow(new SplunkAuthClientError('Unable to set storage: some-storage-name'));
             expect(sessionStorageMock.getItem).not.toBeCalledWith();
             expect(sessionStorageMock.setItem)
                 .toBeCalledWith(STORAGE_NAME, JSON.stringify(STORAGE_VALUE_1));
@@ -222,7 +236,7 @@ describe('StorageManager', () => {
             expect(sessionStorageMock.setItem).not.toBeCalled();
         });
 
-        it('throws AuthClientError when Storage.removeItem fails', () => {
+        it('throws SplunkAuthClientError when Storage.removeItem fails', () => {
             // Arrange
             sessionStorageMock.removeItem = jest.fn().mockImplementation(() => {
                 throw new Error('error in removeItem');
@@ -230,7 +244,7 @@ describe('StorageManager', () => {
 
             // Act/Assert
             expect(() => { storageManager.delete(); })
-                .toThrow(new AuthClientError('Unable to remove storage: some-storage-name'));
+                .toThrow(new SplunkAuthClientError('Unable to remove storage: some-storage-name'));
             expect(sessionStorageMock.removeItem).toBeCalledWith(STORAGE_NAME);
             expect(sessionStorageMock.removeItem).toBeCalledTimes(1);
         });

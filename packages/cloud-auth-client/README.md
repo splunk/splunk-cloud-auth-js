@@ -13,8 +13,8 @@ You can use the `@splunkdev/cloud-auth-client` library alone or with the [Splunk
 
 ## Authorization flows
 
-This library supports the following authorization flows:
-* Implicit
+This library supports the following OAuth authorization flows:
+* [Implicit](https://oauth.net/2/grant-types/implicit/)
 
 For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 
@@ -76,7 +76,7 @@ class App extends Component {
     authenticate = async () => {
         try {
         // AuthClient redirects to a login page if the user is not authenticated.
-        const loggedIn = await authClient.checkAuthentication();
+        const loggedIn = await authClient.authenticate();
         this.setState({
             loggedIn,
         });
@@ -104,7 +104,7 @@ class App extends Component {
         }
 
         return (
-        <div>Authenticated: {String(loggedIn)}</div>
+        <div>Authenticated!</div>
         );
     }
 }

@@ -21,7 +21,7 @@
     "lint:tests": "eslint \"test/**/*.ts\"",
     "lint:fix:tests": "eslint \"test/**/*.ts\" --fix",
     "prepack": "yarn build",
-    "test": "jest --config ./jest.json --verbose --silent",
+    "test": "yarn lint && jest --config ./jest.json --verbose",
     "test:examples": "sh ./ci/scripts/verify_example.sh",
     "third-party-licenses:generate": "node ./ci/generate_3rdparty.js",
     "third-party-licenses": "sh ./ci/scripts/generate_third_party_credits.sh"

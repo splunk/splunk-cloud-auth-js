@@ -22,7 +22,7 @@ import 'mocha';
 import { assert } from 'chai';
 import * as fetchMock from 'fetch-mock';
 
-import { AuthProxy } from '../../src/auth-proxy';
+import { AuthorizationTokenResponse, AuthProxy } from '../../src/auth-proxy';
 
 const MOCK_ACCESS_TOKEN = 'at';
 const MOCK_EXPIRES_IN = 1000;
@@ -200,6 +200,142 @@ describe('AuthProxy', () => {
                     RESPONSE_TYPE,
                     SCOPE,
                     SESSION_TOKEN,
+                    STATE),
+                expectedErrorMessage);
+        });
+    });
+
+    describe('authorizationToken', () => {
+        const CLIENT_ID = 'clientid';
+        const MAX_AGE = '99';
+        const NONCE = 'nonce';
+        const REDIRECT_URI = 'https://redirect.com/';
+        const RESPONSE_MODE = 'responsemode';
+        const RESPONSE_TYPE = 'responsetype';
+        const SCOPE = 'scope';
+        const STATE = 'state';
+
+        it('should return a successful authorization token promise', async () => {
+            // Arrange
+            const tokenResponse: AuthorizationTokenResponse = {
+                access_token: 'abcd123',
+                expires_in: 10,
+                id_token: '1234mnb',
+                scope: 'some scope',
+                token_type: 'token-type'
+            }
+            fetchMock.get(
+                `${MOCK_HOST}${PATH_AUTHORIZATION}`
+                + `?client_id=${CLIENT_ID}`
+                + `&max_age=${MAX_AGE}`
+                + `&nonce=${NONCE}`
+                + `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
+                + `&response_mode=${RESPONSE_MODE}`
+                + `&response_type=${RESPONSE_TYPE}`
+                + `&scope=${SCOPE}`
+                + `&state=${STATE}&`,
+                {
+                    body: tokenResponse
+                });
+
+            fetchMock.post(
+                `${MOCK_HOST}${PATH_TOKEN}`,
+                {
+                    body: {
+                        access_token: MOCK_ACCESS_TOKEN,
+                        expires_in: MOCK_EXPIRES_IN,
+                        id_token: MOCK_ID_TOKEN,
+                        scope: MOCK_SCOPE,
+                        token_type: MOCK_TOKEN_TYPE
+                    },
+                    status: 200,
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'credentials': 'include'
+                    }
+                });
+
+            // Act
+            const result = await authProxy.authorizationToken(
+                CLIENT_ID,
+                MAX_AGE,
+                NONCE,
+                REDIRECT_URI,
+                RESPONSE_MODE,
+                RESPONSE_TYPE,
+                SCOPE,
+                STATE);
+
+            // Assert
+            assert.deepEqual(result, tokenResponse);
+        });
+
+        it('should throw SplunkAuthError when response status code is not 200', async () => {
+            // Arrange
+            const ERROR_STATUS = 500;
+            const ERROR_STATUS_TEXT = 'Internal Server Error';
+            const expectedErrorMessage = `authorization token call failed with ` +
+                `status='${ERROR_STATUS}', statusText='${ERROR_STATUS_TEXT}'`;
+            fetchMock.get(
+                `${MOCK_HOST}${PATH_AUTHORIZATION}`
+                + `?client_id=${CLIENT_ID}`
+                + `&max_age=${MAX_AGE}`
+                + `&nonce=${NONCE}`
+                + `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
+                + `&response_mode=${RESPONSE_MODE}`
+                + `&response_type=${RESPONSE_TYPE}`
+                + `&scope=${SCOPE}`
+                + `&state=${STATE}&`,
+                {
+                    status: ERROR_STATUS,
+                });
+
+            // Act/Assert
+            return assert.isRejected(
+                authProxy.authorizationToken(
+                    CLIENT_ID,
+                    MAX_AGE,
+                    NONCE,
+                    REDIRECT_URI,
+                    RESPONSE_MODE,
+                    RESPONSE_TYPE,
+                    SCOPE,
+                    STATE),
+                expectedErrorMessage);
+        });
+
+        it('should throw SplunkAuthError when response does not contain acces_token', async () => {
+            // Arrange
+            const expectedErrorMessage = `Unable to retrieve access_token from response.`;
+            fetchMock.get(
+                `${MOCK_HOST}${PATH_AUTHORIZATION}`
+                + `?client_id=${CLIENT_ID}`
+                + `&max_age=${MAX_AGE}`
+                + `&nonce=${NONCE}`
+                + `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`
+                + `&response_mode=${RESPONSE_MODE}`
+                + `&response_type=${RESPONSE_TYPE}`
+                + `&scope=${SCOPE}`
+                + `&state=${STATE}&`,
+                {
+                    body: {
+                        access_token: undefined,
+                    },
+                });
+
+            // Act/Assert
+            return assert.isRejected(
+                authProxy.authorizationToken(
+                    CLIENT_ID,
+                    MAX_AGE,
+                    NONCE,
+                    REDIRECT_URI,
+                    RESPONSE_MODE,
+                    RESPONSE_TYPE,
+                    SCOPE,
                     STATE),
                 expectedErrorMessage);
         });

@@ -5,18 +5,19 @@ without a valid written license from Splunk Inc. is PROHIBITED.
 */
 
 /**
- * AuthClientError.
+ * SplunkOAuthError.
  */
-export class AuthClientError implements Error {
+export class SplunkOAuthError implements Error {
     /**
-     * AuthClientError constructor.
+     * SplunkOAuthError.
      * @param message Error message.
+     * @param code Error code.
      * @param stack Error stack trace.
      */
-    public constructor(message: string, stack?: string) {
-        this.name = 'AuthClientError';
+    constructor(message: string, code: string, stack?: string) {
+        this.name = 'SplunkOAuthError';
         this.message = message;
-        this.code = 'internal_error';
+        this.code = code;
         this.stack = stack;
     }
 
@@ -36,7 +37,7 @@ export class AuthClientError implements Error {
     public code: string;
 
     /**
-     * Error stack trace.
+     * Error stack.
      */
     public stack?: string | undefined;
 }

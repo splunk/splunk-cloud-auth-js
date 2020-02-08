@@ -14,17 +14,25 @@ EXAMPLE_WORKING_DIR=$ORIGINAL_WORKING_DIR/examples/cloud-auth-client-react-examp
 # unlinking local packages
 yarn unlink
 cd $EXAMPLE_WORKING_DIR
+yarn unlink @splunkdev/cloud-auth-common
 yarn unlink @splunkdev/cloud-auth-client
 
-# transpiling
+# transpiling and linking cloud-auth-common
+cd $ORIGINAL_WORKING_DIR/../cloud-auth-common
+yarn && yarn build
+yarn link
+
+# transpiling and linking cloud-auth-client
 cd $ORIGINAL_WORKING_DIR
-(yarn tsc > /dev/null || true)
+yarn && yarn build
+yarn link
 
 # linking local packages by temporarily removing local dependencies from package and linking
-yarn link
 cp $EXAMPLE_WORKING_DIR/package.json $EXAMPLE_WORKING_DIR/package.json.orig
 cd $EXAMPLE_WORKING_DIR
+yarn remove @splunkdev/cloud-auth-common
 yarn remove @splunkdev/cloud-auth-client
+yarn link @splunkdev/cloud-auth-common
 yarn link @splunkdev/cloud-auth-client
 
 # verify install and build

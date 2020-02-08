@@ -1,4 +1,4 @@
-# Splunk Cloud Services Cloud-Auth
+# Splunk Cloud Services Auth Components
 
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
@@ -19,11 +19,11 @@ This monorepo contains the following packages.
 
 ## Get started
 
-Follow the instructions below to install and run the Cloud-Auth packages in your local development environment.
+Follow the instructions below to install and run the Auth packages in your local development environment.
 
 ### Prerequisites
 
-Install the following tools before using the Cloud-Auth packages:
+Install the following tools before using the Auth packages:
 
 * [Git](https://git-scm.com/downloads)
 * [Node.js](https://nodejs.org/en/download/) (includes [npm](https://www.npmjs.com/get-npm))
@@ -36,7 +36,7 @@ Several of the npm scripts in this repository contain shell scripts targeting Ba
 
 ### Installation
 
-The Cloud-Auth packages are available in the [`@splunkdev`](https://www.npmjs.com/search?q=%40splunkdev) package scope. 
+The Auth packages are available in the [`@splunkdev`](https://www.npmjs.com/search?q=%40splunkdev) package scope. 
 
 To install these packages into your project, use a node package manager such as npm or Yarn. For example:
 
@@ -60,7 +60,7 @@ Use the following script commands at the top level of the repository directory a
 
 ### Examples
 
-For examples showing how to use the Cloud-Auth packages, see the `examples` directory at the root level of each package directory. 
+For examples showing how to use the Auth packages, see the `examples` directory at the root level of each package directory. 
 
 ## Built with
 

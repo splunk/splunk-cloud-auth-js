@@ -17,6 +17,7 @@
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",
     "prepublishOnly": "lerna run build",
+    "version": "sh cd/replace_url.sh",
     "publish:lerna": "sh ./cd/publish.sh",
     "publish:docs": "lerna run publish:docs",
     "docs": "lerna run docs",

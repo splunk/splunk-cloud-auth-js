@@ -1,6 +1,6 @@
 {
   "name": "@splunkdev/cloud-auth-common",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Splunk Cloud Common Authentication Library for JavaScript",
   "main": "./src/index.js",
   "author": "Splunk, Inc.",

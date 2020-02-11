@@ -1,20 +1,37 @@
+/**
+ * Copyright 2020 Splunk, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"): you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { AuthProxy } from '@splunkdev/cloud-auth-common';
 
+import { clearWindowLocationFragments, generateRandomString } from '../common/util';
+import { SplunkAuthClientError } from "../error/splunk-auth-client-error";
+import { SplunkOAuthError } from "../error/splunk-oauth-error";
+import { AccessToken } from '../model/access-token';
 import {
     REDIRECT_OAUTH_PARAMS_NAME,
     REDIRECT_PARAMS_STORAGE_NAME,
     REDIRECT_PATH_PARAMS_NAME,
-} from './auth-client-settings';
-import { generateRandomString, removeWindowLocationHash } from './common/util';
-import { SplunkAuthClientError } from "./error/splunk-auth-client-error";
-import { SplunkOAuthError } from "./error/splunk-oauth-error";
-import { StorageManager } from './storage/storage-manager';
-import { AccessToken } from './token-manager';
+} from '../splunk-auth-client-settings';
+import { StorageManager } from '../storage/storage-manager';
+import { AuthManager } from './auth-manager';
 
 /**
- * OAuthParamManagerSettings.
+ * ImplicitAuthManagerSettings.
  */
-export class OAuthParamManagerSettings {
+export class ImplicitAuthManagerSettings {
     /**
      * OAuthParamManagerSettings constructor.
      * @param authHost Authorize Host.
@@ -55,21 +72,21 @@ export class OAuthParamManagerSettings {
 }
 
 /**
- * OAuthParamManager.
+ * ImplicitAuthManager.
  */
-export class OAuthParamManager {
+export class ImplicitAuthManager implements AuthManager {
     /**
-     * OAuthParamManager constructor.
-     * @param settings OAuthParamManagerSettings.
+     * ImplicitAuthManager constructor.
+     * @param settings ImplicitAuthManagerSettings.
      */
-    public constructor(settings: OAuthParamManagerSettings) {
+    public constructor(settings: ImplicitAuthManagerSettings) {
         this._settings = settings;
         this._redirectParamsStorage = new StorageManager(this._settings.redirectParamsStorageName);
     }
 
     private _redirectParamsStorage: StorageManager;
 
-    private _settings: OAuthParamManagerSettings;
+    private _settings: ImplicitAuthManagerSettings;
 
     /**
      * Gets redirect path from storage.
@@ -97,7 +114,7 @@ export class OAuthParamManager {
      * Gets an access token from the OAuth parameters in the provided URL or the window location
      * @param url Url.
      */
-    public getAccessTokenFromUrl(url?: string): Promise<AccessToken> {
+    public getAccessToken(url?: string): Promise<AccessToken> {
         const hash = url ? url.toString().substring(url.indexOf('#')) : window.location.hash.toString();
         const hashParameters = new URLSearchParams(hash.substr(1));
 
@@ -138,7 +155,7 @@ export class OAuthParamManager {
         }
 
         if (!url) {
-            removeWindowLocationHash();
+            clearWindowLocationFragments();
         }
 
         const accessToken: AccessToken = {
@@ -198,7 +215,7 @@ export class OAuthParamManager {
      */
     public generateLogoutUrl(redirectUrl: string): URL {
         const url = new URL(AuthProxy.PATH_LOGOUT, this._settings.authHost);
-        url.searchParams.append('redirect_uri', encodeURIComponent(redirectUrl));
-        return url;
+        const queryParameterString = `?redirect_uri=${redirectUrl}`;
+        return new URL(queryParameterString, url);
     }
 }

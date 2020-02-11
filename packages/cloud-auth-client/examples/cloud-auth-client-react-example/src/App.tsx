@@ -14,13 +14,14 @@
  * under the License.
  */
 
-import { AuthClient } from '@splunkdev/cloud-auth-client';
-import { AuthClientSettings } from '@splunkdev/cloud-auth-client';
+import { SplunkAuthClient, GrantType } from '@splunkdev/cloud-auth-client';
+import { SplunkAuthClientSettings } from '@splunkdev/cloud-auth-client';
 import React, { Component } from 'react';
 import { Config } from './config';
 
 // Create settings
-const authClientSettings = new AuthClientSettings(
+const authClientSettings = new SplunkAuthClientSettings(
+    Config.GRANT_TYPE as GrantType,
     Config.CLIENT_ID,
     Config.REDIRECT_URI,
     Config.ON_RESTORE_PATH,
@@ -33,13 +34,14 @@ const authClientSettings = new AuthClientSettings(
 );
 
 // Initialize AuthClient
-const authClient = new AuthClient(authClientSettings);
+const authClient = new SplunkAuthClient(authClientSettings);
 
 class App extends Component {
 
     state = {
         loggedIn: false,
         error: null,
+        token: ''
     };
 
     public async componentDidMount() {
@@ -70,7 +72,8 @@ class App extends Component {
     }
 
     public async getToken() {
-        await authClient.getAccessToken();
+        const token = await authClient.getAccessToken();
+        console.log(JSON.stringify(token, null, '\t'));
     }
 
     public render() {

@@ -16,11 +16,31 @@ export const TOKEN_STORAGE_NAME = 'splunk-token-storage';
 export declare type OnRestorePathFunction = (p: any) => void;
 
 /**
- * AuthClientSettings.
+ * Support OAuth grant types.
  */
-export class AuthClientSettings {
+export enum GrantType {
+    /**
+     * Implicit Flow.
+     *
+     * https://tools.ietf.org/html/rfc6749#section-1.3.2
+     */
+    IMPLICIT = "implicit",
+
+    /**
+     * Proof Code for Key Exchange (PKCE).
+     *
+     * https://tools.ietf.org/html/rfc7636
+     */
+    PKCE = "pkce"
+}
+
+/**
+ * SplunkAuthClientSettings.
+ */
+export class SplunkAuthClientSettings {
     /**
      * AuthClientSettings constructor.
+     * @param grantType Grant type.
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
      * @param onRestorePath OnRestorePath callback function.
@@ -32,6 +52,7 @@ export class AuthClientSettings {
      * @param autoTokenRenewalBuffer Auto token renewal buffer in seconds.
      */
     public constructor(
+        grantType: GrantType = GrantType.IMPLICIT,
         clientId: string,
         redirectUri: string,
         onRestorePath: OnRestorePathFunction | undefined = undefined,
@@ -42,6 +63,7 @@ export class AuthClientSettings {
         queryParamsForLogin: any = DEFAULT_QUERY_PARAMS_FOR_LOGIN,
         autoTokenRenewalBuffer: number = DEFAULT_AUTO_TOKEN_RENEWAL_BUFFER
     ) {
+        this.grantType = grantType;
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.onRestorePath = onRestorePath;
@@ -52,6 +74,13 @@ export class AuthClientSettings {
         this.queryParamsForLogin = queryParamsForLogin;
         this.autoTokenRenewalBuffer = autoTokenRenewalBuffer
     }
+
+    /**
+     * Grant Type.
+     *
+     * This enumeration is the set of supported OAuth Grant Types.
+     */
+    public grantType: GrantType;
 
     /**
      * Client Id.

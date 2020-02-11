@@ -14,7 +14,32 @@
  * under the License.
  */
 
-export { SplunkAuthClient } from './splunk-auth-client';
-export * from './splunk-auth-client-settings';
-export { SplunkAuthClientError } from './error/splunk-auth-client-error';
-export { SplunkOAuthError } from './error/splunk-oauth-error';
+/**
+ * AccessToken interface.
+ */
+export interface AccessToken {
+    /**
+     * Access token string.
+     */
+    accessToken: string;
+
+    /**
+     * Expires at.
+     */
+    expiresAt: number;
+
+    /**
+     * Expiration duration.
+     */
+    expiresIn: number;
+
+    /**
+     * Token type.
+     */
+    tokenType: string;
+
+    /**
+     * Scopes.
+     */
+    scopes?: string[];
+}

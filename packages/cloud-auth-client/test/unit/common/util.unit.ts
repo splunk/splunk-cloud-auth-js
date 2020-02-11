@@ -1,4 +1,4 @@
-import { generateRandomString, removeWindowLocationHash } from '../../../src/common/util';
+import { clearWindowLocationFragments, generateRandomString } from '../../../src/common/util';
 import { mockWindowProperty } from '../fixture/test-setup';
 
 const TITLE_PARAM = 'title';
@@ -51,7 +51,7 @@ describe('util', () => {
 
             it('replaces state in history', () => {
                 // Act
-                removeWindowLocationHash();
+                clearWindowLocationFragments();
 
                 // Assert
                 expect(historyMock.replaceState).toBeCalledWith(null, TITLE_PARAM, `${PATH_NAME_PARAM}${SEARCH_PARAM}`);
@@ -75,7 +75,7 @@ describe('util', () => {
 
             it('replaces state in history', () => {
                 // Act
-                removeWindowLocationHash();
+                clearWindowLocationFragments();
 
                 // Assert
                 expect(locationMock.hash).toEqual('');

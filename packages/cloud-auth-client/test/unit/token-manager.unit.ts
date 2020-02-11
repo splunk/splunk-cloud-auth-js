@@ -1,6 +1,7 @@
 /* eslint-disable import/first */
 /* eslint-disable @typescript-eslint/camelcase */
-import { AccessToken, TokenManager, TokenManagerSettings } from '../../src/token-manager';
+import { AccessToken } from '../../src/model/access-token';
+import { TokenManager, TokenManagerSettings } from '../../src/token/token-manager';
 
 const AUTH_HOST = 'host.com';
 const AUTO_TOKEN_RENEWAL_BUFFER_0 = 0;

@@ -15,6 +15,16 @@ License: [MIT](https://github.com/bouzuya/cookie-storage/raw/master/LICENSE)
 
 Repository: [https://github.com/bouzuya/cookie-storage](https://github.com/bouzuya/cookie-storage)
 
+## crypto-js
+
+Name: crypto-js
+
+Version: 3.2.0
+
+License: [MIT](http://github.com/brix/crypto-js/raw/master/LICENSE)
+
+Repository: [http://github.com/brix/crypto-js](http://github.com/brix/crypto-js)
+
 ## lodash
 
 Name: lodash
@@ -24,26 +34,6 @@ Version: 4.17.15
 License: [MIT](https://github.com/lodash/lodash/raw/master/LICENSE)
 
 Repository: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
-
-## q
-
-Name: q
-
-Version: 1.5.1
-
-License: [MIT](https://github.com/kriskowal/q/raw/master/LICENSE)
-
-Repository: [https://github.com/kriskowal/q](https://github.com/kriskowal/q)
-
-## url-parse
-
-Name: url-parse
-
-Version: 1.4.7
-
-License: [MIT](https://github.com/unshiftio/url-parse/raw/master/LICENSE)
-
-Repository: [https://github.com/unshiftio/url-parse](https://github.com/unshiftio/url-parse)
 
 ## @babel/cli
 
@@ -125,6 +115,16 @@ License: [MIT](https://github.com/babel/babel/raw/master/LICENSE)
 
 Repository: [https://github.com/babel/babel](https://github.com/babel/babel)
 
+## @types/crypto-js
+
+Name: @types/crypto-js
+
+Version: 3.1.43
+
+License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
+
+Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+
 ## @types/jest
 
 Name: @types/jest
@@ -145,31 +145,11 @@ License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LIC
 
 Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
-## @types/q
-
-Name: @types/q
-
-Version: 1.5.2
-
-License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
-
-Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-
-## @types/url-parse
-
-Name: @types/url-parse
-
-Version: 1.4.3
-
-License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
-
-Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
-
 ## @typescript-eslint/eslint-plugin
 
 Name: @typescript-eslint/eslint-plugin
 
-Version: 2.19.0
+Version: 2.19.2
 
 License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -179,7 +159,7 @@ Repository: [https://github.com/typescript-eslint/typescript-eslint](https://git
 
 Name: @typescript-eslint/parser
 
-Version: 2.19.0
+Version: 2.19.2
 
 License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 

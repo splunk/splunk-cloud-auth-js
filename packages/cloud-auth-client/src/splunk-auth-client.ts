@@ -17,28 +17,36 @@
 import get from 'lodash/get';
 import memoize from 'lodash/memoize';
 
-import { AuthClientSettings, REDIRECT_PATH_PARAMS_NAME } from './auth-client-settings';
+import { AuthManager } from './auth/auth-manager';
+import { AuthManagerFactory } from './auth/auth-manager-factory';
 import { Logger } from './common/logger';
 import { SplunkAuthClientError } from './error/splunk-auth-client-error';
-import { OAuthParamManager, OAuthParamManagerSettings } from './oauth-param-manager';
-import { AccessToken, TokenManager, TokenManagerSettings } from './token-manager';
+import { AccessToken } from './model/access-token';
+import { GrantType, REDIRECT_PATH_PARAMS_NAME, SplunkAuthClientSettings } from './splunk-auth-client-settings';
+import { TokenManager, TokenManagerSettings } from './token/token-manager';
 
 /**
- * AuthClient.
+ * SplunkAuthClient.
  */
-export class AuthClient {
+export class SplunkAuthClient {
     /**
      * AuthClient constructor.
      * @param settings AuthClientSettings.
      */
-    public constructor(settings: AuthClientSettings) {
+    public constructor(settings: SplunkAuthClientSettings) {
+        if (!Object.values(GrantType).some((value) => value === settings.grantType)) {
+            throw new SplunkAuthClientError(
+                `Missing valid value for required configuration option "grantType". ` +
+                `Values=[${Object.values(GrantType)}]`);
+        }
+
         if (!settings.clientId) {
             throw new SplunkAuthClientError('Missing required configuration option "clientId".');
         }
 
         this._settings = settings;
         this._settings.onRestorePath =
-            this._settings.onRestorePath ? this._settings.onRestorePath : AuthClient.defaultRestorePath;
+            this._settings.onRestorePath ? this._settings.onRestorePath : SplunkAuthClient.defaultRestorePath;
         this._tokenManager =
             new TokenManager(
                 new TokenManagerSettings(
@@ -48,24 +56,24 @@ export class AuthClient {
                     this._settings.redirectUri
                 )
             );
-        this._oauthParamManager =
-            new OAuthParamManager(
-                new OAuthParamManagerSettings(
-                    this._settings.authHost,
-                    this._settings.clientId,
-                    this._settings.redirectUri
-                ));
+        this._authManager =
+            AuthManagerFactory.get(
+                this._settings.grantType,
+                this._settings.authHost,
+                this._settings.clientId,
+                this._settings.redirectUri
+            );
 
         if (this._settings.autoRedirectToLogin) {
             setTimeout(() => this.authenticate(), 0);
         }
     }
 
-    private _settings: AuthClientSettings;
+    private _settings: SplunkAuthClientSettings;
 
     private _tokenManager: TokenManager;
 
-    private _oauthParamManager: OAuthParamManager;
+    private _authManager: AuthManager;
 
     /**
      * Gets the access token.
@@ -102,8 +110,8 @@ export class AuthClient {
      * AuthClientError is thrown.
      */
     public async parseTokenFromRedirect(): Promise<AccessToken | null> {
-        return this._oauthParamManager
-            .getAccessTokenFromUrl()
+        return this._authManager
+            .getAccessToken()
             .then((accessToken: AccessToken) => {
                 if (this._settings.restorePathAfterLogin) {
                     this.restorePathAfterLogin();
@@ -174,7 +182,7 @@ export class AuthClient {
         }
 
         const additionalLoginQueryParams = this.getQueryStringForLogin();
-        window.location.href = this._oauthParamManager.generateAuthUrl(additionalLoginQueryParams).href;
+        window.location.href = this._authManager.generateAuthUrl(additionalLoginQueryParams).href;
     }
 
     /**
@@ -183,7 +191,7 @@ export class AuthClient {
     public logout(url?: any | string) {
         this._tokenManager.clear();
         window.location.href =
-            this._oauthParamManager.generateLogoutUrl(url || this._settings.redirectUri || window.location.href).href;
+            this._authManager.generateLogoutUrl(url || this._settings.redirectUri || window.location.href).href;
     }
 
     /**
@@ -205,7 +213,7 @@ export class AuthClient {
     private storePathBeforeLogin(): void {
         try {
             const path = window.location.pathname + window.location.search + window.location.hash;
-            this._oauthParamManager.setRedirectPath(path);
+            this._authManager.setRedirectPath(path);
         } catch {
             Logger.warn(`Cannot store the path at ${REDIRECT_PATH_PARAMS_NAME}`);
         }
@@ -216,8 +224,8 @@ export class AuthClient {
      */
     private restorePathAfterLogin(): void {
         try {
-            const path = this._oauthParamManager.getRedirectPath();
-            this._oauthParamManager.deleteRedirectPath();
+            const path = this._authManager.getRedirectPath();
+            this._authManager.deleteRedirectPath();
             if (path && this._settings.onRestorePath) {
                 this._settings.onRestorePath(path);
             }

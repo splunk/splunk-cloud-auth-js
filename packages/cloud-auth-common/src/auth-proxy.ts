@@ -218,7 +218,7 @@ export class AuthProxy {
         let queryParameterString = '?';
         queryParameterMap.forEach((value, key) => {
             const stringValue = String(value);
-            if (stringValue !== 'undefined' && stringValue !== 'null') {
+            if (stringValue !== 'undefined' && stringValue !== 'null' && stringValue !== '') {
                 queryParameterString += `${encodeURIComponent(key)}=${encodeURIComponent(stringValue)}&`;
             }
         });

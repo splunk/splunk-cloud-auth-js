@@ -42,12 +42,13 @@ The following example shows how to work with the `@splunkdev/cloud-auth-client` 
 This example demonstrates how to use the `@splunkdev/cloud-auth-client` library in a React web application. For an example that you can run, see [examples/cloud-auth-client-react-example](examples/cloud-auth-client-react-example).
 
 ```ts
-import AuthClient from '@splunkdev/cloud-auth-client/AuthClient';
-import { AuthClientSettings } from '@splunkdev/cloud-auth-client/auth-client-settings';
+import SplunkAuthClient from '@splunkdev/cloud-auth-client';
+import { SplunkAuthClientSettings } from '@splunkdev/cloud-auth-client';
 import React, { Component } from 'react';
 
 // Create settings.
-const authClientSettings = new AuthClientSettings(
+const authClientSettings = new SplunkAuthClientSettings(
+  GRANT_TYPE,
   CLIENT_ID,
   REDIRECT_URI,
   ON_RESTORE_PATH,
@@ -59,8 +60,8 @@ const authClientSettings = new AuthClientSettings(
   AUTO_TOKEN_RENEWAL_BUFFER
 );
 
-// Initialize AuthClient.
-const authClient = new AuthClient(authClientSettings);
+// Initialize SplunkAuthClient.
+const authClient = new SplunkAuthClient(authClientSettings);
 
 class App extends Component {
     state = {
@@ -112,10 +113,13 @@ class App extends Component {
 
 #### AuthClient configuration
 
-The following example sets configuration options for `AuthClient`.
+The following example sets configuration options for `SplunkAuthClient`.
 
 ```js
 {
+    // The grant type.  The SplunkAuthClient supports the following grant types: Implicit, PKCE.
+    grantType: "", // required
+
     // The clientId setting identifies the app that is registered with the App Registry service.
     clientId: "...", // required
 

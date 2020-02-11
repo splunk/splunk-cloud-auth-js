@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { SplunkAuthClientError } from '../../src/error/splunk-auth-client-error';
-import { SplunkOAuthError } from '../../src/error/splunk-oauth-error';
-import { OAuthParamManager, OAuthParamManagerSettings } from '../../src/oauth-param-manager';
-import { AccessToken } from '../../src/token-manager';
+import { ImplicitAuthManager, ImplicitAuthManagerSettings } from '../../../src/auth/implicit-auth-manager';
+import { SplunkAuthClientError } from '../../../src/error/splunk-auth-client-error';
+import { SplunkOAuthError } from '../../../src/error/splunk-oauth-error';
+import { AccessToken } from '../../../src/model/access-token';
 
 const AUTH_HOST = 'https://host.com';
 const CLIENT_ID = 'clientid';
@@ -23,7 +23,7 @@ jest.useFakeTimers();
 let mockStorageGet: jest.Mock;
 let mockStorageSet: jest.Mock;
 let mockStorageDelete: jest.Mock;
-jest.mock('../../src/storage/storage-manager', () => {
+jest.mock('../../../src/storage/storage-manager', () => {
     return {
         StorageManager: jest.fn().mockImplementation(() => {
             return {
@@ -35,7 +35,7 @@ jest.mock('../../src/storage/storage-manager', () => {
     };
 });
 
-jest.mock('../../src/common/util', () => {
+jest.mock('../../../src/common/util', () => {
     return {
         generateRandomString: jest.fn()
             .mockReturnValueOnce('random1')
@@ -46,7 +46,7 @@ jest.mock('../../src/common/util', () => {
 });
 
 let mockLoggerWarn: jest.Mock;
-jest.mock('../../src/common/logger', () => ({
+jest.mock('../../../src/common/logger', () => ({
     Logger: class {
         public static warn(message: string): void {
             mockLoggerWarn(message);
@@ -54,12 +54,12 @@ jest.mock('../../src/common/logger', () => ({
     }
 }));
 
-describe('OAuthParamManager', () => {
-    let oauthParamManager: OAuthParamManager;
+describe('ImplictAuthManager', () => {
+    let implicitAuthManager: ImplicitAuthManager;
 
-    function getOAuthParamManager(): OAuthParamManager {
-        return new OAuthParamManager(
-            new OAuthParamManagerSettings(
+    function getImplicitAuthManager(): ImplicitAuthManager {
+        return new ImplicitAuthManager(
+            new ImplicitAuthManagerSettings(
                 AUTH_HOST,
                 CLIENT_ID,
                 REDIRECT_URI,
@@ -85,10 +85,10 @@ describe('OAuthParamManager', () => {
                 return 'some-redirect';
             });
 
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act
-            const result = oauthParamManager.getRedirectPath();
+            const result = implicitAuthManager.getRedirectPath();
 
             // Assert
             expect(result).toEqual('some-redirect');
@@ -100,10 +100,10 @@ describe('OAuthParamManager', () => {
     describe('setRedirectPath', () => {
         it('sets redirect path in storage', () => {
             // Arrange
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act
-            oauthParamManager.setRedirectPath('some-redirect');
+            implicitAuthManager.setRedirectPath('some-redirect');
 
             // Assert
             expect(mockStorageSet).toBeCalledWith('some-redirect', REDIRECT_PATH_PARAMS_NAME);
@@ -114,10 +114,10 @@ describe('OAuthParamManager', () => {
     describe('deleteRedirectPath', () => {
         it('deletes redirect path from storage', () => {
             // Arrange
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act
-            oauthParamManager.deleteRedirectPath();
+            implicitAuthManager.deleteRedirectPath();
 
             // Assert
             expect(mockStorageDelete).toBeCalledWith(REDIRECT_PATH_PARAMS_NAME);
@@ -125,14 +125,14 @@ describe('OAuthParamManager', () => {
         });
     });
 
-    describe('getAccessTokenFromUrl', () => {
+    describe('getAccessToken', () => {
         it('throws SplunkAuthClientError when hash parameters does not contain access_token', async (done) => {
             // Arrange
             const urlMock = 'https://url.com/#param=value';
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act/Assert
-            return oauthParamManager.getAccessTokenFromUrl(urlMock)
+            return implicitAuthManager.getAccessToken(urlMock)
                 .then(() => {
                     done.fail();
                 })
@@ -146,10 +146,10 @@ describe('OAuthParamManager', () => {
         it('throws SplunkAuthClientError when hash parameters does not contain expires_in', async (done) => {
             // Arrange
             const urlMock = `https://url.com/#access_token=${ACCESS_TOKEN}`;
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act/Assert
-            return oauthParamManager.getAccessTokenFromUrl(urlMock)
+            return implicitAuthManager.getAccessToken(urlMock)
                 .then(() => {
                     done.fail();
                 })
@@ -163,10 +163,10 @@ describe('OAuthParamManager', () => {
         it('throws SplunkAuthClientError when hash parameters does not contain token_type', async (done) => {
             // Arrange
             const urlMock = `https://url.com/#access_token=${ACCESS_TOKEN}&expires_in=${EXPIRES_IN}`;
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act/Assert
-            return oauthParamManager.getAccessTokenFromUrl(urlMock)
+            return implicitAuthManager.getAccessToken(urlMock)
                 .then(() => {
                     done.fail();
                 })
@@ -181,10 +181,10 @@ describe('OAuthParamManager', () => {
             // Arrange
             const urlMock = `https://url.com/#access_token=${ACCESS_TOKEN}&expires_in=${EXPIRES_IN}&` +
                 `token_type=${TOKEN_TYPE}&error=an%20error&error_description=a%20description`;
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act/Assert
-            return oauthParamManager.getAccessTokenFromUrl(urlMock)
+            return implicitAuthManager.getAccessToken(urlMock)
                 .then(() => {
                     done.fail();
                 })
@@ -205,10 +205,10 @@ describe('OAuthParamManager', () => {
                 return undefined;
             });
 
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act/Assert
-            return oauthParamManager.getAccessTokenFromUrl(urlMock)
+            return implicitAuthManager.getAccessToken(urlMock)
                 .then(() => {
                     done.fail();
                 })
@@ -231,10 +231,10 @@ describe('OAuthParamManager', () => {
                     return `{"state":"${STATE_1}"}`;
                 });
 
-                oauthParamManager = getOAuthParamManager();
+                implicitAuthManager = getImplicitAuthManager();
 
                 // Act/Assert
-                return oauthParamManager.getAccessTokenFromUrl(urlMock)
+                return implicitAuthManager.getAccessToken(urlMock)
                     .then(() => {
                         done.fail();
                     })
@@ -260,10 +260,10 @@ describe('OAuthParamManager', () => {
                 throw new Error(ERROR_MESSAGE);
             });
 
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act/Assert
-            return oauthParamManager.getAccessTokenFromUrl(urlMock)
+            return implicitAuthManager.getAccessToken(urlMock)
                 .then(() => {
                     done.fail();
                 })
@@ -288,10 +288,10 @@ describe('OAuthParamManager', () => {
                 return `{"state":"${STATE_0}","scopes":"${SCOPES}"}`;
             });
 
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act/Assert
-            return oauthParamManager.getAccessTokenFromUrl(urlMock)
+            return implicitAuthManager.getAccessToken(urlMock)
                 .then((accessToken: AccessToken) => {
                     expect(accessToken.accessToken).toEqual(ACCESS_TOKEN);
                     expect(accessToken.expiresAt).toBeGreaterThanOrEqual(EXPIRES_IN + Math.floor(Date.now() / 1000));
@@ -309,10 +309,10 @@ describe('OAuthParamManager', () => {
     describe('generateAuthUrl', () => {
         it('without additional query params generates auth URL', () => {
             // Arrange
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act
-            const result = oauthParamManager.generateAuthUrl();
+            const result = implicitAuthManager.generateAuthUrl();
 
             // Assert
             expect(result).not.toBeNull();
@@ -334,7 +334,7 @@ describe('OAuthParamManager', () => {
 
         it('with additional query params generates auth URL', () => {
             // Arrange
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
             const map = new Map([
                 ['customParam1', 'value1'],
                 ['customParam2', undefined],
@@ -342,7 +342,7 @@ describe('OAuthParamManager', () => {
             ]);
 
             // Act
-            const result = oauthParamManager.generateAuthUrl(map);
+            const result = implicitAuthManager.generateAuthUrl(map);
 
             // Assert
             expect(result).not.toBeNull();
@@ -367,14 +367,14 @@ describe('OAuthParamManager', () => {
     describe('generateLogoutUrl', () => {
         it('deletes redirect path from storage', () => {
             // Arrange
-            oauthParamManager = getOAuthParamManager();
+            implicitAuthManager = getImplicitAuthManager();
 
             // Act
-            const result = oauthParamManager.generateLogoutUrl(REDIRECT_URI);
+            const result = implicitAuthManager.generateLogoutUrl(REDIRECT_URI);
 
             // Assert
             expect(result).not.toBeNull();
-            expect(result.href).toEqual('https://host.com/logout?redirect_uri=https%253A%252F%252Fredirect.com');
+            expect(result.href).toEqual('https://host.com/logout?redirect_uri=https://redirect.com');
         });
     });
 });

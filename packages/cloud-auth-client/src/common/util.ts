@@ -1,4 +1,3 @@
-
 const ACCEPTABLE_RANDOM_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklnopqrstuvwxyz0123456789';
 
 /**
@@ -6,7 +5,7 @@ const ACCEPTABLE_RANDOM_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklnopqrst
  * @param length Length of string.
  */
 export function generateRandomString(length: number) {
-    let result = ''
+    let result = '';
 
     const bytes = new Uint32Array(length);
     const random = window.crypto.getRandomValues(bytes);
@@ -17,9 +16,9 @@ export function generateRandomString(length: number) {
 }
 
 /**
- * Removes the hash from window location.
+ * Clears the hash and search fragments from window location.
  */
-export function removeWindowLocationHash() {
+export function clearWindowLocationFragments() {
     if (window.history && window.history.replaceState) {
         window.history.replaceState(
             null,
@@ -27,5 +26,7 @@ export function removeWindowLocationHash() {
             `${window.location.pathname}${window.location.search}`);
     } else {
         window.location.hash = '';
+        window.location.search = '';
+
     }
 }

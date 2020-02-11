@@ -1,34 +1,23 @@
-import { AuthClient } from '../../../src/auth-client';
-import { AuthClientSettings } from '../../../src/auth-client-settings';
+import { AuthManager } from '../../../src/auth/auth-manager';
+import { AuthManagerFactory } from '../../../src/auth/auth-manager-factory';
 import { SplunkAuthClientError } from '../../../src/error/splunk-auth-client-error';
+import { SplunkAuthClient } from '../../../src/splunk-auth-client';
+import { GrantType, SplunkAuthClientSettings } from '../../../src/splunk-auth-client-settings';
 import { mockWindowProperty } from '../fixture/test-setup';
 
+const GRANT_TYPE = GrantType.IMPLICIT;
 const CLIENT_ID = '12345678';
 const REDIRECT_URI = 'https://redirect.com';
 const URL_0 = new URL('https://newurl.com');
 
 jest.useFakeTimers();
 
-jest.mock('../../../src/token-manager', () => {
+jest.mock('../../../src/token/token-manager', () => {
     return {
         TokenManager: jest.fn().mockImplementation(() => {
             return {};
         }),
         TokenManagerSettings: jest.fn().mockImplementation()
-    };
-});
-
-let mockSetRedirectPath: jest.Mock;
-let mockGenerateAuthUrl: jest.Mock;
-jest.mock('../../../src/oauth-param-manager', () => {
-    return {
-        OAuthParamManager: jest.fn().mockImplementation(() => {
-            return {
-                setRedirectPath: mockSetRedirectPath,
-                generateAuthUrl: mockGenerateAuthUrl
-            };
-        }),
-        OAuthParamManagerSettings: jest.fn().mockImplementation()
     };
 });
 
@@ -41,12 +30,15 @@ jest.mock('../../../src/common/logger', () => ({
     }
 }));
 
+describe('SplunkAuthClient', () => {
+    let mockAuthManager: AuthManager;
+    let mockSetRedirectPath: jest.Mock;
+    let mockGenerateAuthUrl: jest.Mock;
 
-describe('AuthClient', () => {
-
-    function getAuthClient(): AuthClient {
-        return new AuthClient(
-            new AuthClientSettings(
+    function getAuthClient(): SplunkAuthClient {
+        return new SplunkAuthClient(
+            new SplunkAuthClientSettings(
+                GRANT_TYPE,
                 CLIENT_ID,
                 REDIRECT_URI
             ));
@@ -56,6 +48,9 @@ describe('AuthClient', () => {
         mockSetRedirectPath = jest.fn();
         mockGenerateAuthUrl = jest.fn();
         mockLoggerWarn = jest.fn();
+        jest.spyOn(AuthManagerFactory, 'get').mockImplementation(() => {
+            return mockAuthManager;
+        });
     });
 
     afterEach(() => {
@@ -78,6 +73,14 @@ describe('AuthClient', () => {
                 mockGenerateAuthUrl = jest.fn(() => {
                     return URL_0;
                 })
+                mockAuthManager = {
+                    getRedirectPath: jest.fn(),
+                    setRedirectPath: mockSetRedirectPath,
+                    deleteRedirectPath: jest.fn(),
+                    getAccessToken: jest.fn(),
+                    generateAuthUrl: mockGenerateAuthUrl,
+                    generateLogoutUrl: jest.fn()
+                };
 
                 const authClient = getAuthClient();
 
@@ -95,10 +98,18 @@ describe('AuthClient', () => {
                 // Arrange
                 mockGenerateAuthUrl = jest.fn(() => {
                     return URL_0;
-                })
+                });
                 mockSetRedirectPath = jest.fn(() => {
                     throw new SplunkAuthClientError('error message');
-                })
+                });
+                mockAuthManager = {
+                    getRedirectPath: jest.fn(),
+                    setRedirectPath: mockSetRedirectPath,
+                    deleteRedirectPath: jest.fn(),
+                    getAccessToken: jest.fn(),
+                    generateAuthUrl: mockGenerateAuthUrl,
+                    generateLogoutUrl: jest.fn()
+                };
 
                 const authClient = getAuthClient();
 
@@ -124,11 +135,19 @@ describe('AuthClient', () => {
                 // Arrange
                 mockGenerateAuthUrl = jest.fn(() => {
                     return URL_0;
-                })
+                });
+                mockAuthManager = {
+                    getRedirectPath: jest.fn(),
+                    setRedirectPath: jest.fn(),
+                    deleteRedirectPath: jest.fn(),
+                    getAccessToken: jest.fn(),
+                    generateAuthUrl: mockGenerateAuthUrl,
+                    generateLogoutUrl: jest.fn()
+                };
 
-                const authSettings = new AuthClientSettings(CLIENT_ID, '/');
+                const authSettings = new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, '/');
                 authSettings.restorePathAfterLogin = false;
-                const authClient = new AuthClient(authSettings);
+                const authClient = new SplunkAuthClient(authSettings);
 
                 // Act
                 authClient.redirectToLogin();
@@ -142,14 +161,22 @@ describe('AuthClient', () => {
                 // Arrange
                 mockGenerateAuthUrl = jest.fn(() => {
                     return URL_0;
-                })
+                });
+                mockAuthManager = {
+                    getRedirectPath: jest.fn(),
+                    setRedirectPath: jest.fn(),
+                    deleteRedirectPath: jest.fn(),
+                    getAccessToken: jest.fn(),
+                    generateAuthUrl: mockGenerateAuthUrl,
+                    generateLogoutUrl: jest.fn()
+                };
 
-                const authSettings = new AuthClientSettings(CLIENT_ID, '/');
+                const authSettings = new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, '/');
                 authSettings.restorePathAfterLogin = false;
                 authSettings.queryParamsForLogin = {
                     'prop1': 'newvalue1'
                 }
-                const authClient = new AuthClient(authSettings);
+                const authClient = new SplunkAuthClient(authSettings);
 
                 // Act
                 authClient.redirectToLogin();

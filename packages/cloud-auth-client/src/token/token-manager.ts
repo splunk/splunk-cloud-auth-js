@@ -16,10 +16,11 @@
 
 import { AuthProxy } from '@splunkdev/cloud-auth-common';
 
-import { TOKEN_STORAGE_NAME } from './auth-client-settings';
-import { Logger } from './common/logger';
-import { generateRandomString } from './common/util';
-import { StorageManager } from './storage/storage-manager';
+import { Logger } from '../common/logger';
+import { generateRandomString } from '../common/util';
+import { AccessToken } from '../model/access-token';
+import { TOKEN_STORAGE_NAME } from '../splunk-auth-client-settings';
+import { StorageManager } from '../storage/storage-manager';
 
 /**
  * TokenManagerSettings.
@@ -71,36 +72,6 @@ export class TokenManagerSettings {
      * Storage name.
      */
     public storageName: string;
-}
-
-/**
- * AccessToken interface.
- */
-export interface AccessToken {
-    /**
-     * Access token string.
-     */
-    accessToken: string;
-
-    /**
-     * Expires at.
-     */
-    expiresAt: number;
-
-    /**
-     * Expiration duration.
-     */
-    expiresIn: number;
-
-    /**
-     * Token type.
-     */
-    tokenType: string;
-
-    /**
-     * Scopes.
-     */
-    scopes?: string[];
 }
 
 /**

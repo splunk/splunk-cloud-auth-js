@@ -1,13 +1,16 @@
-import { AuthClient } from '../../../src/auth-client';
-import { AuthClientSettings } from '../../../src/auth-client-settings';
+import { AuthManager } from '../../../src/auth/auth-manager';
+import { AuthManagerFactory } from '../../../src/auth/auth-manager-factory';
+import { SplunkAuthClient } from '../../../src/splunk-auth-client';
+import { GrantType, SplunkAuthClientSettings } from '../../../src/splunk-auth-client-settings';
 
+const GRANT_TYPE = GrantType.IMPLICIT;
 const CLIENT_ID = '12345678';
 const REDIRECT_URI = 'https://redirect.com';
 
 jest.useFakeTimers();
 
 let mockStorageGet: jest.Mock;
-jest.mock('../../../src/token-manager', () => {
+jest.mock('../../../src/token/token-manager', () => {
     return {
         TokenManager: jest.fn().mockImplementation(() => {
             return {
@@ -15,15 +18,6 @@ jest.mock('../../../src/token-manager', () => {
             };
         }),
         TokenManagerSettings: jest.fn().mockImplementation()
-    };
-});
-
-jest.mock('../../../src/oauth-param-manager', () => {
-    return {
-        OAuthParamManager: jest.fn().mockImplementation(() => {
-            return {};
-        }),
-        OAuthParamManagerSettings: jest.fn().mockImplementation()
     };
 });
 
@@ -36,11 +30,13 @@ jest.mock('../../../src/common/logger', () => ({
     }
 }));
 
-describe('AuthClient', () => {
+describe('SplunkAuthClient', () => {
+    let mockAuthManager: AuthManager;
 
-    function getAuthClient(): AuthClient {
-        return new AuthClient(
-            new AuthClientSettings(
+    function getAuthClient(): SplunkAuthClient {
+        return new SplunkAuthClient(
+            new SplunkAuthClientSettings(
+                GRANT_TYPE,
                 CLIENT_ID,
                 REDIRECT_URI
             ));
@@ -49,6 +45,17 @@ describe('AuthClient', () => {
     beforeEach(() => {
         mockStorageGet = jest.fn();
         mockLoggerWarn = jest.fn();
+        mockAuthManager = {
+            getRedirectPath: jest.fn(),
+            setRedirectPath: jest.fn(),
+            deleteRedirectPath: jest.fn(),
+            getAccessToken: jest.fn(),
+            generateAuthUrl: jest.fn(),
+            generateLogoutUrl: jest.fn()
+        };
+        jest.spyOn(AuthManagerFactory, 'get').mockImplementation(() => {
+            return mockAuthManager;
+        });
     });
 
     afterEach(() => {

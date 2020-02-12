@@ -19,7 +19,7 @@ Repository: [https://github.com/bouzuya/cookie-storage](https://github.com/bouzu
 
 Name: crypto-js
 
-Version: 3.2.0
+Version: 3.2.1
 
 License: [MIT](http://github.com/brix/crypto-js/raw/master/LICENSE)
 

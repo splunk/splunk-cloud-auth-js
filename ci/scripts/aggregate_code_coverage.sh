@@ -11,7 +11,12 @@ for PACKAGE in */ ; do
     then
         echo "Coverage artifacts found for $PACKAGE"
         mkdir -p $CI_PROJECT_DIR/coverage/$PACKAGE
-        mv $PACKAGES_DIR/$PACKAGE/coverage/* $CI_PROJECT_DIR/coverage/$PACKAGE || true
+        cp -r $PACKAGES_DIR/$PACKAGE/coverage/* $CI_PROJECT_DIR/coverage/$PACKAGE || true
+        if [ "$PACKAGE" != "cloud-auth-client/" ]
+        then
+            sed "s,SF:src,SF:$PACKAGES_DIR/$PACKAGE\src,g" $CI_PROJECT_DIR/coverage/$PACKAGE/lcov.info > $CI_PROJECT_DIR/coverage/$PACKAGE/lcov.info.mod
+            mv $CI_PROJECT_DIR/coverage/$PACKAGE/lcov.info.mod $CI_PROJECT_DIR/coverage/$PACKAGE/lcov.info
+        fi
     fi
 done
 

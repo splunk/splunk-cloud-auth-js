@@ -11,7 +11,7 @@
     "clean": "lerna run clean",
     "clean:modules": "lerna run clean:modules && rimraf node_modules || true",
     "commit": "yarn git-cz",
-    "cover": "lerna run cover --stream",
+    "cover": "lerna run cover --stream --concurrency=1",
     "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",
     "format:verify": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier -l",
     "lint": "lerna run lint",

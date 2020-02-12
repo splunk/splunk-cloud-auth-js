@@ -300,8 +300,8 @@ describe('ImplictAuthManager', () => {
                     expect(accessToken.scopes).toEqual(SCOPES);
                     done();
                 })
-                .catch(() => {
-                    done.fail();
+                .catch((e) => {
+                    done.fail(e);
                 });
         });
     });

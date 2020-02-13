@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.4](https://cd.splunkdev.com/libraries/js-cloud-auth/compare/@splunkdev/cloud-auth-client@1.0.0-alpha.3...@splunkdev/cloud-auth-client@1.0.0-alpha.4) (2020-02-13)
+
+
+### Bug Fixes
+
+* downgrade eslint-plugin, eslint/parser to 2.19.0 ([a368ce3](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/a368ce3ed4c8b2db97118832c477a3a4a7832b73))
+* fix sonarqube code coverage via post-test run file path replace in lcov.info ([179018c](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/179018ca0d2c01bddd167de22f72e524a05a7e91))
+
+
+### Features
+
+* **cloud-auth-client:** abstract authmanager construction away from authclient using the AuthManage ([4b3a82d](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/4b3a82d0c9fe017ed8066f9f0e20eb4f9fa5f8a0))
+* **cloud-auth-client:** implement AuthManager interface from SDK on the SplunkAuthClient ([b818fca](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/b818fcad4a814e4380b7467452ea50eb800f15e5))
+* **cloud-auth-client:** pKCE auth flow implementation ([14b443c](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/14b443ca178bc185e8504f69e5747dd6c55d3946))
+* **cloud-auth-client:** updating react example dependencies ([dff6320](https://cd.splunkdev.com/libraries/js-cloud-auth/commits/dff6320be56a77e2048b9a55c5477de8f80ec5fe))
+
+
+
+
+
 # [1.0.0-alpha.3](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-alpha.2...@splunkdev/cloud-auth-client@1.0.0-alpha.3) (2020-02-08)
 
 

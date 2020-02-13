@@ -1,6 +1,6 @@
 {
   "name": "@splunkdev/cloud-auth-client",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "Library to help authenticating web applications in Splunk Cloud.",
   "author": "Splunk, Inc.",
   "license": "Apache-2.0",
@@ -38,7 +38,7 @@
     "@splunk/babel-preset": "^2.0.0",
     "@splunk/eslint-config": "^2.0.0",
     "@splunk/webpack-configs": "^4.0.0",
-    "@splunkdev/cloud-auth-common": "^1.0.0-alpha.3",
+    "@splunkdev/cloud-auth-common": "^1.0.0-alpha.4",
     "@types/crypto-js": "^3.1.43",
     "@types/jest": "^24.9.0",
     "@types/lodash": "^4.14.149",

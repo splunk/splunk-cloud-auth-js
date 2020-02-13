@@ -14,9 +14,15 @@
  * under the License.
  */
 
-import { AuthProxy } from '@splunkdev/cloud-auth-common';
+import { AccessTokenResponse, AuthProxy } from '@splunkdev/cloud-auth-common';
 
-import { clearWindowLocationFragments, generateRandomString } from '../common/util';
+import {
+    clearWindowLocationFragments,
+    createCodeChallenge,
+    encodeCodeVerifier,
+    generateCodeVerifier,
+    generateRandomString
+} from '../common/util';
 import { SplunkAuthClientError } from "../error/splunk-auth-client-error";
 import { SplunkOAuthError } from '../error/splunk-oauth-error';
 import { AccessToken } from '../model/access-token';
@@ -26,15 +32,15 @@ import {
     REDIRECT_PATH_PARAMS_NAME,
 } from '../splunk-auth-client-settings';
 import { StorageManager } from '../storage/storage-manager';
-import { validateHashParameters, validateOAuthParameters } from '../validator/implicit-param-validators';
+import { validateOAuthParameters, validateSearchParameters } from '../validator/pkce-param-validators';
 import { AuthManager } from './auth-manager';
 
 /**
- * ImplicitAuthManagerSettings.
+ * PKCEAuthManagerSettings.
  */
-export class ImplicitAuthManagerSettings {
+export class PKCEAuthManagerSettings {
     /**
-     * OAuthParamManagerSettings constructor.
+     * PKCEAuthManagerSettings constructor.
      * @param authHost Authorize Host.
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
@@ -73,29 +79,32 @@ export class ImplicitAuthManagerSettings {
 }
 
 /**
- * ImplicitOAuthRedirectParams.
+ * PKCEOAuthRedirectParams.
  */
-export interface ImplicitOAuthRedirectParams {
+export interface PKCEOAuthRedirectParams {
     state: string;
-    scope: string;
+    codeVerifier: string;
 }
 
 /**
- * ImplicitAuthManager.
+ * PKCEAuthManager.
  */
-export class ImplicitAuthManager implements AuthManager {
+export class PKCEAuthManager implements AuthManager {
     /**
-     * ImplicitAuthManager constructor.
-     * @param settings ImplicitAuthManagerSettings.
+     * PKCEAuthManager constructor.
+     * @param settings PKCEAuthManagerSettings.
      */
-    public constructor(settings: ImplicitAuthManagerSettings) {
+    public constructor(settings: PKCEAuthManagerSettings) {
         this._settings = settings;
         this._redirectParamsStorage = new StorageManager(this._settings.redirectParamsStorageName);
+        this._authProxy = new AuthProxy(this._settings.authHost);
     }
+
+    private _settings: PKCEAuthManagerSettings;
 
     private _redirectParamsStorage: StorageManager;
 
-    private _settings: ImplicitAuthManagerSettings;
+    private _authProxy: AuthProxy;
 
     /**
      * Gets redirect path from storage.
@@ -120,41 +129,47 @@ export class ImplicitAuthManager implements AuthManager {
     }
 
     /**
-     * Gets an access token from the OAuth parameters in the provided URL or the window location
+     * Gets an access token using the search parameters from a provided URL or window location
+     * and stored OAuth parameters.  An underlying token API call is made to retrieve a new token.
      * @param url Url.
      */
     public async getAccessToken(url?: string): Promise<AccessToken> {
-        try {
-            const hashParameters = this.getHashParameters(url);
-            const storedOAuthParameters = this.getRedirectOAuthParameters();
+        const searchParameters = this.getSearchParameters(url);
+        const storedOAuthParameters = this.getRedirectOAuthParameters();
 
-            if (hashParameters.get('state') !== storedOAuthParameters.state) {
-                throw new SplunkOAuthError('OAuth flow response state does not match request state');
-            }
-
-            try {
-                this._redirectParamsStorage.delete(REDIRECT_OAUTH_PARAMS_NAME);
-            } catch (e) {
-                throw new SplunkAuthClientError(
-                    `Failed to remove the ${REDIRECT_OAUTH_PARAMS_NAME} data. ${e.message}`);
-            }
-
-            if (!url) {
-                clearWindowLocationFragments();
-            }
-
-            const accessToken: AccessToken = {
-                accessToken: String(hashParameters.get('access_token')),
-                expiresAt: Number(hashParameters.get('expires_in')) + Math.floor(Date.now() / 1000),
-                expiresIn: Number(hashParameters.get('expires_in')),
-                tokenType: String(hashParameters.get('token_type')),
-                scopes: storedOAuthParameters.scope.split(' ')
-            };
-
-            return Promise.resolve(accessToken);
-        } catch (e) {
-            return Promise.reject(e);
+        if (searchParameters.get('state') !== storedOAuthParameters.state) {
+            throw new SplunkOAuthError('OAuth flow response state does not match request state');
         }
+
+        try {
+            this._redirectParamsStorage.delete(REDIRECT_OAUTH_PARAMS_NAME);
+        } catch (e) {
+            throw new SplunkAuthClientError(`Failed to remove the ${REDIRECT_OAUTH_PARAMS_NAME} data. ${e.message}`);
+        }
+
+        if (!url) {
+            clearWindowLocationFragments();
+        }
+
+        // call authproxy accessToken to get token
+        let accessToken: AccessTokenResponse;
+        try {
+            accessToken = await this._authProxy.accessToken(
+                this._settings.clientId,
+                String(searchParameters.get('code')),
+                storedOAuthParameters.codeVerifier,
+                this._settings.redirectUri);
+        } catch (e) {
+            throw new SplunkOAuthError(`Failed to retrieve access token from token endpoint. ${e.message}`);
+        }
+
+        return {
+            accessToken: accessToken.access_token,
+            expiresAt: accessToken.expires_in + Math.floor(Date.now() / 1000),
+            expiresIn: accessToken.expires_in,
+            tokenType: accessToken.token_type,
+            scopes: accessToken.scope.split(' ')
+        };
     }
 
     /**
@@ -162,10 +177,16 @@ export class ImplicitAuthManager implements AuthManager {
      * @param additionalQueryParams Additional query parameters.
      */
     public generateAuthUrl(additionalQueryParams?: Map<string, string>): URL {
+        const cv = generateCodeVerifier(50);
+        const pkceParamCodeVerifier = encodeCodeVerifier(cv);
+        const pkceParamCodeChallenge = createCodeChallenge(pkceParamCodeVerifier);
+
         const oauthQueryParams = new Map([
             ['client_id', this._settings.clientId],
+            ['code_challenge', pkceParamCodeChallenge],
+            ['code_challenge_method', 'S256'],
             ['redirect_uri', this._settings.redirectUri || window.location.href],
-            ['response_type', 'token id_token'],
+            ['response_type', 'code'],
             ['state', generateRandomString(64)],
             ['nonce', generateRandomString(64)],
             ['max_age', undefined],
@@ -178,11 +199,11 @@ export class ImplicitAuthManager implements AuthManager {
             });
         }
 
-        const redirectStorageParms: ImplicitOAuthRedirectParams = {
+        const redirectStorageParams: PKCEOAuthRedirectParams = {
             state: String(oauthQueryParams.get('state')),
-            scope: String(oauthQueryParams.get('scope')),
+            codeVerifier: pkceParamCodeVerifier
         };
-        this._redirectParamsStorage.set(JSON.stringify(redirectStorageParms), REDIRECT_OAUTH_PARAMS_NAME);
+        this._redirectParamsStorage.set(JSON.stringify(redirectStorageParams), REDIRECT_OAUTH_PARAMS_NAME);
 
         const url = new URL(AuthProxy.PATH_AUTHORIZATION, this._settings.authHost);
         let queryParameterString = '?';
@@ -206,15 +227,15 @@ export class ImplicitAuthManager implements AuthManager {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    private getHashParameters(url?: string): URLSearchParams {
-        const hash = url ? url.toString().substring(url.indexOf('#')) : window.location.hash.toString();
+    private getSearchParameters(url?: string): URLSearchParams {
+        const hash = url ? url.toString().substring(url.indexOf('?')) : window.location.search.toString();
         const hashParameters = new URLSearchParams(hash.substr(1));
-        validateHashParameters(hashParameters);
+        validateSearchParameters(hashParameters);
 
         return hashParameters;
     }
 
-    private getRedirectOAuthParameters(): ImplicitOAuthRedirectParams {
+    private getRedirectOAuthParameters(): PKCEOAuthRedirectParams {
         let storedOAuthParameters
         try {
             const data = this._redirectParamsStorage.get(REDIRECT_OAUTH_PARAMS_NAME);

@@ -117,15 +117,6 @@ export class SplunkAuthClient {
                     this.restorePathAfterLogin();
                 }
                 return accessToken;
-            })
-            .catch((e: any) => {
-                if (e.message === 'Unable to parse a token from the url') {
-                    // If there is no token nor any error messages in the url string (e.g. the page was
-                    // visited for the first time) then simply return null
-                    return null;
-                }
-                // For OAuth errors, failure to validate claims, etc. re-throw
-                throw e;
             });
     }
 
@@ -155,9 +146,8 @@ export class SplunkAuthClient {
                 || e.code === 'consent_required'
                 || e.code === 'token_not_found')
                 && shouldRedirect) {
-                this.redirectToLogin();
-                // Change the error.message to indicate that a redirect is being performed
                 Logger.warn(`${e.message} Redirecting to the login page...`);
+                this.redirectToLogin();
                 return false;
             }
 

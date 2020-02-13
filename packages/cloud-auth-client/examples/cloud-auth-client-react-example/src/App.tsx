@@ -14,8 +14,7 @@
  * under the License.
  */
 
-import { SplunkAuthClient, GrantType } from '@splunkdev/cloud-auth-client';
-import { SplunkAuthClientSettings } from '@splunkdev/cloud-auth-client';
+import { SplunkAuthClient, SplunkAuthClientSettings, GrantType } from '@splunkdev/cloud-auth-client';
 import React, { Component } from 'react';
 import { Config } from './config';
 

@@ -16,9 +16,7 @@ const ERROR_MESSAGE = 'an error';
 const EXPIRES_IN = 1000;
 const ACCESS_TOKEN = 'abcd';
 const TOKEN_TYPE = 'token-type';
-const SCOPES = 'scope';
-
-jest.useFakeTimers();
+const SCOPES = 'scope-0 scope-1';
 
 let mockStorageGet: jest.Mock;
 let mockStorageSet: jest.Mock;
@@ -53,6 +51,13 @@ jest.mock('../../../src/common/logger', () => ({
         }
     }
 }));
+
+jest.mock('../../../src/validator/implicit-param-validators', () => {
+    return {
+        validateHashParameters: jest.fn(),
+        validateOAuthParameters: jest.fn()
+    };
+});
 
 describe('ImplictAuthManager', () => {
     let implicitAuthManager: ImplicitAuthManager;
@@ -126,76 +131,6 @@ describe('ImplictAuthManager', () => {
     });
 
     describe('getAccessToken', () => {
-        it('throws SplunkAuthClientError when hash parameters does not contain access_token', async (done) => {
-            // Arrange
-            const urlMock = 'https://url.com/#param=value';
-            implicitAuthManager = getImplicitAuthManager();
-
-            // Act/Assert
-            return implicitAuthManager.getAccessToken(urlMock)
-                .then(() => {
-                    done.fail();
-                })
-                .catch(e => {
-                    expect(e).toEqual(new SplunkAuthClientError('Unable to parse a token from the url'));
-                    expect(mockStorageGet).toBeCalledTimes(0);
-                    done();
-                });
-        });
-
-        it('throws SplunkAuthClientError when hash parameters does not contain expires_in', async (done) => {
-            // Arrange
-            const urlMock = `https://url.com/#access_token=${ACCESS_TOKEN}`;
-            implicitAuthManager = getImplicitAuthManager();
-
-            // Act/Assert
-            return implicitAuthManager.getAccessToken(urlMock)
-                .then(() => {
-                    done.fail();
-                })
-                .catch(e => {
-                    expect(e).toEqual(new SplunkAuthClientError('Unable to parse a token from the url'));
-                    expect(mockStorageGet).toBeCalledTimes(0);
-                    done();
-                });
-        });
-
-        it('throws SplunkAuthClientError when hash parameters does not contain token_type', async (done) => {
-            // Arrange
-            const urlMock = `https://url.com/#access_token=${ACCESS_TOKEN}&expires_in=${EXPIRES_IN}`;
-            implicitAuthManager = getImplicitAuthManager();
-
-            // Act/Assert
-            return implicitAuthManager.getAccessToken(urlMock)
-                .then(() => {
-                    done.fail();
-                })
-                .catch(e => {
-                    expect(e).toEqual(new SplunkAuthClientError('Unable to parse a token from the url'));
-                    expect(mockStorageGet).toBeCalledTimes(0);
-                    done();
-                });
-        });
-
-        it('throws SplunkOAuthError when hash parameters contains error', async (done) => {
-            // Arrange
-            const urlMock = `https://url.com/#access_token=${ACCESS_TOKEN}&expires_in=${EXPIRES_IN}&` +
-                `token_type=${TOKEN_TYPE}&error=an%20error&error_description=a%20description`;
-            implicitAuthManager = getImplicitAuthManager();
-
-            // Act/Assert
-            return implicitAuthManager.getAccessToken(urlMock)
-                .then(() => {
-                    done.fail();
-                })
-                .catch(e => {
-                    expect(e).toEqual(new SplunkOAuthError('a description', 'an error'));
-                    expect(mockStorageGet).toBeCalledTimes(0);
-                    expect(mockStorageDelete).toBeCalledTimes(0);
-                    done();
-                });
-        });
-
         it('throws SplunkAuthClientError when there are no redirect params in storage', async (done) => {
             // Arrange
             const urlMock = `https://url.com/#access_token=${ACCESS_TOKEN}&expires_in=${EXPIRES_IN}&` +
@@ -210,10 +145,11 @@ describe('ImplictAuthManager', () => {
             // Act/Assert
             return implicitAuthManager.getAccessToken(urlMock)
                 .then(() => {
-                    done.fail();
+                    done.fail('getAccessToken should not have succeeded.');
                 })
                 .catch(e => {
-                    expect(e).toEqual(new SplunkAuthClientError('Unable to retrieve OAuth redirect params storage'));
+                    expect(e).toEqual(
+                        new SplunkAuthClientError('Unable to retrieve and parse OAuth redirect params storage'));
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageGet).toBeCalledTimes(1);
                     expect(mockStorageDelete).toBeCalledTimes(0);
@@ -221,14 +157,14 @@ describe('ImplictAuthManager', () => {
                 });
         });
 
-        it('throws SplunkAuthClientError when hash parameter state and redirect parameters state are not equal',
+        it('throws SplunkOAuthError when hash parameter state and redirect parameters state are not equal',
             async (done) => {
                 // Arrange
                 const urlMock = `https://url.com/#access_token=${ACCESS_TOKEN}&expires_in=${EXPIRES_IN}&` +
                     `token_type=${TOKEN_TYPE}&state=${STATE_0}`;
 
                 mockStorageGet = jest.fn(() => {
-                    return `{"state":"${STATE_1}"}`;
+                    return `{"state":"${STATE_1}","scope":"${SCOPES}"}`;
                 });
 
                 implicitAuthManager = getImplicitAuthManager();
@@ -236,11 +172,11 @@ describe('ImplictAuthManager', () => {
                 // Act/Assert
                 return implicitAuthManager.getAccessToken(urlMock)
                     .then(() => {
-                        done.fail();
+                        done.fail('getAccessToken should not have succeeded.');
                     })
                     .catch(e => {
                         expect(e).toEqual(
-                            new SplunkAuthClientError('OAuth flow response state does not match request state'));
+                            new SplunkOAuthError('OAuth flow response state does not match request state'));
                         expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
                         expect(mockStorageGet).toBeCalledTimes(1);
                         expect(mockStorageDelete).toBeCalledTimes(0);
@@ -254,7 +190,7 @@ describe('ImplictAuthManager', () => {
                 `token_type=${TOKEN_TYPE}&state=${STATE_0}`;
 
             mockStorageGet = jest.fn(() => {
-                return `{"state":"${STATE_0}"}`;
+                return `{"state":"${STATE_0}","scope":"${SCOPES}"}`;
             });
             mockStorageDelete = jest.fn(() => {
                 throw new Error(ERROR_MESSAGE);
@@ -265,7 +201,7 @@ describe('ImplictAuthManager', () => {
             // Act/Assert
             return implicitAuthManager.getAccessToken(urlMock)
                 .then(() => {
-                    done.fail();
+                    done.fail('getAccessToken should not have succeeded.');
                 })
                 .catch(e => {
                     expect(e).toEqual(
@@ -285,7 +221,7 @@ describe('ImplictAuthManager', () => {
                 `token_type=${TOKEN_TYPE}&state=${STATE_0}`;
 
             mockStorageGet = jest.fn(() => {
-                return `{"state":"${STATE_0}","scopes":"${SCOPES}"}`;
+                return `{"state":"${STATE_0}","scope":"${SCOPES}"}`;
             });
 
             implicitAuthManager = getImplicitAuthManager();
@@ -294,10 +230,10 @@ describe('ImplictAuthManager', () => {
             return implicitAuthManager.getAccessToken(urlMock)
                 .then((accessToken: AccessToken) => {
                     expect(accessToken.accessToken).toEqual(ACCESS_TOKEN);
-                    expect(accessToken.expiresAt).toBeGreaterThanOrEqual(EXPIRES_IN + Math.floor(Date.now() / 1000));
+                    expect(accessToken.expiresAt).toBeLessThanOrEqual(EXPIRES_IN + Math.floor(Date.now() / 1000));
                     expect(accessToken.expiresIn).toEqual(EXPIRES_IN);
                     expect(accessToken.tokenType).toEqual(TOKEN_TYPE);
-                    expect(accessToken.scopes).toEqual(SCOPES);
+                    expect(accessToken.scopes).toEqual(SCOPES.split(' '));
                     done();
                 })
                 .catch((e) => {
@@ -322,11 +258,8 @@ describe('ImplictAuthManager', () => {
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
-                        responseType: 'token id_token',
                         state: 'random1',
-                        nonce: 'random2',
-                        scopes: 'openid email profile',
-                        clientId: CLIENT_ID
+                        scope: 'openid email profile'
                     }),
                     REDIRECT_OAUTH_PARAMS_NAME);
             expect(mockStorageSet).toBeCalledTimes(1);
@@ -353,11 +286,8 @@ describe('ImplictAuthManager', () => {
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
-                        responseType: 'token id_token',
                         state: 'random',
-                        nonce: 'random',
-                        scopes: 'openid email profile',
-                        clientId: CLIENT_ID
+                        scope: 'openid email profile'
                     }),
                     REDIRECT_OAUTH_PARAMS_NAME);
             expect(mockStorageSet).toBeCalledTimes(1);
@@ -374,7 +304,7 @@ describe('ImplictAuthManager', () => {
 
             // Assert
             expect(result).not.toBeNull();
-            expect(result.href).toEqual('https://host.com/logout?redirect_uri=https://redirect.com');
+            expect(result.href).toEqual('https://host.com/logout?redirect_uri=https%3A%2F%2Fredirect.com');
         });
     });
 });

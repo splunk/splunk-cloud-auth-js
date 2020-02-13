@@ -153,34 +153,6 @@ describe('SplunkAuthClient', () => {
             expect(mockLoggerWarn).toBeCalledTimes(1);
         });
 
-        it('returns null', async () => {
-            // Arrange
-            mockGetAccessToken = jest.fn((): Promise<AccessToken> => {
-                return new Promise<AccessToken>(
-                    (_resolve, reject) => reject(new SplunkAuthClientError('Unable to parse a token from the url')));
-            });
-            mockAuthManager = {
-                getRedirectPath: jest.fn(),
-                setRedirectPath: jest.fn(),
-                deleteRedirectPath: jest.fn(),
-                getAccessToken: mockGetAccessToken,
-                generateAuthUrl: jest.fn(),
-                generateLogoutUrl: jest.fn()
-            };
-
-            const authClient = getAuthClient();
-
-            // Act
-            const result = await authClient.parseTokenFromRedirect();
-
-            // Assert
-            expect(result).toBeNull();
-            expect(mockGetAccessToken).toBeCalledTimes(1);
-            expect(mockGetRedirectPath).toBeCalledTimes(0);
-            expect(mockDeleteRedirectPath).toBeCalledTimes(0);
-            expect(mockLoggerWarn).toBeCalledTimes(0);
-        });
-
         it('throws exception', async (done) => {
             // Arrange
             mockGetAccessToken = jest.fn((): Promise<AccessToken> => {

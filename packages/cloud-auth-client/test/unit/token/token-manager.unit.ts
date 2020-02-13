@@ -1,7 +1,7 @@
 /* eslint-disable import/first */
 /* eslint-disable @typescript-eslint/camelcase */
-import { AccessToken } from '../../src/model/access-token';
-import { TokenManager, TokenManagerSettings } from '../../src/token/token-manager';
+import { AccessToken } from '../../../src/model/access-token';
+import { TokenManager, TokenManagerSettings } from '../../../src/token/token-manager';
 
 const AUTH_HOST = 'host.com';
 const AUTO_TOKEN_RENEWAL_BUFFER_0 = 0;
@@ -19,7 +19,7 @@ jest.useFakeTimers();
 let mockStorageGet: jest.Mock;
 let mockStorageClear: jest.Mock;
 let mockStorageSet: jest.Mock;
-jest.mock('../../src/storage/storage-manager', () => {
+jest.mock('../../../src/storage/storage-manager', () => {
     return {
         StorageManager: jest.fn().mockImplementation(() => {
             return {
@@ -42,7 +42,7 @@ jest.mock('@splunkdev/cloud-auth-common', () => {
     };
 });
 
-jest.mock('../../src/common/util', () => {
+jest.mock('../../../src/common/util', () => {
     return {
         generateRandomString: jest.fn()
             .mockReturnValueOnce('random1')
@@ -53,7 +53,7 @@ jest.mock('../../src/common/util', () => {
 });
 
 let mockLoggerWarn: jest.Mock;
-jest.mock('../../src/common/logger', () => ({
+jest.mock('../../../src/common/logger', () => ({
     Logger: class {
         public static warn(message: string): void {
             mockLoggerWarn(message);

@@ -17,6 +17,7 @@
 import { GrantType } from '../splunk-auth-client-settings';
 import { AuthManager } from './auth-manager';
 import { ImplicitAuthManager, ImplicitAuthManagerSettings } from './implicit-auth-manager';
+import { PKCEAuthManager, PKCEAuthManagerSettings } from './pkce-auth-manager';
 
 /**
  * AuthManagerFactory.
@@ -31,12 +32,14 @@ export class AuthManagerFactory {
         clientId: string,
         redirectUri: string
     ): AuthManager {
-        if (grantType.valueOf() === GrantType.IMPLICIT.valueOf()) {
-            return new ImplicitAuthManager(
-                new ImplicitAuthManagerSettings(authHost, clientId, redirectUri)
+        if (grantType.valueOf() === GrantType.PKCE.valueOf()) {
+            return new PKCEAuthManager(
+                new PKCEAuthManagerSettings(authHost, clientId, redirectUri)
             );
         }
 
-        throw new Error('Unsupported.');
+        return new ImplicitAuthManager(
+            new ImplicitAuthManagerSettings(authHost, clientId, redirectUri)
+        );
     }
 }

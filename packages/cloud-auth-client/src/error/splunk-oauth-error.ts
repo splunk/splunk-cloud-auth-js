@@ -24,10 +24,10 @@ export class SplunkOAuthError implements Error {
      * @param code Error code.
      * @param stack Error stack trace.
      */
-    constructor(message: string, code: string, stack?: string) {
+    constructor(message: string, code?: string, stack?: string) {
         this.name = 'SplunkOAuthError';
         this.message = message;
-        this.code = code;
+        this.code = code || 'oauth-error';
         this.stack = stack;
     }
 

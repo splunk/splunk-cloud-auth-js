@@ -5,6 +5,8 @@
     "!src/index.{ts,js}",
     "!src/**/*.js.map",
     "!src/**/*.ts.map",
+    "!src/model/**/*",
+    "!src/auth/auth-manager.ts",
     "src/**/*.ts"
   ],
   "coverageDirectory": "coverage",
@@ -16,10 +18,10 @@
   ],
   "coverageThreshold": {
     "global": {
-      "branches": 0,
-      "functions": 0,
-      "lines": 0,
-      "statements": 0
+      "branches": 80,
+      "functions": 90,
+      "lines": 90,
+      "statements": 90
     }
   },
   "globals": {

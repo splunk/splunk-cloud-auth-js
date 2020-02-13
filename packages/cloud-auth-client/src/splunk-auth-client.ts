@@ -14,6 +14,7 @@
  * under the License.
  */
 
+import { AuthManager as SdkAuthManager } from '@splunkdev/cloud-sdk/src/auth_manager';
 import get from 'lodash/get';
 import memoize from 'lodash/memoize';
 
@@ -28,7 +29,7 @@ import { TokenManager, TokenManagerSettings } from './token/token-manager';
 /**
  * SplunkAuthClient.
  */
-export class SplunkAuthClient {
+export class SplunkAuthClient implements SdkAuthManager {
     /**
      * AuthClient constructor.
      * @param settings AuthClientSettings.
@@ -76,9 +77,16 @@ export class SplunkAuthClient {
     private _authManager: AuthManager;
 
     /**
-     * Gets the access token.
+     * Gets the access token string.
      */
-    public async getAccessToken(): Promise<AccessToken> {
+    public async getAccessToken(): Promise<string> {
+        return (await this.getAccessTokenContext()).accessToken;
+    }
+
+    /**
+     * Gets the full access token context
+     */
+    public async getAccessTokenContext(): Promise<AccessToken> {
         try {
             await this.authenticate();
         } catch {

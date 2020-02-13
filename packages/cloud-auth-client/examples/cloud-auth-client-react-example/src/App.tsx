@@ -71,7 +71,7 @@ class App extends Component {
     }
 
     public async getToken() {
-        const token = await authClient.getAccessToken();
+        const token = await authClient.getAccessTokenContext();
         console.log(JSON.stringify(token, null, '\t'));
     }
 

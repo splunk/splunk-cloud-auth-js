@@ -3,7 +3,7 @@
 ########################################################################################################################
 # Usage
 #
-# releash.sh
+# release.sh
 #   - Uses conventional commits to determine the next version of each package to release
 #
 # release.sh --custom

@@ -2,7 +2,6 @@
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "./src",
-    "declarationMap": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
     "lib": [

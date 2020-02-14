@@ -21,6 +21,7 @@
     "lint:fix:tests": "eslint \"test/**/*.ts\" --fix",
     "prepack": "yarn build",
     "pretest": "yarn clean:transpile",
+    "publish:docs": "yarn ts:docs && npm add --no-save @splunk/cicd-tools --registry https://repo.splunk.com/artifactory/api/npm/npm && yarn cicd-publish-docs --force docs/md",
     "test": "yarn lint && jest --config ./jest.json --verbose",
     "test:examples": "sh ./ci/scripts/verify_example.sh",
     "third-party-licenses:generate": "node ./ci/generate_3rdparty.js",

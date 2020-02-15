@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.5](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.0-alpha.4...@splunkdev/cloud-auth-node@1.0.0-alpha.5) (2020-02-15)
+
+**Note:** Version bump only for package @splunkdev/cloud-auth-node
+
+
+
+
+
 # [1.0.0-alpha.4](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.0-alpha.3...@splunkdev/cloud-auth-node@1.0.0-alpha.4) (2020-02-13)
 
 

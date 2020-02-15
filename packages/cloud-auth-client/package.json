@@ -15,6 +15,7 @@
     "clean:modules": "rimraf node_modules || true",
     "commit": "yarn git-cz",
     "cover": "yarn clean:coverage && yarn test --coverage",
+    "docs": "yarn ts:docs",
     "lint": "eslint \"src/**/*.ts\" && yarn lint:tests",
     "lint:fix": "eslint \"src/**/*.ts\" --fix && yarn lint:fix:tests",
     "lint:tests": "eslint \"test/**/*.ts\"",

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.6](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.0-alpha.5...@splunkdev/cloud-auth-node@1.0.0-alpha.6) (2020-02-15)
+
+
+### Features
+
+* publishConfig.access set to true ([363182d](https://github.com/splunk/splunk-cloud-auth-js/commits/363182dfba20aa441cb93076657f1596c3eaacec))
+
+
+
+
+
 # [1.0.0-alpha.5](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.0-alpha.4...@splunkdev/cloud-auth-node@1.0.0-alpha.5) (2020-02-15)
 
 **Note:** Version bump only for package @splunkdev/cloud-auth-node

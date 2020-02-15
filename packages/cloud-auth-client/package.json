@@ -97,5 +97,8 @@
     "cz-customizable": {
       "config": "../../ci/.cz-config.js"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

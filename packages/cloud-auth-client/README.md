@@ -42,8 +42,7 @@ The following example shows how to work with the `@splunkdev/cloud-auth-client` 
 This example demonstrates how to use the `@splunkdev/cloud-auth-client` library in a React web application. For an example that you can run, see [examples/cloud-auth-client-react-example](examples/cloud-auth-client-react-example).
 
 ```ts
-import SplunkAuthClient from '@splunkdev/cloud-auth-client';
-import { SplunkAuthClientSettings } from '@splunkdev/cloud-auth-client';
+import { SplunkAuthClient, SplunkAuthClientSettings, GrantType } from '@splunkdev/cloud-auth-client';
 import React, { Component } from 'react';
 
 // Create settings.

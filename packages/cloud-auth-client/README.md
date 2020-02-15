@@ -11,10 +11,11 @@ You can use the `@splunkdev/cloud-auth-client` library alone or with the [Splunk
 
 [Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
 
-## Authorization flows
+## Authorization Grant Types
 
-This library supports the following OAuth authorization flows:
+This library supports the following OAuth authorization grant types:
 * [Implicit](https://oauth.net/2/grant-types/implicit/)
+* [Proof Key for Code Code Exchange](https://oauth.net/2/pkce/) (PKCE)
 
 For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 
@@ -47,16 +48,16 @@ import React, { Component } from 'react';
 
 // Create settings.
 const authClientSettings = new SplunkAuthClientSettings(
-  GRANT_TYPE,
-  CLIENT_ID,
-  REDIRECT_URI,
-  ON_RESTORE_PATH,
-  AUTHORIZE_URL,
-  AUTO_REDIRECT_TO_LOGIN,
-  RESTORE_PATH_AFTER_LOGIN,
-  MAX_CLOCK_SKEW,
-  QUERY_PARAMS_FOR_LOGIN,
-  AUTO_TOKEN_RENEWAL_BUFFER
+    GRANT_TYPE,
+    CLIENT_ID,
+    REDIRECT_URI,
+    ON_RESTORE_PATH,
+    AUTH_HOST,
+    AUTO_REDIRECT_TO_LOGIN,
+    RESTORE_PATH_AFTER_LOGIN,
+    MAX_CLOCK_SKEW,
+    QUERY_PARAMS_FOR_LOGIN,
+    AUTO_TOKEN_RENEWAL_BUFFER
 );
 
 // Initialize SplunkAuthClient.
@@ -126,16 +127,15 @@ The following example sets configuration options for `SplunkAuthClient`.
     // The value of redirectUri must be pre-registered with the App Registry service.
     redirectUri: window.location.origin, // required
 
-    // When this setting is enabled, the cloud-auth-client library restores 
-    // the path of the web app after redirecting to the login page.
-    // This setting is enabled (true) by default.
-    restorePathAfterLogin: true,
-
     // If provided, this function is called when the user is redirected from login
     // after the auth callback is successfully applied.
     // You can use this function to integrate with third-party client-side
     // routers, such as react-router, rather than calling history.replaceState.
     onRestorePath: function(path) { /* ... */ },
+
+    // The authorization and authentication host that is used to perform the authorization flow. 
+    // The default value is the Splunk authorization server.
+    authHost: "..."
 
     // When this setting is enabled, the user is automatically redirected to the
     // login page when the AuthClient instance is created, or when checkAuthentication
@@ -143,19 +143,18 @@ The following example sets configuration options for `SplunkAuthClient`.
     // This setting is enabled (true) by default.
     autoRedirectToLogin: true,
 
-    // The redirect URL is used for redirecting to when using token.getWithRedirect.
-    // This value must be pre-registered as part of client registration. 
-    // If redirectUri is not provided, the value defaults to the current origin.
-    redirectUri: "...",
-
-    // The authorize URL is used to perform the authorization flow. 
-    // The default value is the Splunk authorization server.
-    authorizeUrl: "..."
+    // When this setting is enabled, the cloud-auth-client library restores 
+    // the path of the web app after redirecting to the login page.
+    // This setting is enabled (true) by default.
+    restorePathAfterLogin: true,
 
     // This setting specifies the duration buffer, in seconds, for token expiration.
     // (now > actualExpiration - maxClockSkew) is considered to be expired.
     // The default value is 600.
     maxClockSkew: 600
+
+    // Additional query parameters to pass along while performing login.
+    queryParamsForLogin: { /* ... */ } 
 
     // This setting specifies the duration buffer, in seconds, for token auto-renewal.
     // (now > actualExpiration - autoTokenRenewalBuffer) triggers an auto renewal.

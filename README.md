@@ -29,11 +29,6 @@ Install the following tools before using the Auth packages:
 * [Node.js](https://nodejs.org/en/download/) (includes [npm](https://www.npmjs.com/get-npm))
 * [Yarn](https://legacy.yarnpkg.com/en/docs/install)
 
-Several of the npm scripts in this repository contain shell scripts targeting Bash.  If you are developing on Windows consider installing the following:
-
-* [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-* [Cygwin](https://cygwin.com/install.html)
-
 ### Installation
 
 The Auth packages are available in the [`@splunkdev`](https://www.npmjs.com/search?q=%40splunkdev) package scope. 
@@ -44,9 +39,9 @@ To install these packages into your project, use a node package manager such as 
 npm install @splunk/cloud-auth-common @splunk/cloud-auth-client @splunk/cloud-auth-node 
 ```
 
-### Commands
+### Development Commands
 
-Use the following script commands at the top level of the repository directory as follows. 
+Use the following npm script commands at the top level of the repository directory while developing.
 
 | Command                | Description                              |
 |:---------------------- |:---------------------------------------- |

@@ -67,6 +67,13 @@ Use Homebrew to install additional tools:
 
 Install [Docker](https://www.docker.com/), a container platform. For installation details, see [Install Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install) on the Docker Docs website.
 
+## Development environment for Windows
+
+Several of the npm scripts in this repository contain shell scripts targeting Bash.  If you are developing on Windows consider installing the following:
+
+* [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+* [Cygwin](https://cygwin.com/install.html)
+
 ### Configure the repository environment
 
 To install JavaScript dependencies, run the following command from the root of the project repository: 

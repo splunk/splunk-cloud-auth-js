@@ -11,12 +11,12 @@ You can use the `@splunkdev/cloud-auth-node` library alone or with the [Splunk C
 
 [Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
 
-## Authorization flows
+## Authorization Grant Types
 
-This library supports the following authorization flows:
-* Client Credentials
-* Proof Key for Code Exchange (PKCE)
-* Refresh token with PKCE
+This library supports the following OAuth authorization grant types:
+* [Client Credentials](https://oauth.net/2/grant-types/client-credentials/)
+* [Proof Key for Code Code Exchange](https://oauth.net/2/pkce/) (PKCE)
+* [Refresh Token](https://oauth.net/2/grant-types/refresh-token/)
 
 For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 

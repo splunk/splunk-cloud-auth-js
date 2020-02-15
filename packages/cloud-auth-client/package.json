@@ -25,7 +25,10 @@
     "test": "yarn lint && jest --config ./jest.json --verbose",
     "test:examples": "sh ./ci/scripts/verify_example.sh",
     "third-party-licenses:generate": "node ./ci/generate_3rdparty.js",
-    "third-party-licenses": "sh ./ci/scripts/generate_third_party_credits.sh"
+    "third-party-licenses": "sh ./ci/scripts/generate_third_party_credits.sh",
+    "ts:docs": "rm -rf docs && yarn ts:docs:html && yarn ts:docs:md",
+    "ts:docs:html": "typedoc --tsconfig tsconfig.json --readme none --mode file --out docs/html/ --inlineSourceMap --module commonjs --theme minimal --excludePrivate",
+    "ts:docs:md": "typedoc --tsconfig tsconfig.json --readme none --mode file --out docs/md/ --inlineSourceMap --module commonjs --theme markdown --excludePrivate --mdHideSources --mdEngine github"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",

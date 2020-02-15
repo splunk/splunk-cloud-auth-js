@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.7](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-alpha.5...@splunkdev/cloud-auth-client@1.0.0-alpha.7) (2020-02-15)
+
+
+### Features
+
+* **cloud-auth-client:** push docs to artifactory ([2e8e102](https://github.com/splunk/splunk-cloud-auth-js/commits/2e8e1020cf47079d1e8a5ea0c90bb0d6e68dfd12))
+
+
+
+
+
 # [1.0.0-alpha.6](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-alpha.5...@splunkdev/cloud-auth-client@1.0.0-alpha.6) (2020-02-14)
 
 

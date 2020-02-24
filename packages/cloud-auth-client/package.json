@@ -43,7 +43,6 @@
     "@splunk/babel-preset": "^2.0.0",
     "@splunk/eslint-config": "^2.0.0",
     "@splunk/webpack-configs": "^4.0.0",
-    "@splunkdev/cloud-auth-common": "^1.0.0-alpha.6",
     "@types/crypto-js": "^3.1.43",
     "@types/jest": "^24.9.0",
     "@types/lodash": "^4.14.149",
@@ -80,6 +79,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "dependencies": {
+    "@splunkdev/cloud-auth-common": "^1.0.0-alpha.6",
     "cookie-storage": "^5.0.3",
     "crypto-js": "^3.1.9-1",
     "lodash": "^4.17.5"

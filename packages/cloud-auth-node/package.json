@@ -33,7 +33,6 @@
   },
   "devDependencies": {
     "@splunk/eslint-config": "^2.0.0",
-    "@splunkdev/cloud-auth-common": "^1.0.0-alpha.6",
     "@splunkdev/cloud-sdk": "^4.0.0",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.2",
@@ -78,6 +77,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
+    "@splunkdev/cloud-auth-common": "^1.0.0-alpha.6",
     "node-fetch": "^2.6.0"
   },
   "nyc": {

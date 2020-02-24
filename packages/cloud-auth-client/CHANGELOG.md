@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.10](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-alpha.9...@splunkdev/cloud-auth-client@1.0.0-alpha.10) (2020-02-24)
+
+
+### Features
+
+* moving cloud-auth-common to runtime dependencies ([dfff958](https://github.com/splunk/splunk-cloud-auth-js/commits/dfff95866392501f048237f421643f2a8520732c))
+
+
+
+
+
 # [1.0.0-alpha.9](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-alpha.8...@splunkdev/cloud-auth-client@1.0.0-alpha.9) (2020-02-15)
 
 

@@ -99,7 +99,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @types/sinon
 
-Version: 7.5.1
+Version: 7.5.2
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -329,7 +329,7 @@ Repository: [https://github.com/Dexus/pem](https://github.com/Dexus/pem)
 
 Name: react
 
-Version: 16.12.0
+Version: 16.13.0
 
 License: [MIT](https://github.com/facebook/react/raw/master/LICENSE)
 

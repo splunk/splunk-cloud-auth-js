@@ -2,11 +2,26 @@
   "name": "@splunkdev/cloud-auth-common",
   "version": "1.0.0-alpha.7",
   "description": "Splunk Cloud Common Authentication Library for JavaScript",
-  "main": "./src/index.js",
   "author": "Splunk, Inc.",
   "license": "Apache-2.0",
-  "private": false,
+  "main": "./src/index.js",
   "types": "./src/index.d.ts",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/splunk/splunk-cloud-auth-js.git",
+    "directory": "packages/cloud-auth-common"
+  },
+  "keywords": [
+    "scp",
+    "splunk",
+    "splunk-cloud",
+    "splunk-cloud-platform"
+  ],
+  "homepage": "https://dev.splunk.com/scs/docs/overview/tools/tools_cloud-auth/",
+  "bugs": {
+    "url": "https://github.com/splunk/splunk-cloud-auth-js/issues"
+  },
   "scripts": {
     "commit": "yarn git-cz",
     "lint": "eslint \"src/**/*.ts\" && yarn run lint:tests",

@@ -1,12 +1,27 @@
 {
   "name": "@splunkdev/cloud-auth-client",
   "version": "1.0.0-alpha.10",
-  "description": "Library to help authenticating web applications in Splunk Cloud.",
+  "description": "Splunk Cloud Node Authentication Library for front-end web applications",
   "author": "Splunk, Inc.",
   "license": "Apache-2.0",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/splunk/splunk-cloud-auth-js.git",
+    "directory": "packages/cloud-auth-client"
+  },
+  "keywords": [
+    "scp",
+    "splunk",
+    "splunk-cloud",
+    "splunk-cloud-platform"
+  ],
+  "homepage": "https://dev.splunk.com/scs/docs/overview/tools/tools_cloud-auth/",
+  "bugs": {
+    "url": "https://github.com/splunk/splunk-cloud-auth-js/issues"
+  },
   "scripts": {
     "build": "node ci/extract_version.js && yarn tsc",
     "clean": "rimraf .nyc_output *.log junit.xml && yarn clean:transpile && yarn run clean:coverage && cd examples/cloud-auth-client-react-example && yarn clean || true",

@@ -49,7 +49,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-cli](http
 
 Name: @babel/core
 
-Version: 7.8.4
+Version: 7.8.6
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-core/raw/master/LICENSE)
 
@@ -89,7 +89,7 @@ Repository: [https://github.com/babel/babel/tree/master/packages/babel-plugin-tr
 
 Name: @babel/preset-env
 
-Version: 7.8.4
+Version: 7.8.6
 
 License: [MIT](https://github.com/babel/babel/tree/master/packages/babel-preset-env/raw/master/LICENSE)
 
@@ -358,7 +358,7 @@ Repository: [https://github.com/DavidAnson/markdownlint](https://github.com/Davi
 
 Name: mocha
 
-Version: 7.0.1
+Version: 7.1.0
 
 License: [MIT](https://github.com/mochajs/mocha/raw/master/LICENSE)
 

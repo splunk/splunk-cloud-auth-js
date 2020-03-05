@@ -11,15 +11,17 @@ const REDIRECT_URI = 'https://redirect.com';
 
 jest.useFakeTimers();
 
+let mockStorageClear: jest.Mock;
 let mockStorageGet: jest.Mock;
 jest.mock('../../../src/token/token-manager', () => {
     return {
         TokenManager: jest.fn().mockImplementation(() => {
             return {
+                clear: mockStorageClear,
                 get: mockStorageGet,
             };
         }),
-        TokenManagerSettings: jest.fn().mockImplementation()
+        TokenManagerSettings: jest.fn().mockImplementation(),
     };
 });
 
@@ -28,16 +30,8 @@ describe('SplunkAuthClient', () => {
     let mockGetAccessToken: jest.Mock;
     let mockGenerateAuthUrl: jest.Mock;
 
-    function getAuthClient(): SplunkAuthClient {
-        return new SplunkAuthClient(
-            new SplunkAuthClientSettings(
-                GRANT_TYPE,
-                CLIENT_ID,
-                REDIRECT_URI
-            ));
-    }
-
     beforeEach(() => {
+        mockStorageClear = jest.fn();
         mockStorageGet = jest.fn();
         jest.spyOn(AuthManagerFactory, 'get').mockImplementation(() => {
             return mockAuthManager;
@@ -50,7 +44,7 @@ describe('SplunkAuthClient', () => {
 
     describe('getAccessToken', () => {
         mockWindowProperty('location', {
-            href: ''
+            href: '',
         });
 
         it('returns AccessToken after authenticating', async () => {
@@ -59,11 +53,13 @@ describe('SplunkAuthClient', () => {
                 accessToken: 'abc',
                 expiresAt: Number.MAX_VALUE,
                 expiresIn: 10,
-                tokenType: 'token-type'
-            }
-            mockStorageGet = jest.fn((): AccessToken => {
-                return accessToken;
-            });
+                tokenType: 'token-type',
+            };
+            mockStorageGet = jest.fn(
+                (): AccessToken => {
+                    return accessToken;
+                }
+            );
             mockGetAccessToken = jest.fn();
             mockGenerateAuthUrl = jest.fn();
             mockAuthManager = {
@@ -72,10 +68,12 @@ describe('SplunkAuthClient', () => {
                 deleteRedirectPath: jest.fn(),
                 getAccessToken: mockGetAccessToken,
                 generateAuthUrl: mockGenerateAuthUrl,
-                generateLogoutUrl: jest.fn()
+                generateLogoutUrl: jest.fn(),
             };
 
-            const authClient = getAuthClient();
+            const authClient = new SplunkAuthClient(
+                new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, REDIRECT_URI)
+            );
 
             // Act
             const result = await authClient.getAccessToken();

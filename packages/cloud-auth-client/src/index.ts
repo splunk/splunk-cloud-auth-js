@@ -17,5 +17,8 @@
 export { SplunkAuthClient } from './splunk-auth-client';
 export * from './splunk-auth-client-settings';
 export { SplunkAuthClientError } from './error/splunk-auth-client-error';
-export { SplunkOAuthError } from './error/splunk-oauth-error';
+export {
+    SplunkOAuthError,
+    ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
+} from './error/splunk-oauth-error';
 export { AccessToken } from './model/access-token';

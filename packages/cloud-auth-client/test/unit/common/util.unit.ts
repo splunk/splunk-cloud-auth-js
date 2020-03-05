@@ -38,7 +38,7 @@ describe('util', () => {
         });
     });
 
-    describe('removeWindowLocationHash', () => {
+    describe('clearWindowLocationFragments', () => {
         describe('when history exists', () => {
             const historyMock = {
                 replaceState: jest.fn()

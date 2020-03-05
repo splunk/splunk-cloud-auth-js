@@ -14,7 +14,12 @@
  * under the License.
  */
 
-import { SplunkAuthClient, SplunkAuthClientSettings, GrantType } from '@splunkdev/cloud-auth-client';
+import {
+    SplunkAuthClient,
+    SplunkAuthClientSettings,
+    GrantType,
+    ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
+} from '@splunkdev/cloud-auth-client';
 import React, { Component } from 'react';
 import { Config } from './config';
 
@@ -36,11 +41,10 @@ const authClientSettings = new SplunkAuthClientSettings(
 const authClient = new SplunkAuthClient(authClientSettings);
 
 class App extends Component {
-
     state = {
         loggedIn: false,
         error: null,
-        token: ''
+        token: '',
     };
 
     public async componentDidMount() {
@@ -50,20 +54,25 @@ class App extends Component {
     public async authenticate() {
         try {
             // AuthClient will redirect to login page if user is not authenticated.
-            const loggedIn = await authClient.authenticate();
+            const loggedIn = await authClient.getAccessToken();
             this.setState({
                 loggedIn,
             });
         } catch (e) {
             this.setState({
                 loggedIn: false,
-                error: e.message ? e.message : e.toString(),
+                error:
+                    e.code === ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND
+                        ? ''
+                        : e.message
+                        ? e.message
+                        : e.toString(),
             });
         }
     }
 
     public login() {
-        authClient.redirectToLogin();
+        authClient.login();
     }
 
     public logout() {
@@ -82,22 +91,21 @@ class App extends Component {
             return (
                 <div>
                     <div>Error: {error}</div>
-                    <div>
-                        <button id='login' onClick={this.login}> Login </button>
-                    </div>
-                    <div>
-                        <button id='logout' onClick={this.logout}> Logout </button>
-                    </div>
-                    <div>
-                        <button id='get-token' onClick={this.getToken}> Get Token </button>
-                    </div>
-                </div >
+                </div>
             );
         }
 
         if (!loggedIn) {
             return (
-                <div>Loading ...</div>
+                <div>
+                    <div>Unauthenticated.</div>
+                    <div>
+                        <button id="login" onClick={this.login}>
+                            {' '}
+                            Login{' '}
+                        </button>
+                    </div>
+                </div>
             );
         }
 
@@ -105,15 +113,24 @@ class App extends Component {
             <div>
                 <div>Authenticated!</div>
                 <div>
-                    <button id='login' onClick={this.login}> Login </button>
+                    <button id="login" onClick={this.login}>
+                        {' '}
+                        Login{' '}
+                    </button>
                 </div>
                 <div>
-                    <button id='logout' onClick={this.logout}> Logout </button>
+                    <button id="logout" onClick={this.logout}>
+                        {' '}
+                        Logout{' '}
+                    </button>
                 </div>
                 <div>
-                    <button id='get-token' onClick={this.getToken}> Get Token </button>
+                    <button id="get-token" onClick={this.getToken}>
+                        {' '}
+                        Get Token{' '}
+                    </button>
                 </div>
-            </div >
+            </div>
         );
     }
 }

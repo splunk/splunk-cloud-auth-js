@@ -49,7 +49,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @types/chai
 
-Version: 4.2.9
+Version: 4.2.10
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -79,7 +79,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @types/node
 
-Version: 12.12.28
+Version: 12.12.29
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -109,7 +109,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @typescript-eslint/eslint-plugin
 
-Version: 2.21.0
+Version: 2.22.0
 
 License: [MIT](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -119,7 +119,7 @@ Repository: [https://github.com/typescript-eslint/typescript-eslint](https://git
 
 Name: @typescript-eslint/parser
 
-Version: 2.21.0
+Version: 2.22.0
 
 License: [BSD-2-Clause](https://github.com/typescript-eslint/typescript-eslint/raw/master/LICENSE)
 
@@ -429,7 +429,7 @@ Repository: [https://github.com/TypeStrong/TypeDoc](https://github.com/TypeStron
 
 Name: typescript
 
-Version: 3.8.2
+Version: 3.8.3
 
 License: [Apache-2.0](https://github.com/Microsoft/TypeScript/raw/master/LICENSE.txt)
 

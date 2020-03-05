@@ -137,6 +137,8 @@ export class PKCEAuthManager implements AuthManager {
         const searchParameters = this.getSearchParameters(url);
         const storedOAuthParameters = this.getRedirectOAuthParameters();
 
+        clearWindowLocationFragments();
+
         if (searchParameters.get('state') !== storedOAuthParameters.state) {
             throw new SplunkOAuthError('OAuth flow response state does not match request state');
         }
@@ -145,10 +147,6 @@ export class PKCEAuthManager implements AuthManager {
             this._redirectParamsStorage.delete(REDIRECT_OAUTH_PARAMS_NAME);
         } catch (e) {
             throw new SplunkAuthClientError(`Failed to remove the ${REDIRECT_OAUTH_PARAMS_NAME} data. ${e.message}`);
-        }
-
-        if (!url) {
-            clearWindowLocationFragments();
         }
 
         // call authproxy accessToken to get token

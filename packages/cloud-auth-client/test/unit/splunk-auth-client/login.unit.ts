@@ -17,7 +17,7 @@ jest.mock('../../../src/token/token-manager', () => {
         TokenManager: jest.fn().mockImplementation(() => {
             return {};
         }),
-        TokenManagerSettings: jest.fn().mockImplementation()
+        TokenManagerSettings: jest.fn().mockImplementation(),
     };
 });
 
@@ -27,7 +27,7 @@ jest.mock('../../../src/common/logger', () => ({
         public static warn(message: string): void {
             mockLoggerWarn(message);
         }
-    }
+    },
 }));
 
 describe('SplunkAuthClient', () => {
@@ -37,11 +37,8 @@ describe('SplunkAuthClient', () => {
 
     function getAuthClient(): SplunkAuthClient {
         return new SplunkAuthClient(
-            new SplunkAuthClientSettings(
-                GRANT_TYPE,
-                CLIENT_ID,
-                REDIRECT_URI
-            ));
+            new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, REDIRECT_URI)
+        );
     }
 
     beforeEach(() => {
@@ -57,7 +54,7 @@ describe('SplunkAuthClient', () => {
         jest.clearAllMocks();
     });
 
-    describe('redirectToLogin', () => {
+    describe('login', () => {
         describe('with restorePathAfterLogin set to true', () => {
             const hashValue = '#hashvalue';
             const pathNameValue = '/path/name.html';
@@ -65,30 +62,32 @@ describe('SplunkAuthClient', () => {
             mockWindowProperty('location', {
                 hash: hashValue,
                 pathname: pathNameValue,
-                search: searchValue
+                search: searchValue,
             });
 
             it('sets location href', () => {
                 // Arrange
                 mockGenerateAuthUrl = jest.fn(() => {
                     return URL_0;
-                })
+                });
                 mockAuthManager = {
                     getRedirectPath: jest.fn(),
                     setRedirectPath: mockSetRedirectPath,
                     deleteRedirectPath: jest.fn(),
                     getAccessToken: jest.fn(),
                     generateAuthUrl: mockGenerateAuthUrl,
-                    generateLogoutUrl: jest.fn()
+                    generateLogoutUrl: jest.fn(),
                 };
 
                 const authClient = getAuthClient();
 
                 // Act
-                authClient.redirectToLogin();
+                authClient.login();
 
                 // Assert
-                expect(mockSetRedirectPath).toBeCalledWith(`${pathNameValue}${searchValue}${hashValue}`);
+                expect(mockSetRedirectPath).toBeCalledWith(
+                    `${pathNameValue}${searchValue}${hashValue}`
+                );
                 expect(mockSetRedirectPath).toBeCalledTimes(1);
                 expect(mockGenerateAuthUrl).toBeCalledWith(new Map());
                 expect(mockGenerateAuthUrl).toBeCalledTimes(1);
@@ -108,16 +107,18 @@ describe('SplunkAuthClient', () => {
                     deleteRedirectPath: jest.fn(),
                     getAccessToken: jest.fn(),
                     generateAuthUrl: mockGenerateAuthUrl,
-                    generateLogoutUrl: jest.fn()
+                    generateLogoutUrl: jest.fn(),
                 };
 
                 const authClient = getAuthClient();
 
                 // Act
-                authClient.redirectToLogin();
+                authClient.login();
 
                 // Assert
-                expect(mockSetRedirectPath).toBeCalledWith(`${pathNameValue}${searchValue}${hashValue}`);
+                expect(mockSetRedirectPath).toBeCalledWith(
+                    `${pathNameValue}${searchValue}${hashValue}`
+                );
                 expect(mockSetRedirectPath).toBeCalledTimes(1);
                 expect(mockGenerateAuthUrl).toBeCalledWith(new Map());
                 expect(mockGenerateAuthUrl).toBeCalledTimes(1);
@@ -128,7 +129,7 @@ describe('SplunkAuthClient', () => {
         describe('with restorePathAfterLogin set to false', () => {
             mockWindowProperty('location', {
                 href: jest.fn(),
-                search: '?prop0=value0&prop1=value1'
+                search: '?prop0=value0&prop1=value1',
             });
 
             it('without additional params sets location href', () => {
@@ -142,7 +143,7 @@ describe('SplunkAuthClient', () => {
                     deleteRedirectPath: jest.fn(),
                     getAccessToken: jest.fn(),
                     generateAuthUrl: mockGenerateAuthUrl,
-                    generateLogoutUrl: jest.fn()
+                    generateLogoutUrl: jest.fn(),
                 };
 
                 const authSettings = new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, '/');
@@ -150,7 +151,7 @@ describe('SplunkAuthClient', () => {
                 const authClient = new SplunkAuthClient(authSettings);
 
                 // Act
-                authClient.redirectToLogin();
+                authClient.login();
 
                 // Assert
                 expect(mockGenerateAuthUrl).toBeCalledWith(new Map());
@@ -168,23 +169,23 @@ describe('SplunkAuthClient', () => {
                     deleteRedirectPath: jest.fn(),
                     getAccessToken: jest.fn(),
                     generateAuthUrl: mockGenerateAuthUrl,
-                    generateLogoutUrl: jest.fn()
+                    generateLogoutUrl: jest.fn(),
                 };
 
                 const authSettings = new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, '/');
                 authSettings.restorePathAfterLogin = false;
                 authSettings.queryParamsForLogin = {
-                    'prop1': 'newvalue1'
-                }
+                    prop1: 'newvalue1',
+                };
                 const authClient = new SplunkAuthClient(authSettings);
 
                 // Act
-                authClient.redirectToLogin();
+                authClient.login();
 
                 // Assert
                 expect(mockGenerateAuthUrl).toBeCalledWith(new Map([['prop1', 'newvalue1']]));
                 expect(mockGenerateAuthUrl).toBeCalledTimes(1);
             });
-        })
+        });
     });
 });

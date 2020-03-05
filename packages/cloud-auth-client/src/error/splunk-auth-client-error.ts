@@ -15,6 +15,11 @@
  */
 
 /**
+ * Error code that is used to categorize when a redirect is to occur.
+ */
+export const ERROR_CODE_REDIRECT_UNAUTHENTICATED = 'redirect_unauthenticated';
+
+/**
  * SplunkAuthClientError.
  */
 export class SplunkAuthClientError implements Error {
@@ -49,4 +54,11 @@ export class SplunkAuthClientError implements Error {
      * Error stack trace.
      */
     public stack?: string | undefined;
+
+    /**
+     * ToString method.
+     */
+    public toString(): string {
+        return `Error: ${this.message}, Code: ${this.code}`;
+    }
 }

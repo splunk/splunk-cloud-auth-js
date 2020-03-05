@@ -42,6 +42,7 @@ let mockEncodedCodeVerifier: string;
 let mockCodeChallenge: string;
 jest.mock('../../../src/common/util', () => {
     return {
+        clearWindowLocationFragments: jest.fn(),
         generateRandomString: jest.fn().mockReturnValue('random'),
         generateCodeVerifier: jest.fn().mockImplementation(() => {
             return mockCodeVerifier;

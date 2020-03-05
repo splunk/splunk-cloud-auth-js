@@ -15,6 +15,12 @@
  */
 
 /**
+ * Error code that is used when a well formed access token is not found in the OAuth parameters within the URL search
+ * string.
+ */
+export const ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND = 'token_not_found';
+
+/**
  * SplunkOAuthError.
  */
 export class SplunkOAuthError implements Error {
@@ -27,7 +33,7 @@ export class SplunkOAuthError implements Error {
     constructor(message: string, code?: string, stack?: string) {
         this.name = 'SplunkOAuthError';
         this.message = message;
-        this.code = code || 'oauth-error';
+        this.code = code || 'oauth_error';
         this.stack = stack;
     }
 
@@ -50,4 +56,11 @@ export class SplunkOAuthError implements Error {
      * Error stack.
      */
     public stack?: string | undefined;
+
+    /**
+     * ToString method.
+     */
+    public toString(): string {
+        return `Error: ${this.message}, Code: ${this.code}`;
+    }
 }

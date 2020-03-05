@@ -14,27 +14,39 @@
  * under the License.
  */
 
-import { PKCEOAuthRedirectParams } from "../auth/pkce-auth-manager";
-import { SplunkOAuthError } from "../error/splunk-oauth-error";
+import { PKCEOAuthRedirectParams } from '../auth/pkce-auth-manager';
+import {
+    ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
+    SplunkOAuthError,
+} from '../error/splunk-oauth-error';
 
 /**
  * Validates URL seach parameters for the PKCE flow.
  * @param searchParameters URL search parameters.
  */
 export function validateSearchParameters(searchParameters: URLSearchParams): void {
-    if (searchParameters.get('error') ||
-        searchParameters.get('error_description')) {
+    // URL contains an error from the identity service redirect.
+    if (searchParameters.get('error') || searchParameters.get('error_description')) {
         throw new SplunkOAuthError(
             String(searchParameters.get('error_description')),
-            String(searchParameters.get('error')));
+            String(searchParameters.get('error'))
+        );
     }
 
+    // Otherwise, there is no error and the search parameters are expected to contain a well-formed access code and
+    // state or a user has landed on the page for the first time and search parameters are empty.
     if (!searchParameters.get('code')) {
-        throw new SplunkOAuthError('Unable to parse the code search parameter from the url.', 'token_not_found');
+        throw new SplunkOAuthError(
+            'Unable to parse the code search parameter from the url.',
+            ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND
+        );
     }
 
     if (!searchParameters.get('state')) {
-        throw new SplunkOAuthError('Unable to parse the state search parameter from the url.', 'token_not_found');
+        throw new SplunkOAuthError(
+            'Unable to parse the state search parameter from the url.',
+            ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND
+        );
     }
 }
 

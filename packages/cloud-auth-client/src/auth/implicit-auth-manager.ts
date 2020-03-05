@@ -128,6 +128,8 @@ export class ImplicitAuthManager implements AuthManager {
             const hashParameters = this.getHashParameters(url);
             const storedOAuthParameters = this.getRedirectOAuthParameters();
 
+            clearWindowLocationFragments();
+
             if (hashParameters.get('state') !== storedOAuthParameters.state) {
                 throw new SplunkOAuthError('OAuth flow response state does not match request state');
             }
@@ -137,10 +139,6 @@ export class ImplicitAuthManager implements AuthManager {
             } catch (e) {
                 throw new SplunkAuthClientError(
                     `Failed to remove the ${REDIRECT_OAUTH_PARAMS_NAME} data. ${e.message}`);
-            }
-
-            if (!url) {
-                clearWindowLocationFragments();
             }
 
             const accessToken: AccessToken = {

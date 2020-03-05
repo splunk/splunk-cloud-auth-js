@@ -21,10 +21,26 @@ import memoize from 'lodash/memoize';
 import { AuthManager } from './auth/auth-manager';
 import { AuthManagerFactory } from './auth/auth-manager-factory';
 import { Logger } from './common/logger';
-import { SplunkAuthClientError } from './error/splunk-auth-client-error';
+import { clearWindowLocationFragments } from './common/util';
+import {
+    ERROR_CODE_REDIRECT_UNAUTHENTICATED,
+    SplunkAuthClientError,
+} from './error/splunk-auth-client-error';
+import { ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND } from './error/splunk-oauth-error';
 import { AccessToken } from './model/access-token';
-import { GrantType, REDIRECT_PATH_PARAMS_NAME, SplunkAuthClientSettings } from './splunk-auth-client-settings';
+import {
+    GrantType,
+    REDIRECT_PATH_PARAMS_NAME,
+    SplunkAuthClientSettings,
+} from './splunk-auth-client-settings';
 import { TokenManager, TokenManagerSettings } from './token/token-manager';
+
+/**
+ * Error codes that can be handled for redirecting to login.
+ */
+export const REDIRECT_LOGIN_HANDLED_ERROR_CODES = new Set<string>([
+    ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
+]);
 
 /**
  * SplunkAuthClient.
@@ -35,10 +51,11 @@ export class SplunkAuthClient implements SdkAuthManager {
      * @param settings AuthClientSettings.
      */
     public constructor(settings: SplunkAuthClientSettings) {
-        if (!Object.values(GrantType).some((value) => value === settings.grantType)) {
+        if (!Object.values(GrantType).some(value => value === settings.grantType)) {
             throw new SplunkAuthClientError(
                 `Missing valid value for required configuration option "grantType". ` +
-                `Values=[${Object.values(GrantType)}]`);
+                    `Values=[${Object.values(GrantType)}]`
+            );
         }
 
         if (!settings.clientId) {
@@ -46,27 +63,26 @@ export class SplunkAuthClient implements SdkAuthManager {
         }
 
         this._settings = settings;
-        this._settings.onRestorePath =
-            this._settings.onRestorePath ? this._settings.onRestorePath : SplunkAuthClient.defaultRestorePath;
-        this._tokenManager =
-            new TokenManager(
-                new TokenManagerSettings(
-                    this._settings.authHost,
-                    this._settings.autoTokenRenewalBuffer,
-                    this._settings.clientId,
-                    this._settings.redirectUri
-                )
-            );
-        this._authManager =
-            AuthManagerFactory.get(
-                this._settings.grantType,
+        this._settings.onRestorePath = this._settings.onRestorePath
+            ? this._settings.onRestorePath
+            : SplunkAuthClient.defaultRestorePath;
+        this._tokenManager = new TokenManager(
+            new TokenManagerSettings(
                 this._settings.authHost,
+                this._settings.autoTokenRenewalBuffer,
                 this._settings.clientId,
                 this._settings.redirectUri
-            );
+            )
+        );
+        this._authManager = AuthManagerFactory.get(
+            this._settings.grantType,
+            this._settings.authHost,
+            this._settings.clientId,
+            this._settings.redirectUri
+        );
 
         if (this._settings.autoRedirectToLogin) {
-            setTimeout(() => this.authenticate(), 0);
+            setTimeout(() => this.getAccessTokenContext().catch(), 0);
         }
     }
 
@@ -76,6 +92,8 @@ export class SplunkAuthClient implements SdkAuthManager {
 
     private _authManager: AuthManager;
 
+    private _hasRequestedToken = false;
+
     /**
      * Gets the access token string.
      */
@@ -84,15 +102,56 @@ export class SplunkAuthClient implements SdkAuthManager {
     }
 
     /**
-     * Gets the full access token context
+     * Gets the full access token context including expiration and scope.
+     *
+     * If a token has been cached in the TokenManager and is still valid, this method returns the cached AccessToken.
+     * If a token is not cached or is expired this method will attempt to retrieve, cache and return an AccessToken
+     * from the Auth Host.
+     *      - If token retrieval fails and autoRedirectToLogin is true, this method will redirect to the splunk cloud
+     *        login page.  Once valid credentials have been entered, the browser will be redirected back to the
+     *        previous page.
+     *      - If token retrieval fails and autoRedirectToLogin is  false, this method will attempt to retrieve a
+     *        new token.
      */
     public async getAccessTokenContext(): Promise<AccessToken> {
         try {
-            await this.authenticate();
-        } catch {
-            this.redirectToLogin();
+            if (this.isAuthenticated()) {
+                return this._tokenManager.get();
+            }
+
+            const token = await this.requestToken();
+            this._tokenManager.set(token);
+            return this._tokenManager.get();
+        } catch (e) {
+            Logger.warn(e.toString());
+
+            if (
+                this._settings.autoRedirectToLogin &&
+                REDIRECT_LOGIN_HANDLED_ERROR_CODES.has(e.code)
+            ) {
+                // The login method does a redirect to the login page.
+                this.login();
+
+                throw new SplunkAuthClientError(
+                    'Redirecting to login to authenticate.',
+                    ERROR_CODE_REDIRECT_UNAUTHENTICATED
+                );
+            }
+
+            this._tokenManager.clear();
+            throw e;
+        } finally {
+            // For applications such as SPAs where there may be multiple calls to this method,
+            // it does not make sense to repeatedly clear the window location fragments and/or execute path restore.
+            // The following code block executes only on the first invocation of this method.
+            if (!this._hasRequestedToken) {
+                this._hasRequestedToken = true;
+                clearWindowLocationFragments();
+                if (this._settings.restorePathAfterLogin) {
+                    this.restorePathAfterLogin();
+                }
+            }
         }
-        return new Promise<AccessToken>((resolve) => resolve(this._tokenManager.get()));
     }
 
     /**
@@ -101,66 +160,11 @@ export class SplunkAuthClient implements SdkAuthManager {
      */
     public isAuthenticated() {
         const accessToken = this._tokenManager.get();
-        return accessToken
-            && get(accessToken, 'expiresAt') + this._settings.maxClockSkew > Math.floor(new Date().getTime() / 1000);
-    }
-
-    /**
-     * Attempt to read the token(s) returned from a redirect.
-     *
-     * For successful authentication requests `access_token`, `id_token`, and `code` are read from
-     * the url itself.
-     *
-     * For authentication errors (e.g. login or consent are required), the `error` and
-     * `error_description` are read from the url and used to populate and throw an SplunkOAuthError.
-     *
-     * For cases where no token is present, failure to verify claims, or state mismatches an
-     * AuthClientError is thrown.
-     */
-    public async parseTokenFromRedirect(): Promise<AccessToken | null> {
-        return this._authManager
-            .getAccessToken()
-            .then((accessToken: AccessToken) => {
-                if (this._settings.restorePathAfterLogin) {
-                    this.restorePathAfterLogin();
-                }
-                return accessToken;
-            });
-    }
-
-    /**
-     * Check if we already have an access token in the tokenManager (sessionStorage).
-     * If not, check if there is one returned from a redirect (e.g. in the query string).
-     * If that fails due to consent or login being required then redirect to the login page.
-     */
-    public async authenticate(redirect?: boolean): Promise<boolean> {
-        const shouldRedirect = redirect === undefined ? this._settings.autoRedirectToLogin : redirect;
-
-        if (this.isAuthenticated()) {
-            return true;
-        }
-
-        try {
-            const token = await this.requestToken();
-
-            if (!token || !token.accessToken) {
-                throw new SplunkAuthClientError('Token not found.', 'token_not_found');
-            }
-
-            this._tokenManager.set(token);
-            return true;
-        } catch (e) {
-            if ((e.code === 'login_required'
-                || e.code === 'consent_required'
-                || e.code === 'token_not_found')
-                && shouldRedirect) {
-                Logger.warn(`${e.message} Redirecting to the login page...`);
-                this.redirectToLogin();
-                return false;
-            }
-
-            throw e;
-        }
+        return (
+            accessToken &&
+            get(accessToken, 'expiresAt') + this._settings.maxClockSkew >
+                Math.floor(new Date().getTime() / 1000)
+        );
     }
 
     /* eslint-disable max-len */
@@ -174,7 +178,7 @@ export class SplunkAuthClient implements SdkAuthManager {
      * will be parsed via `this.parseTokensFromRedirect`.
      */
     /* eslint-enable max-len */
-    public redirectToLogin() {
+    public login() {
         if (this._settings.restorePathAfterLogin) {
             this.storePathBeforeLogin();
         }
@@ -188,8 +192,9 @@ export class SplunkAuthClient implements SdkAuthManager {
      */
     public logout(url?: any | string) {
         this._tokenManager.clear();
-        window.location.href =
-            this._authManager.generateLogoutUrl(url || this._settings.redirectUri || window.location.href).href;
+        window.location.href = this._authManager.generateLogoutUrl(
+            url || this._settings.redirectUri || window.location.href
+        ).href;
     }
 
     /**
@@ -202,7 +207,7 @@ export class SplunkAuthClient implements SdkAuthManager {
     /**
      * Check for token returned from a previous redirect, if none then call the /authorize
      */
-    private requestToken = memoize(() => this.parseTokenFromRedirect());
+    private requestToken = memoize((): Promise<AccessToken> => this._authManager.getAccessToken());
 
     /**
      * Store the complete window.location information so that the state can be restored after the
@@ -244,12 +249,8 @@ export class SplunkAuthClient implements SdkAuthManager {
         const urlQueryParams = new URLSearchParams(window.location.search);
         return new Map(
             Object.entries(this._settings.queryParamsForLogin)
-                .filter(
-                    ([key,]) => urlQueryParams.has(key)
-                )
-                .map(
-                    ([key, value]) => [key, String(value)]
-                )
+                .filter(([key]) => urlQueryParams.has(key))
+                .map(([key, value]) => [key, String(value)])
         );
     }
 }

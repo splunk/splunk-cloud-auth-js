@@ -39,7 +39,7 @@ jest.mock('../../../src/common/util', () => {
             .mockReturnValueOnce('random1')
             .mockReturnValueOnce('random2')
             .mockReturnValue('random'),
-        removeWindowLocationHash: jest.fn()
+        clearWindowLocationFragments: jest.fn()
     };
 });
 

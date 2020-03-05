@@ -14,7 +14,7 @@ jest.mock('../../../src/token/token-manager', () => {
         TokenManager: jest.fn().mockImplementation(() => {
             return {};
         }),
-        TokenManagerSettings: jest.fn().mockImplementation()
+        TokenManagerSettings: jest.fn().mockImplementation(),
     };
 });
 
@@ -24,11 +24,10 @@ jest.mock('../../../src/common/logger', () => ({
         public static warn(message: string): void {
             mockLoggerWarn(message);
         }
-    }
+    },
 }));
 
 describe('SplunkAuthClient', () => {
-
     beforeEach(() => {
         mockLoggerWarn = jest.fn();
         jest.spyOn(AuthManagerFactory, 'get').mockImplementation(() => {
@@ -38,7 +37,7 @@ describe('SplunkAuthClient', () => {
                 deleteRedirectPath: jest.fn(),
                 getAccessToken: jest.fn(),
                 generateAuthUrl: jest.fn(),
-                generateLogoutUrl: jest.fn()
+                generateLogoutUrl: jest.fn(),
             };
         });
     });
@@ -50,11 +49,7 @@ describe('SplunkAuthClient', () => {
     describe('constructor', () => {
         it('with auto redirect login should initialize the client and trigger authentication', () => {
             // Arrange
-            const settings = new SplunkAuthClientSettings(
-                GRANT_TYPE,
-                CLIENT_ID,
-                REDIRECT_URI
-            );
+            const settings = new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, REDIRECT_URI);
 
             // Act
             const authClient = new SplunkAuthClient(settings);
@@ -66,11 +61,7 @@ describe('SplunkAuthClient', () => {
 
         it('initializes the client without triggering authentication', () => {
             // Arrange
-            const settings = new SplunkAuthClientSettings(
-                GRANT_TYPE,
-                CLIENT_ID,
-                REDIRECT_URI
-            );
+            const settings = new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, REDIRECT_URI);
             settings.autoRedirectToLogin = false;
 
             // Act
@@ -83,18 +74,32 @@ describe('SplunkAuthClient', () => {
 
         it('throws SplunkAuthClientError when clientId is not specified', () => {
             // Arrange
-            const settings = new SplunkAuthClientSettings(
-                GRANT_TYPE,
-                '',
-                REDIRECT_URI
-            );
+            const settings = new SplunkAuthClientSettings(GRANT_TYPE, '', REDIRECT_URI);
 
             // Act/Assert
             expect(() => {
                 // eslint-disable-next-line no-new
                 new SplunkAuthClient(settings);
+            }).toThrow(
+                new SplunkAuthClientError('Missing required configuration option "clientId".')
+            );
+        });
 
-            }).toThrow(new SplunkAuthClientError('Missing required configuration option "clientId".'));
+        it('throws SplunkAuthClientError when grantType is not specified', () => {
+            // Arrange
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore: expected invalid input for GrantType
+            const settings = new SplunkAuthClientSettings('asdf', CLIENT_ID, REDIRECT_URI);
+
+            // Act/Assert
+            expect(() => {
+                // eslint-disable-next-line no-new
+                new SplunkAuthClient(settings);
+            }).toThrow(
+                new SplunkAuthClientError(
+                    'Missing valid value for required configuration option "grantType". Values=[implicit,pkce]'
+                )
+            );
         });
     });
 });

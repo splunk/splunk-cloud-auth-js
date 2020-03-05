@@ -14,8 +14,9 @@ You can use the `@splunkdev/cloud-auth-client` library alone or with the [Splunk
 ## Authorization Grant Types
 
 This library supports the following OAuth authorization grant types:
-* [Implicit](https://oauth.net/2/grant-types/implicit/)
-* [Proof Key for Code Code Exchange](https://oauth.net/2/pkce/) (PKCE)
+
+-   [Implicit](https://oauth.net/2/grant-types/implicit/)
+-   [Proof Key for Code Code Exchange](https://oauth.net/2/pkce/) (PKCE)
 
 For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 
@@ -28,6 +29,7 @@ Run the following command from your project directory if you use Yarn:
 ```sh-session
 yarn add @splunkdev/cloud-auth-client
 ```
+
 Run the following command from your project directory if you use npm:
 
 ```sh-session
@@ -43,7 +45,11 @@ The following example shows how to work with the `@splunkdev/cloud-auth-client` 
 This example demonstrates how to use the `@splunkdev/cloud-auth-client` library in a React web application. For an example that you can run, see [examples/cloud-auth-client-react-example](examples/cloud-auth-client-react-example).
 
 ```ts
-import { SplunkAuthClient, SplunkAuthClientSettings, GrantType } from '@splunkdev/cloud-auth-client';
+import {
+    SplunkAuthClient,
+    SplunkAuthClientSettings,
+    GrantType,
+} from '@splunkdev/cloud-auth-client';
 import React, { Component } from 'react';
 
 // Create settings.
@@ -76,16 +82,16 @@ class App extends Component {
 
     authenticate = async () => {
         try {
-        // AuthClient redirects to a login page if the user is not authenticated.
-        const loggedIn = await authClient.authenticate();
-        this.setState({
-            loggedIn,
-        });
+            // AuthClient redirects to a login page if the user is not authenticated.
+            const loggedIn = await authClient.getAccessToken();
+            this.setState({
+                loggedIn,
+            });
         } catch (e) {
-        this.setState({
-            loggedIn: false,
-            error: e,
-        });
+            this.setState({
+                loggedIn: false,
+                error: e,
+            });
         }
     };
 
@@ -93,20 +99,14 @@ class App extends Component {
         const { error, loggedIn } = this.state;
 
         if (error) {
-        return (
-            <div>Error: {error}</div>
-        );
+            return <div>Error: {error}</div>;
         }
 
         if (!loggedIn) {
-        return (
-            <div>Loading ...</div>
-        );
+            return <div>Loading ...</div>;
         }
 
-        return (
-        <div>Authenticated!</div>
-        );
+        return <div>Authenticated!</div>;
     }
 }
 ```
@@ -133,7 +133,7 @@ The following example sets configuration options for `SplunkAuthClient`.
     // routers, such as react-router, rather than calling history.replaceState.
     onRestorePath: function(path) { /* ... */ },
 
-    // The authorization and authentication host that is used to perform the authorization flow. 
+    // The authorization and authentication host that is used to perform the authorization flow.
     // The default value is the Splunk authorization server.
     authHost: "..."
 
@@ -143,7 +143,7 @@ The following example sets configuration options for `SplunkAuthClient`.
     // This setting is enabled (true) by default.
     autoRedirectToLogin: true,
 
-    // When this setting is enabled, the cloud-auth-client library restores 
+    // When this setting is enabled, the cloud-auth-client library restores
     // the path of the web app after redirecting to the login page.
     // This setting is enabled (true) by default.
     restorePathAfterLogin: true,
@@ -154,7 +154,7 @@ The following example sets configuration options for `SplunkAuthClient`.
     maxClockSkew: 600
 
     // Additional query parameters to pass along while performing login.
-    queryParamsForLogin: { /* ... */ } 
+    queryParamsForLogin: { /* ... */ }
 
     // This setting specifies the duration buffer, in seconds, for token auto-renewal.
     // (now > actualExpiration - autoTokenRenewalBuffer) triggers an auto renewal.

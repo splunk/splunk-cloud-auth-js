@@ -19,10 +19,46 @@ print_major_header_line() {
     echo "\n============================================================"
 }
 
+print_major_semver() {
+    echo "Reference:"
+    echo "    https://semver.org/"
+    echo "    Given a version number MAJOR.MINOR.PATCH, increment the:"
+    echo ""
+    echo "    MAJOR version when you make incompatible API changes,"
+    echo "    MINOR version when you add functionality in a backwards compatible manner, and"
+    echo "    PATCH version when you make backwards compatible bug fixes."
+    echo ""
+}
+
 CUSTOM_RELEASE=false
 if [[ "$1" == "--custom" ]]
 then
     CUSTOM_RELEASE=true
+fi
+
+EXPLICIT_RELEASE=false
+EXPLICIT_RELEASE_VERSION=""
+if [[ "$1" == "--explicit" ]]
+then
+    if [[ "$2" == "" ]]
+    then
+        echo "You must specify a version number for an explicit release."
+        echo ""
+        print_major_semver
+        echo "Exiting ..."
+        exit 1
+    fi
+    EXPLICIT_RELEASE=true
+    EXPLICIT_RELEASE_VERSION=$2
+fi
+
+if [[ "$CI_PROJECT_URL" == ""  ]] || [[ "$GITHUB_PROJECT_URL" == "" ]]
+then
+    echo "Environment variables for project URLs are not specified. Please specify the following variables:"
+    echo "    CI_PROJECT_URL"
+    echo "    GITHUB_PROJECT_URL"
+    echo "Exiting ..."
+    exit 1
 fi
 
 print_header_line
@@ -53,16 +89,11 @@ then
     print_header_line
     echo "Compare develop...master branches to determine versions for each package..."
     echo ""
-    echo "Please review all incoming changes and determine the release types of each package. When you are ready type 'Y' and then press [ENTER]."
+    echo "Please review all incoming changes and determine the release types of each package."
+    echo "Update that package.json of each package you would like to release."
+    echo "When you are ready type 'Y' and then press [ENTER]."
     echo ""
-    echo "Reference:"
-    echo "    https://semver.org/"
-    echo "    Given a version number MAJOR.MINOR.PATCH, increment the:"
-    echo ""
-    echo "    MAJOR version when you make incompatible API changes,"
-    echo "    MINOR version when you add functionality in a backwards compatible manner, and"
-    echo "    PATCH version when you make backwards compatible bug fixes."
-    echo ""
+    print_major_semver
     read CONFIRM_MANUAL_REVIEW
     if [[ "$CONFIRM_MANUAL_REVIEW" != "y" ]] && [[ "$CONFIRM_MANUAL_REVIEW" != "Y" ]]
     then
@@ -84,8 +115,14 @@ then
     echo "    NOTICE"
     echo "Please update the respective CHANGELOG.MD files for each package before pushing."
 else
-    print_header_line
-    yarn lerna version --conventional-commits --no-push --include-merged-tags --yes
+    if [ $EXPLICIT_RELEASE ]
+    then
+        print_header_line
+        yarn lerna version $EXPLICIT_RELEASE_VERSION --no-push --include-merged-tags --yes
+    else
+        print_header_line
+        yarn lerna version --conventional-commits --no-push --include-merged-tags --yes
+    fi
 
     LERNA_VERSION_EXIT_CODE=$?
     if [ $LERNA_VERSION_EXIT_CODE -ne 0 ]

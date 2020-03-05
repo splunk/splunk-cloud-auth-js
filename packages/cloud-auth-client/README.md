@@ -83,7 +83,7 @@ class App extends Component {
     authenticate = async () => {
         try {
             // AuthClient redirects to a login page if the user is not authenticated.
-            const loggedIn = await authClient.getAccessToken();
+            const loggedIn = (await authClient.getAccessToken()) != '';
             this.setState({
                 loggedIn,
             });

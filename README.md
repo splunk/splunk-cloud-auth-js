@@ -73,6 +73,6 @@ For examples showing how to use the Auth packages, see the `examples` directory 
 | File                               | Description                             |
 |:---------------------------------- |:--------------------------------------- |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Guidelines for contributing to this project. |
-| [CONTRIBUTING.md](CONTRIBUTING.md)           | Authors of this project.                |
+| [CODEOWNERS](CODEOWNERS)           | Authors of this project.                |
 | [LICENSE.txt](LICENSE.txt)         | Apache 2.0 License for this project.    |
 | THIRD-PARTY-CREDITS.md             | Acknowledgements of the contributors of the libraries that have been used in the development of this project. Each package directory contains this file. |

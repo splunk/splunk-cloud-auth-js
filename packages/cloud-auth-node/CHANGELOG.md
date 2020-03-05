@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.0-alpha.7...@splunkdev/cloud-auth-node@1.0.0-beta.1) (2020-03-05)
+
+
+### Bug Fixes
+
+* update codecov to 3.6.5+ ([ce2cfe5](https://github.com/splunk/splunk-cloud-auth-js/commit/ce2cfe583d0d8df565beb8386d5ab8da87f7cf2a))
+
+
+
+
+
 # [1.0.0-alpha.7](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.0-alpha.6...@splunkdev/cloud-auth-node@1.0.0-alpha.7) (2020-02-24)
 
 

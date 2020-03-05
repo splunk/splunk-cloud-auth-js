@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-alpha.10...@splunkdev/cloud-auth-client@1.0.0-beta.1) (2020-03-05)
+
+
+### Features
+
+* enabling explicit version release in release.sh ([4ef88f8](https://github.com/splunk/splunk-cloud-auth-js/commit/4ef88f8e5660c52bb0793b48ccf211fc4e80ef6f))
+
+
+### BREAKING CHANGES
+
+* **cloud-auth-client:** remove authenticate, parseTokenFromRedirect, rename login method in splunkauthclient, auth flow via getAccessTokenContext ([3f7b333](https://github.com/splunk/splunk-cloud-auth-js/commit/3f7b333b2457b1d85310d83ead3944a00c947275))
+
+
+
+
+
 # [1.0.0-alpha.10](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-alpha.9...@splunkdev/cloud-auth-client@1.0.0-alpha.10) (2020-02-24)
 
 

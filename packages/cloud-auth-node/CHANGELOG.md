@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.2](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.0-beta.1...@splunkdev/cloud-auth-node@1.0.0-beta.2) (2020-03-06)
+
+
+### Features
+
+* yarn.lock cleanup ([34711ef](https://github.com/splunk/splunk-cloud-auth-js/commit/34711efcca95a9db49fa912787902a9bbf902ffc))
+
+
+
+
+
 # [1.0.0-beta.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.0-alpha.7...@splunkdev/cloud-auth-node@1.0.0-beta.1) (2020-03-05)
 
 

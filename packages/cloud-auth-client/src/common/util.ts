@@ -1,6 +1,6 @@
 import CryptoJs from 'crypto-js';
 
-import { SplunkAuthClientError } from "../error/splunk-auth-client-error";
+import { SplunkAuthClientError } from '../error/splunk-auth-client-error';
 
 const ACCEPTABLE_RANDOM_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklnopqrstuvwxyz0123456789';
 
@@ -23,16 +23,30 @@ export function generateRandomString(length: number) {
  * Clears the hash and search fragments from window location.
  */
 export function clearWindowLocationFragments() {
-    if (window.history && window.history.replaceState) {
-        window.history.replaceState(
-            null,
-            window.document.title,
-            `${window.location.pathname}${window.location.search}`);
-    } else {
-        window.location.hash = '';
-        window.location.search = '';
-
+    let url = `${window.location.pathname}`;
+    if (window.location.search) {
+        const urlQueryParams = new URLSearchParams(window.location.search.substr(1));
+        urlQueryParams.delete('code');
+        urlQueryParams.delete('redirect_uri');
+        urlQueryParams.delete('requestId');
+        urlQueryParams.delete('state');
+        url += urlQueryParams.toString() ? `?${urlQueryParams.toString()}` : '';
     }
+
+    if (window.location.hash) {
+        const urlHashParams = new URLSearchParams(window.location.hash.substr(1));
+        urlHashParams.delete('access_token');
+        urlHashParams.delete('expires_in');
+        urlHashParams.delete('id_token');
+        urlHashParams.delete('redirect_uri');
+        urlHashParams.delete('requestId');
+        urlHashParams.delete('scope');
+        urlHashParams.delete('state');
+        urlHashParams.delete('token_type');
+        url += urlHashParams.toString() ? `#${urlHashParams.toString()}` : '';
+    }
+
+    window.history.replaceState(null, window.document.title, url);
 }
 
 // pkce code flow

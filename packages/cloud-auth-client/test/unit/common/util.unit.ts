@@ -3,15 +3,13 @@ import {
     createCodeChallenge,
     encodeCodeVerifier,
     generateCodeVerifier,
-    generateRandomString
+    generateRandomString,
 } from '../../../src/common/util';
 import { SplunkAuthClientError } from '../../../src/error/splunk-auth-client-error';
 import { mockWindowProperty } from '../fixture/test-setup';
 
 const TITLE_PARAM = 'title';
 const PATH_NAME_PARAM = 'pathname';
-const SEARCH_PARAM = 'search';
-const HASH_VALUE = '#abc=123';
 
 describe('util', () => {
     describe('generateRandomString', () => {
@@ -20,7 +18,7 @@ describe('util', () => {
         const cryptoMock = {
             getRandomValues: jest.fn().mockImplementation(() => {
                 return randomBytesMock;
-            })
+            }),
         };
         mockWindowProperty('crypto', cryptoMock);
 
@@ -39,52 +37,115 @@ describe('util', () => {
     });
 
     describe('clearWindowLocationFragments', () => {
-        describe('when history exists', () => {
-            const historyMock = {
-                replaceState: jest.fn()
-            };
-            const documentMock = {
-                title: TITLE_PARAM
-            };
-            const locationMock = {
-                pathname: PATH_NAME_PARAM,
-                search: SEARCH_PARAM
-            };
+        const historyMock = {
+            replaceState: jest.fn(),
+        };
+        const documentMock = {
+            title: TITLE_PARAM,
+        };
 
-            mockWindowProperty('history', historyMock);
-            mockWindowProperty('document', documentMock);
-            mockWindowProperty('location', locationMock);
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
 
-            it('replaces state in history', () => {
-                // Act
-                clearWindowLocationFragments();
+        mockWindowProperty('history', historyMock);
+        mockWindowProperty('document', documentMock);
 
-                // Assert
-                expect(historyMock.replaceState).toBeCalledWith(null, TITLE_PARAM, `${PATH_NAME_PARAM}${SEARCH_PARAM}`);
-                expect(historyMock.replaceState).toBeCalledTimes(1);
+        describe('with window location search', () => {
+            const SEARCH_VALUE = `?code=value&redirect_uri=http://redirect.com&requestId=qwert1234&state=zxcv09877`;
+            const SEARCH_WITH_ADDITIONAL_VALUE = `${SEARCH_VALUE}&search=value`;
+
+            describe('with search params', () => {
+                const locationMock = {
+                    pathname: PATH_NAME_PARAM,
+                    search: SEARCH_VALUE,
+                };
+
+                mockWindowProperty('location', locationMock);
+
+                it('replaces state in history', () => {
+                    // Act
+                    clearWindowLocationFragments();
+
+                    // Assert
+                    expect(historyMock.replaceState).toBeCalledWith(
+                        null,
+                        TITLE_PARAM,
+                        `${PATH_NAME_PARAM}`
+                    );
+                    expect(historyMock.replaceState).toBeCalledTimes(1);
+                });
+            });
+
+            describe('with search params and additional value', () => {
+                const locationMock = {
+                    pathname: PATH_NAME_PARAM,
+                    search: SEARCH_WITH_ADDITIONAL_VALUE,
+                };
+
+                mockWindowProperty('location', locationMock);
+
+                it('replaces state in history', () => {
+                    // Act
+                    clearWindowLocationFragments();
+
+                    // Assert
+                    expect(historyMock.replaceState).toBeCalledWith(
+                        null,
+                        TITLE_PARAM,
+                        `${PATH_NAME_PARAM}?search=value`
+                    );
+                    expect(historyMock.replaceState).toBeCalledTimes(1);
+                });
             });
         });
 
-        describe('when history does not exist', () => {
-            const documentMock = {
-                title: TITLE_PARAM
-            };
-            const locationMock = {
-                pathname: PATH_NAME_PARAM,
-                search: SEARCH_PARAM,
-                hash: HASH_VALUE
-            };
+        describe('with window location hash', () => {
+            const HASH_VALUE = `#access_token=IAMTOKEN&expires_in=123&id_token=IAMIDTOKEN&redirect_uri=http://redirect.com&requestId=qwert1234&scope=open&state=zxcv09877&token_type=iamtype`;
+            const HASH_WITH_ADDITIONAL_VALUE = `${HASH_VALUE}&hash=value`;
 
-            mockWindowProperty('history', {});
-            mockWindowProperty('document', documentMock);
-            mockWindowProperty('location', locationMock);
+            describe('with hash params', () => {
+                const locationMock = {
+                    pathname: PATH_NAME_PARAM,
+                    hash: HASH_VALUE,
+                };
 
-            it('replaces state in history', () => {
-                // Act
-                clearWindowLocationFragments();
+                mockWindowProperty('location', locationMock);
 
-                // Assert
-                expect(locationMock.hash).toEqual('');
+                it('replaces state in history', () => {
+                    // Act
+                    clearWindowLocationFragments();
+
+                    // Assert
+                    expect(historyMock.replaceState).toBeCalledWith(
+                        null,
+                        TITLE_PARAM,
+                        `${PATH_NAME_PARAM}`
+                    );
+                    expect(historyMock.replaceState).toBeCalledTimes(1);
+                });
+            });
+
+            describe('with hash params and additional value', () => {
+                const locationMock = {
+                    pathname: PATH_NAME_PARAM,
+                    hash: HASH_WITH_ADDITIONAL_VALUE,
+                };
+
+                mockWindowProperty('location', locationMock);
+
+                it('replaces state in history', () => {
+                    // Act
+                    clearWindowLocationFragments();
+
+                    // Assert
+                    expect(historyMock.replaceState).toBeCalledWith(
+                        null,
+                        TITLE_PARAM,
+                        `${PATH_NAME_PARAM}#hash=value`
+                    );
+                    expect(historyMock.replaceState).toBeCalledTimes(1);
+                });
             });
         });
     });
@@ -105,8 +166,7 @@ describe('util', () => {
 
     describe('generateCodeVerifier', () => {
         const validCodeVerifierLength = 50;
-        const randomBytesMock =
-            new Uint32Array([
+        const randomBytesMock =  new Uint32Array([
                 1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
                 1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
                 1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
@@ -116,7 +176,7 @@ describe('util', () => {
         const cryptoMock = {
             getRandomValues: jest.fn().mockImplementation(() => {
                 return randomBytesMock;
-            })
+            }),
         };
         mockWindowProperty('crypto', cryptoMock);
 
@@ -125,9 +185,13 @@ describe('util', () => {
             const codeVerifierLength = 42;
 
             // Act/Assert
-            expect(() => { generateCodeVerifier(codeVerifierLength) })
-                .toThrow(new SplunkAuthClientError(
-                    `Specified code verifier length is invalid. Length=${codeVerifierLength}`));
+            expect(() => {
+                generateCodeVerifier(codeVerifierLength);
+            }).toThrow(
+                new SplunkAuthClientError(
+                    `Specified code verifier length is invalid. Length=${codeVerifierLength}`
+                )
+            );
         });
 
         it('throws SplunkAuthClientError when codeVerifierLength is greater than 128', () => {
@@ -135,9 +199,13 @@ describe('util', () => {
             const codeVerifierLength = 129;
 
             // Act/Assert
-            expect(() => { generateCodeVerifier(codeVerifierLength) })
-                .toThrow(new SplunkAuthClientError(
-                    `Specified code verifier length is invalid. Length=${codeVerifierLength}`));
+            expect(() => {
+                generateCodeVerifier(codeVerifierLength);
+            }).toThrow(
+                new SplunkAuthClientError(
+                    `Specified code verifier length is invalid. Length=${codeVerifierLength}`
+                )
+            );
         });
 
         it('returns valid codeVerifier', () => {

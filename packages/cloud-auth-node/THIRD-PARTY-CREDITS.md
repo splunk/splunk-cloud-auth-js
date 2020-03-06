@@ -29,7 +29,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @types/chai
 
-Version: 4.1.7
+Version: 4.2.10
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -59,7 +59,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @types/node
 
-Version: 12.12.6
+Version: 12.12.29
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -299,7 +299,7 @@ Repository: [https://github.com/istanbuljs/nyc](https://github.com/istanbuljs/ny
 
 Name: pem
 
-Version: 1.14.2
+Version: 1.14.4
 
 License: [MIT](https://github.com/Dexus/pem/raw/master/LICENSE)
 
@@ -319,7 +319,7 @@ Repository: [https://github.com/facebook/react](https://github.com/facebook/reac
 
 Name: replace
 
-Version: 1.1.0
+Version: 1.1.5
 
 License: [MIT](https://github.com/ALMaclaine/replace/raw/master/LICENSE)
 
@@ -329,7 +329,7 @@ Repository: [https://github.com/ALMaclaine/replace](https://github.com/ALMaclain
 
 Name: rimraf
 
-Version: 2.6.3
+Version: 2.7.1
 
 License: [ISC](https://github.com/isaacs/rimraf/raw/master/LICENSE)
 
@@ -359,7 +359,7 @@ Repository: [https://github.com/brummelte/sleep-promise](https://github.com/brum
 
 Name: source-map-support
 
-Version: 0.5.12
+Version: 0.5.16
 
 License: [MIT](https://github.com/evanw/node-source-map-support/raw/master/LICENSE.md)
 
@@ -409,7 +409,7 @@ Repository: [https://github.com/tgreyuk/typedoc-plugin-markdown](https://github.
 
 Name: typedoc
 
-Version: 0.15.0
+Version: 0.15.8
 
 License: [Apache-2.0](https://github.com/TypeStrong/TypeDoc/raw/master/LICENSE)
 
@@ -419,7 +419,7 @@ Repository: [https://github.com/TypeStrong/TypeDoc](https://github.com/TypeStron
 
 Name: typescript
 
-Version: 3.7.2
+Version: 3.8.3
 
 License: [Apache-2.0](https://github.com/Microsoft/TypeScript/raw/master/LICENSE.txt)
 

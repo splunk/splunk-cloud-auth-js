@@ -408,7 +408,7 @@ Repository: [https://github.com/Microsoft/TypeScript](https://github.com/Microso
 
 Name: webpack-cli
 
-Version: 3.3.10
+Version: 3.3.11
 
 License: [MIT](https://github.com/webpack/webpack-cli/raw/master/LICENSE)
 
@@ -418,7 +418,7 @@ Repository: [https://github.com/webpack/webpack-cli](https://github.com/webpack/
 
 Name: webpack-dev-server
 
-Version: 3.9.0
+Version: 3.10.3
 
 License: [MIT](https://github.com/webpack/webpack-dev-server/raw/master/LICENSE)
 

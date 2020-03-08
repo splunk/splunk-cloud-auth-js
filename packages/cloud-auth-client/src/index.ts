@@ -16,7 +16,10 @@
 
 export { SplunkAuthClient } from './splunk-auth-client';
 export * from './splunk-auth-client-settings';
-export { SplunkAuthClientError } from './error/splunk-auth-client-error';
+export {
+    SplunkAuthClientError,
+    ERROR_CODE_REDIRECT_UNAUTHENTICATED,
+} from './error/splunk-auth-client-error';
 export {
     SplunkOAuthError,
     ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,

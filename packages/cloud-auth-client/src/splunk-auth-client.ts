@@ -71,14 +71,16 @@ export class SplunkAuthClient implements SdkAuthManager {
                 this._settings.authHost,
                 this._settings.autoTokenRenewalBuffer,
                 this._settings.clientId,
-                this._settings.redirectUri
+                this._settings.redirectUri,
+                this._settings.tokenStorageName
             )
         );
         this._authManager = AuthManagerFactory.get(
             this._settings.grantType,
             this._settings.authHost,
             this._settings.clientId,
-            this._settings.redirectUri
+            this._settings.redirectUri,
+            this._settings.redirectParamsStorageName
         );
 
         if (this._settings.autoRedirectToLogin) {

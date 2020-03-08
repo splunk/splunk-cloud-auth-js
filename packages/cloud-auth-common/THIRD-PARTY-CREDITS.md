@@ -209,7 +209,7 @@ Repository: [https://github.com/evcohen/eslint-plugin-jsx-a11y](https://github.c
 
 Name: eslint-plugin-react
 
-Version: 7.18.3
+Version: 7.19.0
 
 License: [MIT](https://github.com/yannickcr/eslint-plugin-react/raw/master/LICENSE)
 

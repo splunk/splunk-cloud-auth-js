@@ -30,16 +30,27 @@ export class AuthManagerFactory {
         grantType: GrantType,
         authHost: string,
         clientId: string,
-        redirectUri: string
+        redirectUri: string,
+        redirectParamsStorageName: string
     ): AuthManager {
         if (grantType.valueOf() === GrantType.PKCE.valueOf()) {
             return new PKCEAuthManager(
-                new PKCEAuthManagerSettings(authHost, clientId, redirectUri)
+                new PKCEAuthManagerSettings(
+                    authHost,
+                    clientId,
+                    redirectUri,
+                    redirectParamsStorageName
+                )
             );
         }
 
         return new ImplicitAuthManager(
-            new ImplicitAuthManagerSettings(authHost, clientId, redirectUri)
+            new ImplicitAuthManagerSettings(
+                authHost,
+                clientId,
+                redirectUri,
+                redirectParamsStorageName
+            )
         );
     }
 }

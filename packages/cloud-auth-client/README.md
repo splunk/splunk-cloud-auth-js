@@ -135,7 +135,7 @@ The following example sets configuration options for `SplunkAuthClient`.
 
     // The authorization and authentication host that is used to perform the authorization flow.
     // The default value is the Splunk authorization server.
-    authHost: "..."
+    authHost: "...",
 
     // When this setting is enabled, the user is automatically redirected to the
     // login page when the AuthClient instance is created, or when checkAuthentication
@@ -151,15 +151,23 @@ The following example sets configuration options for `SplunkAuthClient`.
     // This setting specifies the duration buffer, in seconds, for token expiration.
     // (now > actualExpiration - maxClockSkew) is considered to be expired.
     // The default value is 600.
-    maxClockSkew: 600
+    maxClockSkew: 600,
 
     // Additional query parameters to pass along while performing login.
-    queryParamsForLogin: { /* ... */ }
+    queryParamsForLogin: { /* ... */ },
 
     // This setting specifies the duration buffer, in seconds, for token auto-renewal.
     // (now > actualExpiration - autoTokenRenewalBuffer) triggers an auto renewal.
     // The default value is 120.
-    autoTokenRenewalBuffer: 120
+    autoTokenRenewalBuffer: 120,
+
+    // The storage key name for managing token data.
+    // The default value for storage key is 'splunk-token-storage'.
+    public tokenStorageName: 'splunk-token-storage',
+
+    // The storage key name for managing URL redirect parameter data.
+    // The default value for storage key is 'splunk-redirect-params-storage'.
+    public redirectParamsStorageName: 'splunk-redirect-params-storage',
 }
 ```
 

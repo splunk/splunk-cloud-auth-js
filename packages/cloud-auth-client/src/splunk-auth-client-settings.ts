@@ -24,14 +24,14 @@ export enum GrantType {
      *
      * https://tools.ietf.org/html/rfc6749#section-1.3.2
      */
-    IMPLICIT = "implicit",
+    IMPLICIT = 'implicit',
 
     /**
      * Proof Code for Key Exchange (PKCE).
      *
      * https://tools.ietf.org/html/rfc7636
      */
-    PKCE = "pkce"
+    PKCE = 'pkce',
 }
 
 /**
@@ -61,7 +61,9 @@ export class SplunkAuthClientSettings {
         restorePathAfterLogin: boolean = DEFAULT_RESTORE_PATH_AFTER_LOGIN,
         maxClockSkew: number = DEFAULT_MAX_CLOCK_SKEW,
         queryParamsForLogin: any = DEFAULT_QUERY_PARAMS_FOR_LOGIN,
-        autoTokenRenewalBuffer: number = DEFAULT_AUTO_TOKEN_RENEWAL_BUFFER
+        autoTokenRenewalBuffer: number = DEFAULT_AUTO_TOKEN_RENEWAL_BUFFER,
+        tokenStorageName: string = TOKEN_STORAGE_NAME,
+        redirectParamsStorageName: string = REDIRECT_PARAMS_STORAGE_NAME
     ) {
         this.grantType = grantType;
         this.clientId = clientId;
@@ -72,7 +74,9 @@ export class SplunkAuthClientSettings {
         this.restorePathAfterLogin = restorePathAfterLogin;
         this.maxClockSkew = maxClockSkew;
         this.queryParamsForLogin = queryParamsForLogin;
-        this.autoTokenRenewalBuffer = autoTokenRenewalBuffer
+        this.autoTokenRenewalBuffer = autoTokenRenewalBuffer;
+        this.tokenStorageName = tokenStorageName;
+        this.redirectParamsStorageName = redirectParamsStorageName;
     }
 
     /**
@@ -149,4 +153,18 @@ export class SplunkAuthClientSettings {
      * (now > actualExpiration - autoTokenRenewalBuffer) will trigger an auto renewal
      */
     public autoTokenRenewalBuffer: number;
+
+    /**
+     * Storage key name for managing token data.
+     *
+     * Default value for storage key is 'splunk-token-storage'.
+     */
+    public tokenStorageName: string;
+
+    /**
+     * Storage key name for managing URL redirect parameter data.
+     *
+     * Default value for storage key is 'splunk-redirect-params-storage'.
+     */
+    public redirectParamsStorageName: string;
 }

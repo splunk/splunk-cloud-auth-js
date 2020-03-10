@@ -16,7 +16,7 @@ You can use the `@splunkdev/cloud-auth-client` library alone or with the [Splunk
 This library supports the following OAuth authorization grant types:
 
 -   [Implicit](https://oauth.net/2/grant-types/implicit/)
--   [Proof Key for Code Code Exchange](https://oauth.net/2/pkce/) (PKCE)
+-   [Proof Key for Code Exchange](https://oauth.net/2/pkce/) (PKCE)
 
 For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 

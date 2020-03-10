@@ -3,7 +3,7 @@
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-Splunk Cloud Services Cloud-Auth-Common contains an authentication library with common code used in the [@splunkdev/cloud-auth-client](../cloud-auth-client) and [@splunkdev/cloud-auth-node](../cloud-auth-node) packages.
+Splunk Cloud Services Cloud-Auth-Common contains an authentication library with common code used in the [@splunkdev/cloud-auth-client](https://github.com/splunk/splunk-cloud-auth-js/tree/master/packages/cloud-auth-client) and [@splunkdev/cloud-auth-node](https://github.com/splunk/splunk-cloud-auth-js/tree/master/packages/cloud-auth-node) packages.
 
 ## Terms of Service
 
@@ -18,6 +18,7 @@ Run the following command from your project directory if you use Yarn:
 ```sh-session
 yarn add @splunkdev/cloud-auth-common
 ```
+
 Run the following command from your project directory if you use npm:
 
 ```sh-session

@@ -14,9 +14,10 @@ You can use the `@splunkdev/cloud-auth-node` library alone or with the [Splunk C
 ## Authorization Grant Types
 
 This library supports the following OAuth authorization grant types:
-* [Client Credentials](https://oauth.net/2/grant-types/client-credentials/)
-* [Proof Key for Code Code Exchange](https://oauth.net/2/pkce/) (PKCE)
-* [Refresh Token](https://oauth.net/2/grant-types/refresh-token/)
+
+-   [Client Credentials](https://oauth.net/2/grant-types/client-credentials/)
+-   [Proof Key for Code Exchange](https://oauth.net/2/pkce/) (PKCE)
+-   [Refresh Token](https://oauth.net/2/grant-types/refresh-token/)
 
 For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 
@@ -29,6 +30,7 @@ Run the following command from your project directory if you use Yarn:
 ```sh-session
 yarn add @splunkdev/cloud-auth-node
 ```
+
 Run the following command from your project directory if you use npm:
 
 ```sh-session

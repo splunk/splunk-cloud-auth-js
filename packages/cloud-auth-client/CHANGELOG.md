@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.3](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-beta.2...@splunkdev/cloud-auth-client@1.0.0-beta.3) (2020-03-13)
+
+
+### Features
+
+* **cloud-auth-client:** configurable storage key names for token and redirect params ([273e6de](https://github.com/splunk/splunk-cloud-auth-js/commit/273e6dede512137f2de5ebe6cabb4312819ddbde))
+* **cloud-auth-client:** retaining hash and search params that are not related to auth ([b5094df](https://github.com/splunk/splunk-cloud-auth-js/commit/b5094df2b5c90eea054bfb82521885e2e332e74c))
+
+
+
+
+
 # [1.0.0-beta.2](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-beta.1...@splunkdev/cloud-auth-client@1.0.0-beta.2) (2020-03-06)
 
 

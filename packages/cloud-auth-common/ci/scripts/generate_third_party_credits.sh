@@ -14,6 +14,9 @@ echo temporary working directory: $TMP_WORKING_DIR
 mkdir -p $TMP_WORKING_DIR
 cp -R $PWD/. $TMP_WORKING_DIR
 
+# copy the yarn.lock from the root
+cp $PWD/../../yarn.lock $TMP_WORKING_DIR/yarn.lock
+
 # install and run third-party-licenses target
 cd $TMP_WORKING_DIR
 yarn install

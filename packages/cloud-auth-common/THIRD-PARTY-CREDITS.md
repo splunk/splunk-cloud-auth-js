@@ -79,7 +79,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: @types/node
 
-Version: 12.12.29
+Version: 12.12.30
 
 License: [MIT](https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE)
 
@@ -159,7 +159,7 @@ Repository: [https://github.com/codecov/codecov-node](https://github.com/codecov
 
 Name: eslint-config-airbnb
 
-Version: 18.0.1
+Version: 18.1.0
 
 License: [MIT](https://github.com/airbnb/javascript/raw/master/LICENSE.md)
 
@@ -219,7 +219,7 @@ Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.co
 
 Name: eslint-plugin-simple-import-sort
 
-Version: 5.0.1
+Version: 5.0.2
 
 License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
 

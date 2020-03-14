@@ -228,7 +228,7 @@ Repository: [https://github.com/zloirock/core-js](https://github.com/zloirock/co
 
 Name: eslint-config-airbnb
 
-Version: 18.0.1
+Version: 18.1.0
 
 License: [MIT](https://github.com/airbnb/javascript/raw/master/LICENSE.md)
 
@@ -288,7 +288,7 @@ Repository: [https://github.com/yannickcr/eslint-plugin-react](https://github.co
 
 Name: eslint-plugin-simple-import-sort
 
-Version: 5.0.1
+Version: 5.0.2
 
 License: [MIT](https://github.com/lydell/eslint-plugin-simple-import-sort/raw/master/LICENSE)
 

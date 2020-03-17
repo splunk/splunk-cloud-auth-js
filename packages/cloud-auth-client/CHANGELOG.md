@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-beta.3...@splunkdev/cloud-auth-client@1.0.0) (2020-03-17)
+
+
+### Features
+
+* using root level yarn.lock when generating third-party-licenses.md ([1c0404b](https://github.com/splunk/splunk-cloud-auth-js/commit/1c0404b791bc1e0a39917389a2d5023e06ff2409))
+
+
+
+
+
 # [1.0.0-beta.3](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.0-beta.2...@splunkdev/cloud-auth-client@1.0.0-beta.3) (2020-03-13)
 
 

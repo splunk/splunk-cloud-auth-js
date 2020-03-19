@@ -19,6 +19,7 @@ import {
     SplunkAuthClientSettings,
     GrantType,
     ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
+    ERROR_CODE_REDIRECT_UNAUTHENTICATED,
 } from '@splunkdev/cloud-auth-client';
 import React, { Component } from 'react';
 import { Config } from './config';
@@ -59,14 +60,24 @@ class App extends Component {
                 loggedIn,
             });
         } catch (e) {
+            let errorMessage = '';
+            if (e) {
+                if (e.code === ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND) {
+                    // This error code is surfaced when the client is unable to retrieve the OAuth parameters (including the access token)
+                    // from the current window.location.href.
+                    console.error(e.toString());
+                } else if (e.code === ERROR_CODE_REDIRECT_UNAUTHENTICATED) {
+                    // when autoRedirectToLogin is true, the client will redirect to the auth host /authorize endpoint for login
+                    // this error code is surfaced to notify the client that an access token was not retrieved but a redirect will occur.
+                    console.error(e.toString());
+                } else {
+                    errorMessage = e.message ? e.message : e.toString();
+                }
+            }
+
             this.setState({
                 loggedIn: false,
-                error:
-                    e.code === ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND
-                        ? ''
-                        : e.message
-                        ? e.message
-                        : e.toString(),
+                error: errorMessage,
             });
         }
     }

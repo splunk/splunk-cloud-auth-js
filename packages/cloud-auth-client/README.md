@@ -82,15 +82,28 @@ class App extends Component {
 
     authenticate = async () => {
         try {
-            // AuthClient redirects to a login page if the user is not authenticated.
-            const loggedIn = (await authClient.getAccessToken()) != '';
+            const loggedIn = (await authClient.getAccessToken()) !== '';
             this.setState({
                 loggedIn,
             });
         } catch (e) {
+            let errorMessage = '';
+            if (e) {
+                if (e.code === ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND) {
+                    // This error code is surfaced when the client is unable to retrieve the OAuth parameters (including the access token)
+                    // from the current window.location.href.
+                }
+                if (e.code === ERROR_CODE_REDIRECT_UNAUTHENTICATED) {
+                    // when autoRedirectToLogin is true, the client will redirect to the auth host /authorize endpoint for login
+                    // this error code is surfaced to notify the client that an access token was not retrieved but a redirect will occur.
+                }
+
+                errorMessage = e.message ? e.message : e.toString();
+            }
+
             this.setState({
                 loggedIn: false,
-                error: e,
+                error: errorMessage,
             });
         }
     };
@@ -117,15 +130,15 @@ The following example sets configuration options for `SplunkAuthClient`.
 
 ```js
 {
-    // The grant type.  The SplunkAuthClient supports the following grant types: Implicit, PKCE.
-    grantType: "", // required
+    // The grant type.  The SplunkAuthClient supports the following grant types: implicit, pkce.
+    grantType: 'implicit', // required
 
     // The clientId setting identifies the app that is registered with the App Registry service.
-    clientId: "...", // required
+    clientId: 'YOUR_CLIENT_ID', // required
 
     // The redirectUri function redirects the user to the web app after logging in.
     // The value of redirectUri must be pre-registered with the App Registry service.
-    redirectUri: window.location.origin, // required
+    redirectUri: 'https://YOUR_REDIRECT_URI.com/', // required
 
     // If provided, this function is called when the user is redirected from login
     // after the auth callback is successfully applied.
@@ -135,11 +148,10 @@ The following example sets configuration options for `SplunkAuthClient`.
 
     // The authorization and authentication host that is used to perform the authorization flow.
     // The default value is the Splunk authorization server.
-    authHost: "...",
+    authHost: 'https://auth.scp.splunk.com/',
 
     // When this setting is enabled, the user is automatically redirected to the
-    // login page when the AuthClient instance is created, or when checkAuthentication
-    // is called and the user is not already logged in.
+    // login page when the AuthClient instance is created.
     // This setting is enabled (true) by default.
     autoRedirectToLogin: true,
 
@@ -163,11 +175,11 @@ The following example sets configuration options for `SplunkAuthClient`.
 
     // The storage key name for managing token data.
     // The default value for storage key is 'splunk-token-storage'.
-    public tokenStorageName: 'splunk-token-storage',
+    tokenStorageName: 'splunk-token-storage',
 
     // The storage key name for managing URL redirect parameter data.
     // The default value for storage key is 'splunk-redirect-params-storage'.
-    public redirectParamsStorageName: 'splunk-redirect-params-storage',
+    redirectParamsStorageName: 'splunk-redirect-params-storage',
 }
 ```
 

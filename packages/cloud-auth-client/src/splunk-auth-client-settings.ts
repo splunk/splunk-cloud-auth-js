@@ -119,16 +119,16 @@ export class SplunkAuthClientSettings {
     /**
      * Auto-redirect to login boolean.
      *
-     * If enabled, the user is automatically redirected to the login page when the AuthClient instance is created or
-     * when checkAuthentication is called and the user is not already logged in. This is enabled by default but can
-     * be disabled by setting it to `false`.
+     * If enabled, the user is automatically redirected to the login page when the AuthClient instance is created.
+     * The user will also be redirected to login if the getAccessToken call fails.
+     * This is enabled by default but can be disabled by setting it to `false`.
      */
     public autoRedirectToLogin: boolean;
 
     /**
      * Restore path after login boolean.
      *
-     * If enabled, then the @splunkdev/cloud-auth-client lib will restore the path of the web app after redirecting
+     * If enabled, then the auth client will restore the path of the web app after redirecting
      * to login page.
      */
     public restorePathAfterLogin: boolean;

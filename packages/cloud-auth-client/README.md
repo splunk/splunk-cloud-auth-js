@@ -36,13 +36,17 @@ Run the following command from your project directory if you use npm:
 npm install --save @splunkdev/cloud-auth-client
 ```
 
+## Migrating from @splunkdev/cloud-auth
+
+If your apps use the previous version of the library, **@splunkdev/cloud-auth**, you'll need to migrate your apps. For details, see the [Migration Guide](https://github.com/splunk/splunk-cloud-auth-js/blob/master/packages/cloud-auth-client/MIGRATION.md).
+
 ## Example
 
 The following example shows how to work with the `@splunkdev/cloud-auth-client` library.
 
 ### React web application
 
-This example demonstrates how to use the `@splunkdev/cloud-auth-client` library in a React web application. For an example that you can run, see [examples/cloud-auth-client-react-example](examples/cloud-auth-client-react-example).
+This example demonstrates how to use the `@splunkdev/cloud-auth-client` library in a React web application. For an example that you can run, see [examples/cloud-auth-client-react-example](https://github.com/splunk/splunk-cloud-auth-js/blob/master/packages/cloud-auth-client/examples/cloud-auth-client-react-example).
 
 ```ts
 import {

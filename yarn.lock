@@ -2085,10 +2085,10 @@
     webpack-livereload-plugin "^2.1.1"
     webpack-merge "^4.1.3"
 
-"@splunkdev/cloud-sdk@^4.0.0":
-  version "4.0.0"
-  resolved "https://repo.splunk.com/artifactory/api/npm/npm-solutions-local/@splunkdev/cloud-sdk/-/@splunkdev/cloud-sdk-4.0.0.tgz#cc21823e73e4983bf79b58fc0d49147ad11f5cb7"
-  integrity sha1-zCGCPnPkmDv3m1j8DUkUetEfXLc=
+"@splunkdev/cloud-sdk@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@splunkdev/cloud-sdk/-/cloud-sdk-8.0.0.tgz#ba94bd44e5f7d45d9af71e153c07cf3a4a31ec14"
+  integrity sha512-kN1q+TKTDUSGNqLWFJXyLyZa4jxBmc+y4GDL1QgnPgeaGue36O2D/XaujCZyPgnWPfiq7hrN7hMnssdTLG8gaQ==
   dependencies:
     rxjs "^6.3.2"
 

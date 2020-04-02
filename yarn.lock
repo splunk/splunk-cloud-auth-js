@@ -2087,8 +2087,8 @@
 
 "@splunkdev/cloud-sdk@^4.0.0":
   version "4.0.0"
-  resolved "https://repo.splunk.com/artifactory/api/npm/npm-solutions-local/@splunkdev/cloud-sdk/-/@splunkdev/cloud-sdk-4.0.0.tgz#cc21823e73e4983bf79b58fc0d49147ad11f5cb7"
-  integrity sha1-zCGCPnPkmDv3m1j8DUkUetEfXLc=
+  resolved "https://registry.yarnpkg.com/@splunkdev/cloud-sdk/-/cloud-sdk-4.0.0.tgz#cc21823e73e4983bf79b58fc0d49147ad11f5cb7"
+  integrity sha512-yLVKc8gs4r8c3mTk7h0lp3CpOMzKnSODH2BxIgi7t259SA/DwLXnJkjUZm9MJyhtjFQQ3XY27Y5Pp6ZYNJKswA==
   dependencies:
     rxjs "^6.3.2"
 

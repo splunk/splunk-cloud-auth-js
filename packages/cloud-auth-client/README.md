@@ -187,6 +187,66 @@ The following example sets configuration options for `SplunkAuthClient`.
 }
 ```
 
+## Usage with the Splunk Cloud SDK
+
+The Splunk Cloud SDK accepts the following values as valid tokenSource inputs:
+
+-   an asynchronous function that returns a token string
+-   an object that implements the AuthManager interface
+-   a token string
+
+```js
+export interface ServiceClientArgs {
+    // ...
+
+    /**
+     * An async function that returns a token, a string that is a token, or an object that contains an
+     * async function named `getAccessToken` that returns a token.
+     */
+    tokenSource: AuthManager | string | TokenProviderAsyncFunction;
+
+    // ...
+}
+```
+
+More information can be found in the [@splunkdev/cloud-sdk](https://github.com/splunk/splunk-cloud-sdk-js/blob/ee4fb63b6ff05e33dbf7908dd5192e786af80b95/src/client.ts#L301-L305)
+
+The following code snippets demonstrate how you can use the `@splunkdev/cloud-auth-client` library to provide a valid tokenSource to the `@splunkdev/cloud-sdk`.
+
+```js
+const authClient = new SplunkAuthClient(authClientSettings);
+
+/**
+ * Passing the SplunkAuthClient as the tokenSource.  SplunkAuthClient implements the AuthManager interface in @splunkdev/cloud-sdk.
+ */
+const cloudSdk = new SplunkCloud({
+    // ..
+    tokenSource: authClient,
+    // ..
+});
+
+/**
+ * Passing an async function as the tokenSource. Use the SplunkAuthClient to retrieve the access token and return a string as the function output.
+ */
+const cloudSdk = new SplunkCloud({
+    // ..
+    tokenSource: () => {
+        return authClient.getAccessToken();
+    },
+    // ..
+});
+
+/**
+ * Passing a token string as the tokenSource.  Use the SplunkAuthClient to retrieve the access token and set that token as the tokenSource.
+ */
+const token = await authClient.getAccessToken();
+const cloudSdk = new SplunkCloud({
+    // ..
+    tokenSource: token,
+    // ..
+});
+```
+
 ## Documentation
 
 For Splunk Cloud Services documentation, see the [Splunk Developer Portal](https://dev.splunk.com/scs/).

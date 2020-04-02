@@ -56,6 +56,12 @@ jobs:
         file: ./packages/cloud-auth-common/coverage/lcov.info
         flags: unittests
         name: codecov-cloud-auth-common
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./packages/cloud-auth-node/coverage/lcov.info
+        flags: unittests
+        name: codecov-cloud-auth-node
 
   third-party-licenses:
 

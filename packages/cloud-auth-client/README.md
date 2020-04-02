@@ -1,5 +1,7 @@
 # Splunk Cloud Services Cloud-Auth-Client
 
+[![Build Status](https://github.com/splunk/splunk-cloud-auth-js/workflows/Build%20and%20Run%20Tests/badge.svg?branch=master)](https://github.com/splunk/splunk-cloud-auth-js/actions?query=workflow%3A%22Build+and+Run+Tests%22+branch%3Amaster)
+[![codecov](https://codecov.io/gh/splunk/splunk-cloud-auth-js/branch/master/graphs/badge.svg)](https://codecov.io/gh/splunk/splunk-cloud-auth-js)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 

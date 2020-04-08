@@ -99,10 +99,6 @@ class App extends Component {
                     // This error code is surfaced when the client is unable to retrieve the OAuth parameters (including the access token)
                     // from the current window.location.href.
                 }
-                if (e.code === ERROR_CODE_REDIRECT_UNAUTHENTICATED) {
-                    // when autoRedirectToLogin is true, the client will redirect to the auth host /authorize endpoint for login
-                    // this error code is surfaced to notify the client that an access token was not retrieved but a redirect will occur.
-                }
 
                 errorMessage = e.message ? e.message : e.toString();
             }

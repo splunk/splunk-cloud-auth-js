@@ -15,11 +15,6 @@
  */
 
 /**
- * Error code that is used to categorize when a redirect is to occur.
- */
-export const ERROR_CODE_REDIRECT_UNAUTHENTICATED = 'redirect_unauthenticated';
-
-/**
  * SplunkAuthClientError.
  */
 export class SplunkAuthClientError implements Error {

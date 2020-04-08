@@ -22,10 +22,7 @@ import { AuthManager } from './auth/auth-manager';
 import { AuthManagerFactory } from './auth/auth-manager-factory';
 import { Logger } from './common/logger';
 import { clearWindowLocationFragments } from './common/util';
-import {
-    ERROR_CODE_REDIRECT_UNAUTHENTICATED,
-    SplunkAuthClientError,
-} from './error/splunk-auth-client-error';
+import { SplunkAuthClientError } from './error/splunk-auth-client-error';
 import { ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND } from './error/splunk-oauth-error';
 import { AccessToken } from './model/access-token';
 import {
@@ -51,7 +48,7 @@ export class SplunkAuthClient implements SdkAuthManager {
      * @param settings AuthClientSettings.
      */
     public constructor(settings: SplunkAuthClientSettings) {
-        if (!Object.values(GrantType).some(value => value === settings.grantType)) {
+        if (!Object.values(GrantType).some((value) => value === settings.grantType)) {
             throw new SplunkAuthClientError(
                 `Missing valid value for required configuration option "grantType". ` +
                     `Values=[${Object.values(GrantType)}]`
@@ -100,7 +97,8 @@ export class SplunkAuthClient implements SdkAuthManager {
      * Gets the access token string.
      */
     public async getAccessToken(): Promise<string> {
-        return (await this.getAccessTokenContext()).accessToken;
+        const accessTokenContext = await this.getAccessTokenContext();
+        return accessTokenContext ? accessTokenContext.accessToken : '';
     }
 
     /**
@@ -115,7 +113,7 @@ export class SplunkAuthClient implements SdkAuthManager {
      *      - If token retrieval fails and autoRedirectToLogin is  false, this method will attempt to retrieve a
      *        new token.
      */
-    public async getAccessTokenContext(): Promise<AccessToken> {
+    public async getAccessTokenContext(): Promise<AccessToken | undefined> {
         try {
             if (this.isAuthenticated()) {
                 return this._tokenManager.get();
@@ -133,11 +131,7 @@ export class SplunkAuthClient implements SdkAuthManager {
             ) {
                 // The login method does a redirect to the login page.
                 this.login();
-
-                throw new SplunkAuthClientError(
-                    'Redirecting to login to authenticate.',
-                    ERROR_CODE_REDIRECT_UNAUTHENTICATED
-                );
+                return undefined;
             }
 
             this._tokenManager.clear();

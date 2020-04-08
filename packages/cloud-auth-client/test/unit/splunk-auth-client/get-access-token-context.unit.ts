@@ -1,6 +1,5 @@
 import { AuthManager } from '../../../src/auth/auth-manager';
 import { AuthManagerFactory } from '../../../src/auth/auth-manager-factory';
-import { SplunkAuthClientError } from '../../../src/error/splunk-auth-client-error';
 import { SplunkOAuthError } from '../../../src/error/splunk-oauth-error';
 import { AccessToken } from '../../../src/model/access-token';
 import { SplunkAuthClient } from '../../../src/splunk-auth-client';
@@ -164,7 +163,7 @@ describe('SplunkAuthClient', () => {
         });
 
         describe('with failed token validation', () => {
-            it('throws error when request for token fails and autoRedirectToLogin set to false', async done => {
+            it('throws error when request for token fails and autoRedirectToLogin set to false', async (done) => {
                 // Arrange
                 mockStorageGet = jest
                     .fn()
@@ -201,7 +200,7 @@ describe('SplunkAuthClient', () => {
                     .then(() => {
                         done.fail();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         // Assert
                         expect(e).toEqual(error);
                         expect(mockStorageGet).toBeCalledTimes(1);
@@ -212,7 +211,7 @@ describe('SplunkAuthClient', () => {
                     });
             });
 
-            it('redirects to login when request for token fails and autoRedirectToLogin set to true', async done => {
+            it('redirects to login when request for token fails and autoRedirectToLogin set to true', async (done) => {
                 // Arrange
                 mockStorageGet = jest
                     .fn()
@@ -248,26 +247,18 @@ describe('SplunkAuthClient', () => {
                 const authClient = new SplunkAuthClient(settings);
 
                 // Act
-                await authClient
-                    .getAccessTokenContext()
-                    .then(() => {
-                        done.fail();
-                    })
-                    .catch(e => {
-                        expect(e).toEqual(
-                            new SplunkAuthClientError(
-                                'Redirecting to login to authenticate.',
-                                'redirect_unauthenticated'
-                            )
-                        );
-                        done();
-                    });
+                const result = await authClient.getAccessTokenContext().catch((e) => {
+                    done.fail(e);
+                });
 
                 // Assert
+                expect(result).toBeUndefined();
                 expect(mockStorageGet).toBeCalledTimes(1);
                 expect(mockStorageClear).toBeCalledTimes(0);
                 expect(mockGetAccessToken).toBeCalledTimes(1);
                 expect(mockGenerateAuthUrl).toBeCalledTimes(1);
+
+                done();
             });
 
             it('returns valid AccessToken after failed token validation and successful retrieval of a new token', async () => {
@@ -288,7 +279,7 @@ describe('SplunkAuthClient', () => {
                     return URL_0;
                 });
                 mockGetAccessToken = jest.fn(() => {
-                    return new Promise(resolve => resolve(accessToken));
+                    return new Promise((resolve) => resolve(accessToken));
                 });
                 mockAuthManager = {
                     getRedirectPath: jest.fn(),

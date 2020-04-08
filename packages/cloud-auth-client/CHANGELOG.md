@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.2...@splunkdev/cloud-auth-client@2.0.0) (2020-04-08)
+
+
+### Features
+
+* **cloud-auth-client:** removing redirect_unauthenticated exception during expected redirect to auth login endpoint ([87bbbbf](https://github.com/splunk/splunk-cloud-auth-js/commit/87bbbbf6cc6b12ea4127fc6af0002e3d1412ad53))
+
+
+### BREAKING CHANGES
+
+* **cloud-auth-client:** removed ERROR_CODE_REDIRECT_UNAUTHENTICATED error code
+
+
+
+
+
 ## [1.0.2](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.1...@splunkdev/cloud-auth-client@1.0.2) (2020-04-02)
 
 **Note:** Version bump only for package @splunkdev/cloud-auth-client

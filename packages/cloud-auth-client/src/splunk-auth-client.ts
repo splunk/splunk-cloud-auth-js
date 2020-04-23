@@ -151,6 +151,13 @@ export class SplunkAuthClient implements SdkAuthManager {
     }
 
     /**
+     * Explicitly clears the access token from storage.
+     */
+    public clearAccessToken() {
+        this._tokenManager.clear();
+    }
+
+    /**
      * Checks whether the client is authenticated by checking for a token in storage
      * and comparing against the expiration time.
      */
@@ -178,7 +185,6 @@ export class SplunkAuthClient implements SdkAuthManager {
         if (this._settings.restorePathAfterLogin) {
             this.storePathBeforeLogin();
         }
-
         const additionalLoginQueryParams = this.getQueryStringForLogin();
         window.location.href = this._authManager.generateAuthUrl(additionalLoginQueryParams).href;
     }

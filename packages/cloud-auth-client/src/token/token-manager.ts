@@ -22,6 +22,9 @@ import { AccessToken } from '../model/access-token';
 import { TOKEN_STORAGE_NAME } from '../splunk-auth-client-settings';
 import { StorageManager } from '../storage/storage-manager';
 
+const DEFAULT_TOKEN_STORAGE_KEY = 'default';
+const TENANT_TOKEN_STORAGE_KEY = 'tenant';
+
 /**
  * TokenManagerSettings.
  */
@@ -33,19 +36,22 @@ export class TokenManagerSettings {
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
      * @param storageName Storage name.
+     * @param tenant Tenant.
      */
     public constructor(
         authHost: string,
         autoTokenRenewalBuffer: number,
         clientId: string,
         redirectUri: string,
-        storageName: string = TOKEN_STORAGE_NAME
+        storageName: string = TOKEN_STORAGE_NAME,
+        tenant?: string,
     ) {
         this.authHost = authHost;
         this.autoTokenRenewalBuffer = autoTokenRenewalBuffer;
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.storageName = storageName === '' ? TOKEN_STORAGE_NAME : storageName;
+        this.tenant = tenant || '';
     }
 
     /**
@@ -72,6 +78,11 @@ export class TokenManagerSettings {
      * Storage name.
      */
     public storageName: string;
+
+    /**
+     * Tenant.
+     */
+    public tenant: string;
 }
 
 /**
@@ -99,9 +110,23 @@ export class TokenManager {
 
     /**
      * Puts the access token in storage.
+     * 
+     * Token refresh is not supported for tenant specific access tokens.
      */
     public set(accessToken: AccessToken): void {
-        this._storage.set(accessToken, 'accessToken');
+        const tenant = this._settings.tenant;
+        if (tenant) {
+            let tenantTokens;
+            tenantTokens = this._storage.get(TENANT_TOKEN_STORAGE_KEY);
+            if (tenantTokens === undefined) {
+                tenantTokens = {};
+            }
+            tenantTokens[tenant] = accessToken;
+            this._storage.set(tenantTokens, TENANT_TOKEN_STORAGE_KEY);
+            return;
+        }
+
+        this._storage.set(accessToken, DEFAULT_TOKEN_STORAGE_KEY);
 
         if (this._settings.autoTokenRenewalBuffer <= 0) {
             return;
@@ -124,9 +149,19 @@ export class TokenManager {
 
     /**
      * Gets the access token from storage.
+     * 
+     * If a tenant is defined and in storage return the tenant access token.
+     * Otherwise return the default access token.
      */
     public get(): AccessToken {
-        return this._storage.get('accessToken');
+        const tenant = this._settings.tenant;
+        const defaultToken = this._storage.get(DEFAULT_TOKEN_STORAGE_KEY);
+        // check if tenant is defined and in storage
+        if (tenant) {
+            const tenantTokens = this._storage.get(TENANT_TOKEN_STORAGE_KEY);
+            return tenantTokens && tenantTokens[tenant] || defaultToken;
+        }
+        return defaultToken;
     }
 
     /**

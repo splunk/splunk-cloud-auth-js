@@ -50,6 +50,7 @@ export class SplunkAuthClientSettings {
      * @param maxClockSkew Maximum clock skew in seconds.
      * @param queryParamsForLogin Query parameters for logging in.
      * @param autoTokenRenewalBuffer Auto token renewal buffer in seconds.
+     * @param tenant Tenant.
      */
     public constructor(
         grantType: GrantType = GrantType.IMPLICIT,
@@ -63,7 +64,8 @@ export class SplunkAuthClientSettings {
         queryParamsForLogin: any = DEFAULT_QUERY_PARAMS_FOR_LOGIN,
         autoTokenRenewalBuffer: number = DEFAULT_AUTO_TOKEN_RENEWAL_BUFFER,
         tokenStorageName: string = TOKEN_STORAGE_NAME,
-        redirectParamsStorageName: string = REDIRECT_PARAMS_STORAGE_NAME
+        redirectParamsStorageName: string = REDIRECT_PARAMS_STORAGE_NAME,
+        tenant?: string,
     ) {
         this.grantType = grantType;
         this.clientId = clientId;
@@ -77,6 +79,7 @@ export class SplunkAuthClientSettings {
         this.autoTokenRenewalBuffer = autoTokenRenewalBuffer;
         this.tokenStorageName = tokenStorageName;
         this.redirectParamsStorageName = redirectParamsStorageName;
+        this.tenant = tenant || '';
     }
 
     /**
@@ -167,4 +170,11 @@ export class SplunkAuthClientSettings {
      * Default value for storage key is 'splunk-redirect-params-storage'.
      */
     public redirectParamsStorageName: string;
+
+    /**
+     * Tenant.
+     * 
+     * This is used to get the access token for the specified tenant.
+     */
+    public tenant: string;
 }

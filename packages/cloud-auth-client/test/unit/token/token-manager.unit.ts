@@ -13,6 +13,7 @@ const EXPIRES_AT = 1000;
 const EXPIRES_IN = 100;
 const TOKEN_TYPE = 'some-token-type';
 const TOKEN_STORAGE_NAME = 'some-storage';
+const TENANT = 'testTenant';
 
 jest.useFakeTimers();
 
@@ -103,7 +104,7 @@ describe('TokenManager', () => {
             tokenManager.set(accessToken);
 
             // Assert
-            expect(mockStorageSet).toBeCalledWith(accessToken, 'accessToken');
+            expect(mockStorageSet).toBeCalledWith(accessToken, 'default');
             expect(mockStorageSet).toBeCalledTimes(1);
             expect(setTimeout).toBeCalledTimes(0);
             expect(clearTimeout).toBeCalledTimes(0);
@@ -132,11 +133,46 @@ describe('TokenManager', () => {
             tokenManager.set(accessToken);
 
             // Assert
-            expect(mockStorageSet).toBeCalledWith(accessToken, 'accessToken');
+            expect(mockStorageSet).toBeCalledWith(accessToken, 'default');
             expect(mockStorageSet).toBeCalledTimes(1);
             expect(setTimeout)
                 .toBeCalledWith(expect.anything(), (EXPIRES_IN - AUTO_TOKEN_RENEWAL_BUFFER_10) * 1000);
             expect(setTimeout).toBeCalledTimes(1);
+            expect(clearTimeout).toBeCalledTimes(0);
+        });
+
+        it('with tenant sets token in storage', () => {
+            // Arrange
+            const accessToken: AccessToken = {
+                accessToken: ACCESS_TOKEN,
+                expiresAt: EXPIRES_AT,
+                expiresIn: EXPIRES_IN,
+                tokenType: TOKEN_TYPE
+            }
+            tokenManager = new TokenManager(
+                new TokenManagerSettings(
+                    AUTH_HOST,
+                    AUTO_TOKEN_RENEWAL_BUFFER_10,
+                    CLIENT_ID,
+                    REDIRECT_URI,
+                    TOKEN_STORAGE_NAME,
+                    TENANT
+                )
+            );
+
+            // Act
+            tokenManager.set(accessToken);
+
+            // Assert
+            expect(mockStorageGet).toBeCalledWith('tenant');
+            expect(mockStorageGet).toBeCalledTimes(1);
+
+            const expectedTenantAccessToken = {};
+            expectedTenantAccessToken[TENANT] = accessToken;
+            expect(mockStorageSet).toBeCalledWith(expectedTenantAccessToken, 'tenant');
+            expect(mockStorageSet).toBeCalledTimes(1);
+
+            expect(setTimeout).toBeCalledTimes(0);
             expect(clearTimeout).toBeCalledTimes(0);
         });
     });
@@ -144,8 +180,16 @@ describe('TokenManager', () => {
     describe('get', () => {
         it('returns data from storage', () => {
             // Arrange
-            mockStorageGet = jest.fn(() => {
-                return 'access-token';
+            const defaultAccessToken = { 'accessToken': 'default-access-token' }
+            const tenantAccessToken = { 'accessToken': 'tenant-access-token' }
+            const accessTokenStorage = {
+                'default': defaultAccessToken,
+                'tenant': {
+                    'testTenant': tenantAccessToken
+                }
+            }
+            mockStorageGet = jest.fn((key) => {
+                return accessTokenStorage[key];
             });
 
             tokenManager = getTokenManager();
@@ -154,9 +198,43 @@ describe('TokenManager', () => {
             const result = tokenManager.get();
 
             // Assert
-            expect(result).toEqual('access-token');
-            expect(mockStorageGet).toBeCalledWith('accessToken');
+            expect(result).toEqual(defaultAccessToken);
+            expect(mockStorageGet).toBeCalledWith('default');
             expect(mockStorageGet).toBeCalledTimes(1);
+        });
+
+        it('returns the tenant specific access token from storage', () => {
+            // Arrange
+            const defaultAccessToken = { 'accessToken': 'default-access-token' }
+            const tenantAccessToken = { 'accessToken': 'tenant-access-token' }
+            const accessTokenStorage = {
+                'default': defaultAccessToken,
+                'tenant': {
+                    'testTenant': tenantAccessToken
+                }
+            }
+            mockStorageGet = jest.fn((key) => {
+                return accessTokenStorage[key];
+            });
+
+            tokenManager = new TokenManager(
+                new TokenManagerSettings(
+                    AUTH_HOST,
+                    AUTO_TOKEN_RENEWAL_BUFFER_10,
+                    CLIENT_ID,
+                    REDIRECT_URI,
+                    TOKEN_STORAGE_NAME,
+                    TENANT
+                )
+            );
+
+            // Act
+            const result = tokenManager.get();
+
+            // Assert
+            expect(result).toEqual(tenantAccessToken);
+            expect(mockStorageGet).toBeCalledWith('tenant');
+            expect(mockStorageGet).toBeCalledTimes(2);
         });
     });
 
@@ -214,7 +292,7 @@ describe('TokenManager', () => {
                 expiresAt: 1000 + Math.floor(Date.now() / 1000),
                 expiresIn: 1000,
                 tokenType: 'token_type'
-            }, 'accessToken');
+            }, 'default');
             expect(mockStorageSet).toBeCalledTimes(1);
         });
 

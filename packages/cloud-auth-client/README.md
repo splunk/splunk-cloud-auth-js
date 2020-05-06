@@ -69,7 +69,10 @@ const authClientSettings = new SplunkAuthClientSettings(
     RESTORE_PATH_AFTER_LOGIN,
     MAX_CLOCK_SKEW,
     QUERY_PARAMS_FOR_LOGIN,
-    AUTO_TOKEN_RENEWAL_BUFFER
+    AUTO_TOKEN_RENEWAL_BUFFER,
+    TOKEN_STORAGE_NAME,
+    REDIRECT_PARAMS_STORAGE_NAME,
+    TENANT
 );
 
 // Initialize SplunkAuthClient.
@@ -182,6 +185,10 @@ The following example sets configuration options for `SplunkAuthClient`.
     // The storage key name for managing URL redirect parameter data.
     // The default value for storage key is 'splunk-redirect-params-storage'.
     redirectParamsStorageName: 'splunk-redirect-params-storage',
+
+    // This setting specifies the tenant specific access token to set and return.
+    // Access tokens set for a specific tenant does not support token refresh.
+    tenant: 'pwnyfood'
 }
 ```
 

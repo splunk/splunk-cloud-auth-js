@@ -1,6 +1,6 @@
 {
   "name": "@splunkdev/cloud-auth-client",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Splunk Cloud Node Authentication Library for front-end web applications",
   "author": "Splunk, Inc.",
   "license": "Apache-2.0",

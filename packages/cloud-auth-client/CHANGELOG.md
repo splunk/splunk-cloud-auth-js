@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.1.0...@splunkdev/cloud-auth-client@2.1.1) (2020-05-07)
+
+
+### Bug Fixes
+
+* **cloud-auth-client:** update readme example ([39b5874](https://github.com/splunk/splunk-cloud-auth-js/commit/39b587446de38d35170badbd75a22f7e30242ec1))
+
+
+
+
+
 # [2.1.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.0.0...@splunkdev/cloud-auth-client@2.1.0) (2020-05-06)
 
 

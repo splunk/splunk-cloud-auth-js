@@ -188,7 +188,7 @@ The following example sets configuration options for `SplunkAuthClient`.
 
     // This setting specifies the tenant specific access token to set and return.
     // Access tokens set for a specific tenant does not support token refresh.
-    tenant: 'pwnyfood'
+    tenant: 'YOUR_TENANT_NAME'
 }
 ```
 

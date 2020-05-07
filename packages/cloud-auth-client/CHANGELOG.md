@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.1.0...@splunkdev/cloud-auth-client@2.1.1) (2020-05-07)
+
+
+### Bug Fixes
+
+* **cloud-auth-client:** update readme example ([39b5874](https://github.com/splunk/splunk-cloud-auth-js/commit/39b587446de38d35170badbd75a22f7e30242ec1))
+
+
+
+
+
+# [2.1.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.0.0...@splunkdev/cloud-auth-client@2.1.0) (2020-05-06)
+
+
+### Features
+
+* **cloud-auth-client:** add explicit clear access token api to the client ([566ce33](https://github.com/splunk/splunk-cloud-auth-js/commit/566ce339bfbd3fa4f5a45e4adcd7da94ba041c81))
+* **cloud-auth-client:** expose functionality to manage multiple auth tokens per tenant ([59904f0](https://github.com/splunk/splunk-cloud-auth-js/commit/59904f0651c4a26010f28e13d77470c9fafbc810))
+
+
+
+
+
 # [2.0.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@1.0.2...@splunkdev/cloud-auth-client@2.0.0) (2020-04-08)
 
 

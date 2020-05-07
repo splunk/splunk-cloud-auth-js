@@ -51,7 +51,7 @@ export class SplunkAuthClient implements SdkAuthManager {
         if (!Object.values(GrantType).some((value) => value === settings.grantType)) {
             throw new SplunkAuthClientError(
                 `Missing valid value for required configuration option "grantType". ` +
-                    `Values=[${Object.values(GrantType)}]`
+                `Values=[${Object.values(GrantType)}]`
             );
         }
 
@@ -63,13 +63,17 @@ export class SplunkAuthClient implements SdkAuthManager {
         this._settings.onRestorePath = this._settings.onRestorePath
             ? this._settings.onRestorePath
             : SplunkAuthClient.defaultRestorePath;
+
+        this._settings.tenant = this.getTenantQueryForLogin() || '';
+
         this._tokenManager = new TokenManager(
             new TokenManagerSettings(
                 this._settings.authHost,
                 this._settings.autoTokenRenewalBuffer,
                 this._settings.clientId,
                 this._settings.redirectUri,
-                this._settings.tokenStorageName
+                this._settings.tokenStorageName,
+                this._settings.tenant
             )
         );
         this._authManager = AuthManagerFactory.get(
@@ -151,6 +155,13 @@ export class SplunkAuthClient implements SdkAuthManager {
     }
 
     /**
+     * Explicitly clears the access token from storage.
+     */
+    public clearAccessToken() {
+        this._tokenManager.clear();
+    }
+
+    /**
      * Checks whether the client is authenticated by checking for a token in storage
      * and comparing against the expiration time.
      */
@@ -159,7 +170,7 @@ export class SplunkAuthClient implements SdkAuthManager {
         return (
             accessToken &&
             get(accessToken, 'expiresAt') + this._settings.maxClockSkew >
-                Math.floor(new Date().getTime() / 1000)
+            Math.floor(new Date().getTime() / 1000)
         );
     }
 
@@ -178,7 +189,6 @@ export class SplunkAuthClient implements SdkAuthManager {
         if (this._settings.restorePathAfterLogin) {
             this.storePathBeforeLogin();
         }
-
         const additionalLoginQueryParams = this.getQueryStringForLogin();
         window.location.href = this._authManager.generateAuthUrl(additionalLoginQueryParams).href;
     }
@@ -191,6 +201,17 @@ export class SplunkAuthClient implements SdkAuthManager {
         window.location.href = this._authManager.generateLogoutUrl(
             url || this._settings.redirectUri || window.location.href
         ).href;
+    }
+
+    /**
+     * Get the tenant from the url params for login.
+     */
+    public getTenantQueryForLogin(): string | undefined {
+        if (this._settings.tenant) {
+            return undefined;
+        }
+        const urlQueryParams = new URLSearchParams(window.location.search);
+        return urlQueryParams.get('tenant')?.toString();
     }
 
     /**

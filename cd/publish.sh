@@ -24,6 +24,15 @@ yarn build
 echo "Publishing latest versions of updated packages to ${REGISTRY} ..."
 yarn lerna publish from-package --no-git-reset --dist-tag latest --yes --registry=$REGISTRY
 
+LERNA_PUBLISH_EXIT_CODE=$?
+if [ $LERNA_PUBLISH_EXIT_CODE -ne 0 ]
+then
+    print_header_line
+    echo "Showing changes with 'git status' ..."
+    git status
+    exit $LERNA_PUBLISH_EXIT_CODE
+fi
+
 if [[ $REGISTRY == $DEFAULT_REGISTRY ]]
 then
     echo "Publishing docs to artifactory ..."

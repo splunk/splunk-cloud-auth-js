@@ -64,7 +64,9 @@ export class SplunkAuthClient implements SdkAuthManager {
             ? this._settings.onRestorePath
             : SplunkAuthClient.defaultRestorePath;
 
-        this._settings.tenant = this.getTenantQueryForLogin() || '';
+        this._settings.tenant = this._settings.tenant
+            ? this._settings.tenant
+            : SplunkAuthClient.getTenantQueryForLogin() || '';
 
         this._tokenManager = new TokenManager(
             new TokenManagerSettings(
@@ -206,10 +208,7 @@ export class SplunkAuthClient implements SdkAuthManager {
     /**
      * Get the tenant from the url params for login.
      */
-    public getTenantQueryForLogin(): string | undefined {
-        if (this._settings.tenant) {
-            return undefined;
-        }
+    private static getTenantQueryForLogin(): string | undefined {
         const urlQueryParams = new URLSearchParams(window.location.search);
         return urlQueryParams.get('tenant')?.toString();
     }

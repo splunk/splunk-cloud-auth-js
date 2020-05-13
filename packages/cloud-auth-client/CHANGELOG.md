@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.2](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.1.1...@splunkdev/cloud-auth-client@2.1.2) (2020-05-13)
+
+
+### Bug Fixes
+
+* **cloud-auth-client:** fix setting tenant parameter ([193c9a0](https://github.com/splunk/splunk-cloud-auth-js/commit/193c9a0807015de1a9f745cabcaa333cf78c9b3a))
+
+
+
+
+
 ## [2.1.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.1.0...@splunkdev/cloud-auth-client@2.1.1) (2020-05-07)
 
 

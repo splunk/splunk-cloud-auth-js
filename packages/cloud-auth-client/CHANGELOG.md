@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.1.2...@splunkdev/cloud-auth-client@2.2.0) (2020-06-08)
+
+
+### Features
+
+* **cloud-auth-client:** store code_challenge and support accept_tos flag to support tos for pkce flow ([8b277c5](https://github.com/splunk/splunk-cloud-auth-js/commit/8b277c531f956d7b9a353d63cc110d092f02fc00))
+
+
+
+
+
 ## [2.1.2](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.1.1...@splunkdev/cloud-auth-client@2.1.2) (2020-05-13)
 
 

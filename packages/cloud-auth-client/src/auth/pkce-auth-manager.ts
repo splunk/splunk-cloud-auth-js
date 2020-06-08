@@ -15,6 +15,7 @@
  */
 
 import { AccessTokenResponse, AuthProxy } from '@splunkdev/cloud-auth-common';
+import { generateQueryParameters } from '@splunkdev/cloud-auth-common/src/util';
 
 import {
     clearWindowLocationFragments,
@@ -24,7 +25,10 @@ import {
     generateRandomString
 } from '../common/util';
 import { SplunkAuthClientError } from "../error/splunk-auth-client-error";
-import { SplunkOAuthError } from '../error/splunk-oauth-error';
+import {
+    ERROR_CODE_UNSIGNED_TOS,
+    SplunkOAuthError
+} from '../error/splunk-oauth-error';
 import { AccessToken } from '../model/access-token';
 import {
     REDIRECT_OAUTH_PARAMS_NAME,
@@ -84,6 +88,7 @@ export class PKCEAuthManagerSettings {
 export interface PKCEOAuthRedirectParams {
     state: string;
     codeVerifier: string;
+    codeChallenge: string;
 }
 
 /**
@@ -143,22 +148,30 @@ export class PKCEAuthManager implements AuthManager {
             throw new SplunkOAuthError('OAuth flow response state does not match request state');
         }
 
-        try {
-            this._redirectParamsStorage.delete(REDIRECT_OAUTH_PARAMS_NAME);
-        } catch (e) {
-            throw new SplunkAuthClientError(`Failed to remove the ${REDIRECT_OAUTH_PARAMS_NAME} data. ${e.message}`);
-        }
-
         // call authproxy accessToken to get token
         let accessToken: AccessTokenResponse;
+        const accessTokenError = 'Failed to retrieve access token from token endpoint.'
         try {
             accessToken = await this._authProxy.accessToken(
                 this._settings.clientId,
                 String(searchParameters.get('code')),
                 storedOAuthParameters.codeVerifier,
-                this._settings.redirectUri);
+                this._settings.redirectUri,
+                searchParameters.get('accept_tos')?.toString());
+
+            // delete the redirect oauth params after successfully returning the
+            // access token otherwise if accessToken returns a unsignedtos error
+            // then these params are needed to generate the tos redirect url
+            this.deleteRedirectOAuthParameters();
         } catch (e) {
-            throw new SplunkOAuthError(`Failed to retrieve access token from token endpoint. ${e.message}`);
+            if (e.message.includes(ERROR_CODE_UNSIGNED_TOS)) {
+                throw new SplunkOAuthError(
+                    accessTokenError,
+                    ERROR_CODE_UNSIGNED_TOS
+                );
+            }
+            this.deleteRedirectOAuthParameters();
+            throw new SplunkOAuthError(`${accessTokenError} ${e.message}`);
         }
 
         return {
@@ -199,17 +212,13 @@ export class PKCEAuthManager implements AuthManager {
 
         const redirectStorageParams: PKCEOAuthRedirectParams = {
             state: String(oauthQueryParams.get('state')),
-            codeVerifier: pkceParamCodeVerifier
+            codeVerifier: pkceParamCodeVerifier,
+            codeChallenge: pkceParamCodeChallenge
         };
         this._redirectParamsStorage.set(JSON.stringify(redirectStorageParams), REDIRECT_OAUTH_PARAMS_NAME);
 
         const url = new URL(AuthProxy.PATH_AUTHORIZATION, this._settings.authHost);
-        let queryParameterString = '?';
-        oauthQueryParams.forEach((value, key) => {
-            if (value !== undefined && value !== null) {
-                queryParameterString += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
-            }
-        });
+        const queryParameterString = generateQueryParameters(oauthQueryParams);
 
         return new URL(queryParameterString, url.href);
     }
@@ -222,6 +231,28 @@ export class PKCEAuthManager implements AuthManager {
         const url = new URL(AuthProxy.PATH_LOGOUT, this._settings.authHost);
         const queryParameterString = `?redirect_uri=${encodeURIComponent(redirectUrl)}`;
         return new URL(queryParameterString, url);
+    }
+
+    /**
+     * Generates the TOS URL.
+     */
+    public generateTosUrl(): URL {
+        const storedOAuthParameters = this.getRedirectOAuthParameters();
+
+        const oauthQueryParams = new Map([
+            ['client_id', this._settings.clientId],
+            ['code_challenge', storedOAuthParameters.codeChallenge],
+            ['code_challenge_method', 'S256'],
+            ['redirect_uri', this._settings.redirectUri || window.location.href],
+            ['response_type', 'code'],
+            ['state', storedOAuthParameters.state],
+            ['scope', 'openid email profile']
+        ]);
+
+        const url = new URL(AuthProxy.PATH_TOS, this._settings.authHost);
+        const queryParameterString = generateQueryParameters(oauthQueryParams);
+
+        return new URL(queryParameterString, url.href);
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -244,5 +275,13 @@ export class PKCEAuthManager implements AuthManager {
         validateOAuthParameters(storedOAuthParameters);
 
         return storedOAuthParameters;
+    }
+
+    private deleteRedirectOAuthParameters() {
+        try {
+            this._redirectParamsStorage.delete(REDIRECT_OAUTH_PARAMS_NAME);
+        } catch (e) {
+            throw new SplunkAuthClientError(`Failed to remove the ${REDIRECT_OAUTH_PARAMS_NAME} data. ${e.message}`);
+        }
     }
 }

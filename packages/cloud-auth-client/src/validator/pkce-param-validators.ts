@@ -62,4 +62,8 @@ export function validateOAuthParameters(parameters: PKCEOAuthRedirectParams): vo
     if (!parameters.codeVerifier) {
         throw new SplunkOAuthError('Unable to retrieve codeVerifier from redirect params storage.');
     }
+
+    if (!parameters.codeChallenge) {
+        throw new SplunkOAuthError('Unable to retrieve codeChallenge from redirect params storage.');
+    }
 }

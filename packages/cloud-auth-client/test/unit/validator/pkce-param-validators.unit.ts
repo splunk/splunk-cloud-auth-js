@@ -49,7 +49,8 @@ describe('validateOAuthParameters', () => {
         // Arrange
         const searchParameters = {
             state: 'state',
-            codeVerifier: 'abcdsf'
+            codeVerifier: 'abcdsf',
+            codeChallenge: 'abcdefg'
         };
 
         // Act/Arrange
@@ -60,7 +61,8 @@ describe('validateOAuthParameters', () => {
         // Arrange
         const searchParameters = {
             state: undefined,
-            codeVerifier: undefined
+            codeVerifier: undefined,
+            codeChallenge: undefined,
         };
 
         // Act/Arrange
@@ -72,7 +74,8 @@ describe('validateOAuthParameters', () => {
         // Arrange
         const searchParameters = {
             state: 'state',
-            codeVerifier: undefined
+            codeVerifier: undefined,
+            codeChallenge: 'abcdefg'
         };
 
         // Act/Arrange
@@ -80,6 +83,22 @@ describe('validateOAuthParameters', () => {
             .toThrow(
                 new SplunkOAuthError(
                     'Unable to retrieve codeVerifier from redirect params storage.',
+                    'token_not_found'));
+    });
+
+    it('throws SplunkOAuthError when parameters does not contain codeChallenge', () => {
+        // Arrange
+        const searchParameters = {
+            state: 'state',
+            codeVerifier: 'abcdsf',
+            codeChallenge: undefined
+        };
+
+        // Act/Arrange
+        expect(() => validateOAuthParameters(searchParameters))
+            .toThrow(
+                new SplunkOAuthError(
+                    'Unable to retrieve codeChallenge from redirect params storage.',
                     'token_not_found'));
     });
 });

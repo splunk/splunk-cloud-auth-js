@@ -254,7 +254,7 @@ describe('ImplictAuthManager', () => {
             expect(result).not.toBeNull();
             expect(result.href)
                 .toEqual('https://host.com/authorize?client_id=clientid&redirect_uri=https%3A%2F%2Fredirect.com&' +
-                    'response_type=token%20id_token&state=random1&nonce=random2&scope=openid%20email%20profile&');
+                    'response_type=token%20id_token&state=random1&nonce=random2&scope=openid%20email%20profile');
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
@@ -282,7 +282,7 @@ describe('ImplictAuthManager', () => {
             expect(result.href)
                 .toEqual('https://host.com/authorize?client_id=clientid&redirect_uri=https%3A%2F%2Fredirect.com&' +
                     'response_type=token%20id_token&state=random&nonce=random&scope=openid%20email%20profile&' +
-                    'customParam1=value1&');
+                    'customParam1=value1');
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({

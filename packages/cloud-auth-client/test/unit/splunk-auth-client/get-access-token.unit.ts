@@ -53,6 +53,7 @@ describe('SplunkAuthClient', () => {
     let mockAuthManager: AuthManager;
     let mockGetAccessToken: jest.Mock;
     let mockGenerateAuthUrl: jest.Mock;
+    let mockGenerateTosUrl: jest.Mock;
 
     beforeEach(() => {
         mockLoggerWarn = jest.fn();
@@ -149,6 +150,57 @@ describe('SplunkAuthClient', () => {
             expect(mockStorageClear).toBeCalledTimes(0);
             expect(mockGetAccessToken).toBeCalledTimes(1);
             expect(mockGenerateAuthUrl).toBeCalledTimes(1);
+
+            done();
+        });
+
+        it('return empty string when redirecting to tos page', async (done) => {
+            // Arrange
+            mockStorageGet = jest
+                .fn()
+                .mockImplementationOnce(
+                    (): AccessToken => {
+                        return invalidAccessToken;
+                    }
+                )
+                .mockImplementationOnce(
+                    (): AccessToken => {
+                        return accessToken;
+                    }
+                );
+            mockGetAccessToken = jest.fn(
+                (): AccessToken => {
+                    throw new SplunkOAuthError('error', 'unsignedtos');
+                }
+            );
+            mockGenerateTosUrl = jest.fn(() => {
+                return URL_0;
+            });
+            mockAuthManager = {
+                getRedirectPath: jest.fn(),
+                setRedirectPath: jest.fn(),
+                deleteRedirectPath: jest.fn(),
+                getAccessToken: mockGetAccessToken,
+                generateAuthUrl: jest.fn(),
+                generateLogoutUrl: jest.fn(),
+                generateTosUrl: mockGenerateTosUrl
+            };
+
+            const settings = new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, REDIRECT_URI);
+            settings.restorePathAfterLogin = true;
+            const authClient = new SplunkAuthClient(settings);
+
+            // Act
+            const result = await authClient.getAccessToken().catch((e) => {
+                done.fail(e);
+            });
+
+            // Assert
+            expect(result).toEqual('');
+            expect(mockStorageGet).toBeCalledTimes(1);
+            expect(mockStorageClear).toBeCalledTimes(0);
+            expect(mockGetAccessToken).toBeCalledTimes(1);
+            expect(mockGenerateTosUrl).toBeCalledTimes(1);
 
             done();
         });

@@ -15,6 +15,7 @@
  */
 
 import { AuthProxy } from '@splunkdev/cloud-auth-common';
+import { generateQueryParameters } from '@splunkdev/cloud-auth-common/src/util';
 
 import { clearWindowLocationFragments, generateRandomString } from '../common/util';
 import { SplunkAuthClientError } from "../error/splunk-auth-client-error";
@@ -183,12 +184,7 @@ export class ImplicitAuthManager implements AuthManager {
         this._redirectParamsStorage.set(JSON.stringify(redirectStorageParms), REDIRECT_OAUTH_PARAMS_NAME);
 
         const url = new URL(AuthProxy.PATH_AUTHORIZATION, this._settings.authHost);
-        let queryParameterString = '?';
-        oauthQueryParams.forEach((value, key) => {
-            if (value !== undefined && value !== null) {
-                queryParameterString += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
-            }
-        });
+        const queryParameterString = generateQueryParameters(oauthQueryParams);
 
         return new URL(queryParameterString, url.href);
     }

@@ -19,6 +19,7 @@ import 'isomorphic-fetch';
 import cookieParser from 'set-cookie-parser';
 
 import { SplunkAuthError } from './splunk-auth-error';
+import { generateQueryParameters } from './util';
 
 const HEADERS_APPLICATION_JSON = {
     'Accept': 'application/json',
@@ -97,6 +98,8 @@ export class AuthProxy {
 
     public static readonly PATH_TOKEN_CSRF: string = '/csrfToken';
 
+    public static readonly PATH_TOS: string = '/tos';
+
     /**
      * Retrieves an access token using auth code and code verifier.
      * IETF Reference: https://tools.ietf.org/html/rfc7636#section-4.5
@@ -104,12 +107,14 @@ export class AuthProxy {
      * @param authCode Authorization code.
      * @param codeVerifier Code verifier.
      * @param redirectUri Redirect URI.
+     * @param acceptTos Accepted TOS.
      */
     public async accessToken(
         clientId: string,
         authCode: string,
         codeVerifier: string,
-        redirectUri: string): Promise<AccessTokenResponse> {
+        redirectUri: string,
+        acceptTos?: string): Promise<AccessTokenResponse> {
         const body: Map<string, any> = new Map([
             ['grant_type', 'authorization_code'],
             ['client_id', clientId],
@@ -117,6 +122,9 @@ export class AuthProxy {
             ['code_verifier', codeVerifier],
             ['redirect_uri', redirectUri]
         ]);
+        if (acceptTos) {
+            body.set('accept_tos', acceptTos);
+        }
 
         return this._token(HEADERS_APPLICATION_JSON_URLENCODED, body);
     }
@@ -155,11 +163,7 @@ export class AuthProxy {
             ['session_token', sessionToken],
             ['state', state]
         ]);
-        let queryParameterString = '?';
-        queryParameterMap.forEach((value, key) => {
-            queryParameterString += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
-        });
-
+        const queryParameterString = generateQueryParameters(queryParameterMap);
         const authorizeBaseUrl = new URL(AuthProxy.PATH_AUTHORIZATION, this.host);
         const authorizeUrl = new URL(queryParameterString, authorizeBaseUrl.href);
         return fetch(
@@ -215,14 +219,7 @@ export class AuthProxy {
             ['scope', scope],
             ['state', state]
         ]);
-        let queryParameterString = '?';
-        queryParameterMap.forEach((value, key) => {
-            const stringValue = String(value);
-            if (stringValue !== 'undefined' && stringValue !== 'null' && stringValue !== '') {
-                queryParameterString += `${encodeURIComponent(key)}=${encodeURIComponent(stringValue)}&`;
-            }
-        });
-
+        const queryParameterString = generateQueryParameters(queryParameterMap);
         const authorizeBaseUrl = new URL(AuthProxy.PATH_AUTHORIZATION, this.host);
         const authorizeUrl = new URL(queryParameterString, authorizeBaseUrl.href);
 
@@ -384,10 +381,9 @@ export class AuthProxy {
 
     private async _token(headers: any, body: Map<string, any>): Promise<AccessTokenResponse> {
         const tokenUrl = new URL(AuthProxy.PATH_TOKEN, this.host);
-        let formUrlEncodedBody = '';
-        body.forEach((value, key) => {
-            formUrlEncodedBody += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
-        });
+        // remove the prefixed query "?" to convert the query params into form url
+        let formUrlEncodedBody = generateQueryParameters(body);
+        formUrlEncodedBody = formUrlEncodedBody.slice(1);
 
         return fetch(
             tokenUrl.href,
@@ -400,7 +396,8 @@ export class AuthProxy {
             .then(json => {
                 if (!json.access_token) {
                     throw new SplunkAuthError(
-                        `Unable to authenticate and retrieve access_token. ErrorCode='${json.code}'`);
+                        'Unable to authenticate and retrieve access_token.' +
+                        `Error='${json.error}' ErrorCode='${json.code}'`);
                 }
 
                 return json;

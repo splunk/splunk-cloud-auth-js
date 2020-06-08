@@ -17,3 +17,4 @@
 export { AccessTokenResponse, AuthProxy, CsrfTokenResponse } from './auth-proxy';
 export { AuthContext, AuthManagerSettings, BaseAuthManager } from './base-auth-manager';
 export { SplunkAuthError } from './splunk-auth-error';
+export { generateQueryParameters } from './util';

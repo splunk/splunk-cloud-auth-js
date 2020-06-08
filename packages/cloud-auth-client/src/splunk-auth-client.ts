@@ -23,7 +23,10 @@ import { AuthManagerFactory } from './auth/auth-manager-factory';
 import { Logger } from './common/logger';
 import { clearWindowLocationFragments } from './common/util';
 import { SplunkAuthClientError } from './error/splunk-auth-client-error';
-import { ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND } from './error/splunk-oauth-error';
+import {
+    ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
+    ERROR_CODE_UNSIGNED_TOS
+} from './error/splunk-oauth-error';
 import { AccessToken } from './model/access-token';
 import {
     GrantType,
@@ -131,6 +134,13 @@ export class SplunkAuthClient implements SdkAuthManager {
         } catch (e) {
             Logger.warn(e.toString());
 
+            if (this._settings.grantType === GrantType.PKCE &&
+                e.code === ERROR_CODE_UNSIGNED_TOS
+            ) {
+                this.redirectToTos();
+                return undefined;
+            }
+
             if (
                 this._settings.autoRedirectToLogin &&
                 REDIRECT_LOGIN_HANDLED_ERROR_CODES.has(e.code)
@@ -203,6 +213,16 @@ export class SplunkAuthClient implements SdkAuthManager {
         window.location.href = this._authManager.generateLogoutUrl(
             url || this._settings.redirectUri || window.location.href
         ).href;
+    }
+
+    /**
+     * Redirect the user to sign the Splunk Cloud Services Terms Of Service.
+     */
+    private redirectToTos() {
+        const getTosUrl = this._authManager.generateTosUrl && this._authManager.generateTosUrl();
+        if (getTosUrl !== undefined) {
+            window.location.href = getTosUrl.href;
+        }
     }
 
     /**

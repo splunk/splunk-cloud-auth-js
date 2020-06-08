@@ -48,4 +48,8 @@ export interface AuthManager {
      * @param redirectUrl Optional redirect URL.
      */
     generateLogoutUrl(redirectUrl: string): URL;
+    /**
+     * Generates the TOS URL.
+     */
+    generateTosUrl?(): URL;
 }

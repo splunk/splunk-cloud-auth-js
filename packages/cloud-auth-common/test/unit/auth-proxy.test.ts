@@ -31,6 +31,7 @@ const MOCK_ID_TOKEN = 'it';
 const MOCK_REFRESH_TOKEN = 'rt';
 const MOCK_SCOPE = 's';
 const MOCK_TOKEN_TYPE = 'tt';
+const MOCK_ACCEPT_TOS = '1';
 const PATH_AUTHN = '/authn';
 const PATH_AUTHORIZATION = '/authorize';
 const PATH_TOKEN = '/token';
@@ -73,7 +74,53 @@ describe('AuthProxy', () => {
                 });
 
             // Act
-            const result = await authProxy.accessToken(CLIENT_ID, AUTH_CODE, CODE_VERIFIER, REDIRECT_URI);
+            const result = await authProxy.accessToken(
+                CLIENT_ID,
+                AUTH_CODE,
+                CODE_VERIFIER,
+                REDIRECT_URI
+            );
+
+            // Assert
+            assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
+            assert.equal(result.expires_in, MOCK_EXPIRES_IN);
+            assert.equal(result.id_token, MOCK_ID_TOKEN);
+            assert.equal(result.refresh_token, MOCK_REFRESH_TOKEN);
+            assert.equal(result.scope, MOCK_SCOPE);
+            assert.equal(result.token_type, MOCK_TOKEN_TYPE);
+        });
+
+        it('should return a successful AccessTokenResponse promise with accept_tos parameter', async () => {
+            // Arrange
+            // TODO: figure out how to assert the body.
+            fetchMock.post(
+                `${MOCK_HOST}${PATH_TOKEN}`,
+                {
+                    body: {
+                        access_token: MOCK_ACCESS_TOKEN,
+                        expires_in: MOCK_EXPIRES_IN,
+                        id_token: MOCK_ID_TOKEN,
+                        refresh_token: MOCK_REFRESH_TOKEN,
+                        scope: MOCK_SCOPE,
+                        token_type: MOCK_TOKEN_TYPE
+                    },
+                    status: 200,
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+            // Act
+            const result = await authProxy.accessToken(
+                CLIENT_ID,
+                AUTH_CODE,
+                CODE_VERIFIER,
+                REDIRECT_URI,
+                MOCK_ACCEPT_TOS
+            );
 
             // Assert
             assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
@@ -110,7 +157,7 @@ describe('AuthProxy', () => {
                 + `&response_type=${RESPONSE_TYPE}`
                 + `&scope=${SCOPE}`
                 + `&session_token=${SESSION_TOKEN}`
-                + `&state=${STATE}&`,
+                + `&state=${STATE}`,
                 {
                     body: {},
                     redirectUrl: responseUrl
@@ -148,7 +195,7 @@ describe('AuthProxy', () => {
                 + `&response_type=${RESPONSE_TYPE}`
                 + `&scope=${SCOPE}`
                 + `&session_token=${SESSION_TOKEN}`
-                + `&state=${STATE}&`,
+                + `&state=${STATE}`,
                 {
                     status: ERROR_STATUS,
                 });
@@ -183,7 +230,7 @@ describe('AuthProxy', () => {
                 + `&response_type=${RESPONSE_TYPE}`
                 + `&scope=${SCOPE}`
                 + `&session_token=${SESSION_TOKEN}`
-                + `&state=${STATE}&`,
+                + `&state=${STATE}`,
                 {
                     body: {},
                     redirectUrl: responseUrl
@@ -233,7 +280,7 @@ describe('AuthProxy', () => {
                 + `&response_mode=${RESPONSE_MODE}`
                 + `&response_type=${RESPONSE_TYPE}`
                 + `&scope=${SCOPE}`
-                + `&state=${STATE}&`,
+                + `&state=${STATE}`,
                 {
                     body: tokenResponse
                 });
@@ -288,7 +335,7 @@ describe('AuthProxy', () => {
                 + `&response_mode=${RESPONSE_MODE}`
                 + `&response_type=${RESPONSE_TYPE}`
                 + `&scope=${SCOPE}`
-                + `&state=${STATE}&`,
+                + `&state=${STATE}`,
                 {
                     status: ERROR_STATUS,
                 });
@@ -307,7 +354,7 @@ describe('AuthProxy', () => {
                 expectedErrorMessage);
         });
 
-        it('should throw SplunkAuthError when response does not contain acces_token', async () => {
+        it('should throw SplunkAuthError when response does not contain access_token', async () => {
             // Arrange
             const expectedErrorMessage = `Unable to retrieve access_token from response.`;
             fetchMock.get(
@@ -319,7 +366,7 @@ describe('AuthProxy', () => {
                 + `&response_mode=${RESPONSE_MODE}`
                 + `&response_type=${RESPONSE_TYPE}`
                 + `&scope=${SCOPE}`
-                + `&state=${STATE}&`,
+                + `&state=${STATE}`,
                 {
                     body: {
                         access_token: undefined,

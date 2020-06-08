@@ -16,7 +16,9 @@ const CODE = 'iamcode';
 const STATE_0 = 'iamstate0';
 const STATE_1 = 'iamstate1';
 const CODE_VERIFIER = 'iamcodeverifier';
+const CODE_CHALLENGE = 'iamcodechallenge';
 const ERROR_MESSAGE = 'iamerrormessage';
+const TOS_ERROR_MESSAGE = 'unsignedtos';
 const ACCESS_TOKEN = 'accesstoken';
 const EXPIRES_IN = 1000;
 const TOKEN_TYPE = 'tokentype';
@@ -85,6 +87,8 @@ jest.mock('@splunkdev/cloud-auth-common', () => ({
         public static readonly PATH_AUTHORIZATION: string = '/authorize';
 
         public static readonly PATH_LOGOUT: string = '/logout';
+
+        public static readonly PATH_TOS: string = '/tos';
     }
 }));
 
@@ -194,7 +198,7 @@ describe('PKCEAuthManager', () => {
                 const urlMock = `https://url.com/?code=${CODE}&state=${STATE_0}`;
 
                 mockStorageGet = jest.fn(() => {
-                    return `{"state":"${STATE_1}","codeVerifier":"${CODE_VERIFIER}"}`;
+                    return `{"state":"${STATE_1}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
                 });
 
                 pkceAuthManager = getPKCEAuthManager();
@@ -219,10 +223,21 @@ describe('PKCEAuthManager', () => {
             const urlMock = `https://url.com/?code=${CODE}&state=${STATE_0}`;
 
             mockStorageGet = jest.fn(() => {
-                return `{"state":"${STATE_0}","codeVerifier":"${CODE_VERIFIER}"}`;
+                return `{"state":"${STATE_0}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
             });
             mockStorageDelete = jest.fn(() => {
                 throw new Error(ERROR_MESSAGE);
+            });
+
+            mockAuthProxyAccessToken = jest.fn((): Promise<AccessTokenResponse> => {
+                return Promise.resolve({
+                    access_token: ACCESS_TOKEN,
+                    expires_in: EXPIRES_IN,
+                    id_token: 'idtoken',
+                    refresh_token: 'refreshtoken',
+                    token_type: TOKEN_TYPE,
+                    scope: SCOPES
+                });
             });
 
             pkceAuthManager = getPKCEAuthManager();
@@ -239,7 +254,7 @@ describe('PKCEAuthManager', () => {
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageGet).toBeCalledTimes(1);
                     expect(mockStorageDelete).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
-                    expect(mockStorageDelete).toBeCalledTimes(1);
+                    expect(mockStorageDelete).toBeCalledTimes(2);
                     done();
                 });
         });
@@ -249,7 +264,7 @@ describe('PKCEAuthManager', () => {
             const urlMock = `https://url.com/?code=${CODE}&state=${STATE_0}`;
 
             mockStorageGet = jest.fn(() => {
-                return `{"state":"${STATE_0}","codeVerifier":"${CODE_VERIFIER}"}`;
+                return `{"state":"${STATE_0}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
             });
 
             mockAuthProxyAccessToken = jest.fn((): Promise<AccessTokenResponse> => {
@@ -275,12 +290,46 @@ describe('PKCEAuthManager', () => {
                 });
         });
 
-        it('returns AccessToken', async (done) => {
+        it('throws SplunkOAuthError when /token access token call fails due to unsigned TOS', async (done) => {
             // Arrange
             const urlMock = `https://url.com/?code=${CODE}&state=${STATE_0}`;
 
             mockStorageGet = jest.fn(() => {
-                return `{"state":"${STATE_0}","codeVerifier":"${CODE_VERIFIER}"}`;
+                return `{"state":"${STATE_0}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+            });
+
+            mockAuthProxyAccessToken = jest.fn((): Promise<AccessTokenResponse> => {
+                return Promise.reject(new Error(TOS_ERROR_MESSAGE));
+            });
+
+            pkceAuthManager = getPKCEAuthManager();
+
+            // Act/Assert
+            return pkceAuthManager.getAccessToken(urlMock)
+                .then(() => {
+                    done.fail('getAccessToken should not have succeeded.');
+                })
+                .catch(e => {
+                    expect(e).toEqual(
+                        new SplunkOAuthError(
+                            `Failed to retrieve access token from token endpoint.`,
+                            TOS_ERROR_MESSAGE
+                        )
+                    );
+                    expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
+                    expect(mockStorageGet).toBeCalledTimes(1);
+                    expect(mockStorageDelete).toBeCalledTimes(0);
+                    done();
+                });
+
+        });
+
+        it('returns AccessToken', async (done) => {
+            // Arrange
+            const urlMock = `https://url.com/?code=${CODE}&state=${STATE_0}&accept_tos=1`;
+
+            mockStorageGet = jest.fn(() => {
+                return `{"state":"${STATE_0}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
             });
 
             mockAuthProxyAccessToken = jest.fn((): Promise<AccessTokenResponse> => {
@@ -304,6 +353,8 @@ describe('PKCEAuthManager', () => {
                     expect(accessToken.expiresIn).toEqual(EXPIRES_IN);
                     expect(accessToken.tokenType).toEqual(TOKEN_TYPE);
                     expect(accessToken.scopes).toEqual(SCOPES.split(' '));
+                    expect(mockStorageDelete).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
+                    expect(mockStorageDelete).toBeCalledTimes(1);
                     done();
                 })
                 .catch((e) => {
@@ -328,12 +379,13 @@ describe('PKCEAuthManager', () => {
             expect(result.href)
                 .toEqual('https://host.com/authorize?client_id=clientid&code_challenge=abc&' +
                     'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
-                    'state=random&nonce=random&scope=openid%20email%20profile&');
+                    'state=random&nonce=random&scope=openid%20email%20profile');
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
                         state: 'random',
-                        codeVerifier: mockEncodedCodeVerifier
+                        codeVerifier: mockEncodedCodeVerifier,
+                        codeChallenge: mockCodeChallenge
                     }),
                     REDIRECT_OAUTH_PARAMS_NAME);
             expect(mockStorageSet).toBeCalledTimes(1);
@@ -359,12 +411,13 @@ describe('PKCEAuthManager', () => {
             expect(result.href)
                 .toEqual('https://host.com/authorize?client_id=clientid&code_challenge=abc&' +
                     'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
-                    'state=random&nonce=random&scope=openid%20email%20profile&customParam1=value1&');
+                    'state=random&nonce=random&scope=openid%20email%20profile&customParam1=value1');
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
                         state: 'random',
-                        codeVerifier: mockEncodedCodeVerifier
+                        codeVerifier: mockEncodedCodeVerifier,
+                        codeChallenge: mockCodeChallenge
                     }),
                     REDIRECT_OAUTH_PARAMS_NAME);
             expect(mockStorageSet).toBeCalledTimes(1);
@@ -382,6 +435,27 @@ describe('PKCEAuthManager', () => {
             // Assert
             expect(result).not.toBeNull();
             expect(result.href).toEqual('https://host.com/logout?redirect_uri=https%3A%2F%2Fredirect.com');
+        });
+    });
+
+    describe('generateTosUrl', () => {
+        it('generates the tos url', () => {
+            // Arrange
+            mockStorageGet = jest.fn(() => {
+                return `{"state":"${STATE_0}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+            });
+            pkceAuthManager = getPKCEAuthManager();
+
+            // Act
+            const result = pkceAuthManager.generateTosUrl();
+
+            // Assert
+            expect(result).not.toBeNull();
+            expect(result.href)
+                .toEqual('https://host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&' +
+                    'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
+                    'state=iamstate0&scope=openid%20email%20profile');
+            expect(mockStorageGet).toBeCalledTimes(1);
         });
     });
 });

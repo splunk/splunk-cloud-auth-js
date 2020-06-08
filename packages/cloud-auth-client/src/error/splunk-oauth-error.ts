@@ -21,6 +21,11 @@
 export const ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND = 'token_not_found';
 
 /**
+ * Error code that is used when the user has not signed the Splunk Cloud Services Terms of Service.
+ */
+export const ERROR_CODE_UNSIGNED_TOS = 'unsignedtos';
+
+/**
  * SplunkOAuthError.
  */
 export class SplunkOAuthError implements Error {

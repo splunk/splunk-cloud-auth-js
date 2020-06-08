@@ -30,6 +30,7 @@ const mockPKCEAuthManager: AuthManager = {
     deleteRedirectPath: jest.fn(),
     generateAuthUrl: jest.fn(),
     generateLogoutUrl: jest.fn(),
+    generateTosUrl: jest.fn(),
     getAccessToken: jest.fn(),
     getRedirectPath: jest.fn(),
     setRedirectPath: jest.fn(),

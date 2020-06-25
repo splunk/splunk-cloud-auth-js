@@ -52,7 +52,7 @@ describe('util', () => {
         mockWindowProperty('document', documentMock);
 
         describe('with window location search', () => {
-            const SEARCH_VALUE = `?code=value&redirect_uri=http://redirect.com&requestId=qwert1234&state=zxcv09877`;
+            const SEARCH_VALUE = `?code=value&redirect_uri=http://redirect.com&requestId=qwert1234&state=zxcv09877&accept_tos=1`;
             const SEARCH_WITH_ADDITIONAL_VALUE = `${SEARCH_VALUE}&search=value`;
 
             describe('with search params', () => {
@@ -166,13 +166,13 @@ describe('util', () => {
 
     describe('generateCodeVerifier', () => {
         const validCodeVerifierLength = 50;
-        const randomBytesMock =  new Uint32Array([
-                1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
-                1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
-                1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
-                1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
-                1, 120, 122, 35, 1, 20, 67, 98, 30, 100
-            ]);
+        const randomBytesMock = new Uint32Array([
+            1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
+            1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
+            1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
+            1, 120, 122, 35, 1, 20, 67, 98, 30, 100,
+            1, 120, 122, 35, 1, 20, 67, 98, 30, 100
+        ]);
         const cryptoMock = {
             getRandomValues: jest.fn().mockImplementation(() => {
                 return randomBytesMock;

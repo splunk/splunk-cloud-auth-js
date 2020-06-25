@@ -179,7 +179,8 @@ export class PKCEAuthManager implements AuthManager {
             expiresAt: accessToken.expires_in + Math.floor(Date.now() / 1000),
             expiresIn: accessToken.expires_in,
             tokenType: accessToken.token_type,
-            scopes: accessToken.scope.split(' ')
+            scopes: accessToken.scope.split(' '),
+            refreshToken: accessToken.refresh_token
         };
     }
 
@@ -201,7 +202,7 @@ export class PKCEAuthManager implements AuthManager {
             ['state', generateRandomString(64)],
             ['nonce', generateRandomString(64)],
             ['max_age', undefined],
-            ['scope', 'openid email profile']
+            ['scope', 'openid email profile offline_access']
         ]);
 
         if (additionalQueryParams) {
@@ -246,7 +247,7 @@ export class PKCEAuthManager implements AuthManager {
             ['redirect_uri', this._settings.redirectUri || window.location.href],
             ['response_type', 'code'],
             ['state', storedOAuthParameters.state],
-            ['scope', 'openid email profile']
+            ['scope', 'openid email profile offline_access']
         ]);
 
         const url = new URL(AuthProxy.PATH_TOS, this._settings.authHost);

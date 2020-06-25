@@ -30,6 +30,7 @@ export function clearWindowLocationFragments() {
         urlQueryParams.delete('redirect_uri');
         urlQueryParams.delete('requestId');
         urlQueryParams.delete('state');
+        urlQueryParams.delete('accept_tos');
         url += urlQueryParams.toString() ? `?${urlQueryParams.toString()}` : '';
     }
 

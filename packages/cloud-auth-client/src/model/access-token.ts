@@ -42,4 +42,9 @@ export interface AccessToken {
      * Scopes.
      */
     scopes?: string[];
+
+    /**
+     * Refresh token string.
+     */
+    refreshToken?: string;
 }

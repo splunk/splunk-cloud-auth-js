@@ -23,6 +23,7 @@ const ACCESS_TOKEN = 'accesstoken';
 const EXPIRES_IN = 1000;
 const TOKEN_TYPE = 'tokentype';
 const SCOPES = 'scope0 scope1';
+const REFRESH_TOKEN = 'refreshtoken';
 
 let mockStorageGet: jest.Mock;
 let mockStorageSet: jest.Mock;
@@ -234,7 +235,7 @@ describe('PKCEAuthManager', () => {
                     access_token: ACCESS_TOKEN,
                     expires_in: EXPIRES_IN,
                     id_token: 'idtoken',
-                    refresh_token: 'refreshtoken',
+                    refresh_token: REFRESH_TOKEN,
                     token_type: TOKEN_TYPE,
                     scope: SCOPES
                 });
@@ -337,7 +338,7 @@ describe('PKCEAuthManager', () => {
                     access_token: ACCESS_TOKEN,
                     expires_in: EXPIRES_IN,
                     id_token: 'idtoken',
-                    refresh_token: 'refreshtoken',
+                    refresh_token: REFRESH_TOKEN,
                     token_type: TOKEN_TYPE,
                     scope: SCOPES
                 });
@@ -353,6 +354,7 @@ describe('PKCEAuthManager', () => {
                     expect(accessToken.expiresIn).toEqual(EXPIRES_IN);
                     expect(accessToken.tokenType).toEqual(TOKEN_TYPE);
                     expect(accessToken.scopes).toEqual(SCOPES.split(' '));
+                    expect(accessToken.refreshToken).toEqual(REFRESH_TOKEN);
                     expect(mockStorageDelete).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toBeCalledTimes(1);
                     done();
@@ -379,7 +381,7 @@ describe('PKCEAuthManager', () => {
             expect(result.href)
                 .toEqual('https://host.com/authorize?client_id=clientid&code_challenge=abc&' +
                     'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
-                    'state=random&nonce=random&scope=openid%20email%20profile');
+                    'state=random&nonce=random&scope=openid%20email%20profile%20offline_access');
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
@@ -411,7 +413,7 @@ describe('PKCEAuthManager', () => {
             expect(result.href)
                 .toEqual('https://host.com/authorize?client_id=clientid&code_challenge=abc&' +
                     'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
-                    'state=random&nonce=random&scope=openid%20email%20profile&customParam1=value1');
+                    'state=random&nonce=random&scope=openid%20email%20profile%20offline_access&customParam1=value1');
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
@@ -454,7 +456,7 @@ describe('PKCEAuthManager', () => {
             expect(result.href)
                 .toEqual('https://host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&' +
                     'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
-                    'state=iamstate0&scope=openid%20email%20profile');
+                    'state=iamstate0&scope=openid%20email%20profile%20offline_access');
             expect(mockStorageGet).toBeCalledTimes(1);
         });
     });

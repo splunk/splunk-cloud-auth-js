@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.2.0...@splunkdev/cloud-auth-client@2.3.0) (2020-07-06)
+
+
+### Features
+
+* **cloud-auth-client:** store refresh token during login for pkce flow ([50d43d0](https://github.com/splunk/splunk-cloud-auth-js/commit/50d43d0220653dcc9539e2035cf91775e286058b))
+
+
+
+
+
 # [2.2.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.1.2...@splunkdev/cloud-auth-client@2.2.0) (2020-06-08)
 
 

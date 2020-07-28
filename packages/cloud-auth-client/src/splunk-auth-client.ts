@@ -102,6 +102,8 @@ export class SplunkAuthClient implements SdkAuthManager {
 
     private _hasRequestedToken = false;
 
+    private _redirectInProgress = false;
+
     /**
      * Gets the access token string.
      */
@@ -155,8 +157,9 @@ export class SplunkAuthClient implements SdkAuthManager {
         } finally {
             // For applications such as SPAs where there may be multiple calls to this method,
             // it does not make sense to repeatedly clear the window location fragments and/or execute path restore.
-            // The following code block executes only on the first invocation of this method.
-            if (!this._hasRequestedToken) {
+            // The following code block executes only on the first invocation of this method and when
+            // redirect is not in progress.
+            if (!this._hasRequestedToken && !this._redirectInProgress) {
                 this._hasRequestedToken = true;
                 clearWindowLocationFragments();
                 if (this._settings.restorePathAfterLogin) {
@@ -201,6 +204,7 @@ export class SplunkAuthClient implements SdkAuthManager {
         if (this._settings.restorePathAfterLogin) {
             this.storePathBeforeLogin();
         }
+        this._redirectInProgress = true;
         const additionalLoginQueryParams = this.getQueryStringForLogin();
         window.location.href = this._authManager.generateAuthUrl(additionalLoginQueryParams).href;
     }
@@ -210,6 +214,7 @@ export class SplunkAuthClient implements SdkAuthManager {
      */
     public logout(url?: any | string) {
         this._tokenManager.clear();
+        this._redirectInProgress = true;
         window.location.href = this._authManager.generateLogoutUrl(
             url || this._settings.redirectUri || window.location.href
         ).href;
@@ -221,6 +226,7 @@ export class SplunkAuthClient implements SdkAuthManager {
     private redirectToTos() {
         const getTosUrl = this._authManager.generateTosUrl && this._authManager.generateTosUrl();
         if (getTosUrl !== undefined) {
+            this._redirectInProgress = true;
             window.location.href = getTosUrl.href;
         }
     }

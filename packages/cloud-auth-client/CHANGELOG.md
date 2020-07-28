@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.3.0...@splunkdev/cloud-auth-client@2.3.1) (2020-07-28)
+
+
+### Bug Fixes
+
+* **cloud-auth-client:** Fix the restorePathAfterLogin logic after TOS redirect ([c4cb770](https://github.com/splunk/splunk-cloud-auth-js/commit/c4cb7703c3e27423cdc35d9deadfa2577fc186d7))
+
+
+
+
+
 # [2.3.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.2.0...@splunkdev/cloud-auth-client@2.3.0) (2020-07-06)
 
 

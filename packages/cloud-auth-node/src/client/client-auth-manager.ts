@@ -41,9 +41,16 @@ export class ClientAuthManagerSettings extends AuthManagerSettings {
      * @param clientId Client Id.
      * @param clientSecret Client secret.
      * @param grantType Grant type.
+     * @param tenant Tenant.
      */
-    constructor(host: string, scope: string, clientId: string, clientSecret: string, grantType: string) {
-        super(host, scope, clientId);
+    constructor(
+        host: string,
+        scope: string,
+        clientId: string,
+        clientSecret: string,
+        grantType: string,
+        tenant: string) {
+        super(host, scope, clientId, tenant);
         this.clientSecret = clientSecret;
         this.grantType = grantType;
     }
@@ -93,7 +100,8 @@ export class ClientAuthManager extends BaseAuthManager<ClientAuthManagerSettings
             this.authSettings.clientId,
             this.authSettings.clientSecret,
             this.authSettings.grantType,
-            this.authSettings.scope)
+            this.authSettings.scope,
+            this.authSettings.tenant)
             .then((response: AccessTokenResponse) => {
                 this.authContext.accessToken = response.access_token;
                 this.authContext.idToken = response.id_token;

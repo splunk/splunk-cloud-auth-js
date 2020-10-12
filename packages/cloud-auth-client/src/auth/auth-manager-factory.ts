@@ -31,7 +31,8 @@ export class AuthManagerFactory {
         authHost: string,
         clientId: string,
         redirectUri: string,
-        redirectParamsStorageName: string
+        tenant: string,
+        redirectParamsStorageName: string,
     ): AuthManager {
         if (grantType.valueOf() === GrantType.PKCE.valueOf()) {
             return new PKCEAuthManager(
@@ -39,6 +40,7 @@ export class AuthManagerFactory {
                     authHost,
                     clientId,
                     redirectUri,
+                    tenant,
                     redirectParamsStorageName
                 )
             );

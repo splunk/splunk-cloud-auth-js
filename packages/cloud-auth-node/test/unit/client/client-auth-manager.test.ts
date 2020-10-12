@@ -34,11 +34,13 @@ const MOCK_ID_TOKEN = 'it';
 const MOCK_REFRESH_TOKEN = 'rt';
 const MOCK_SCOPE = 's';
 const MOCK_TOKEN_TYPE = 'tt';
+const MOCK_TENANT = 'testtenant';
 const TIME_MILLIS_BUFFER = 999999;
 
 describe('ClientAuthManager', () => {
     const mockAuthSettings =
-        new ClientAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_CLIENT_SECRET, MOCK_GRANT_TYPE);
+        new ClientAuthManagerSettings(
+            MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_CLIENT_SECRET, MOCK_GRANT_TYPE, MOCK_TENANT);
     let mockAuthProxy: AuthProxy;
     let authManager: ClientAuthManager;
 
@@ -75,7 +77,7 @@ describe('ClientAuthManager', () => {
             // Assert
             assert.equal(result, MOCK_ACCESS_TOKEN);
             assert(tokenStub.calledOnce);
-            assert(tokenStub.calledWith(MOCK_CLIENT_ID, MOCK_CLIENT_SECRET, MOCK_GRANT_TYPE, MOCK_SCOPE));
+            assert(tokenStub.calledWith(MOCK_CLIENT_ID, MOCK_CLIENT_SECRET, MOCK_GRANT_TYPE, MOCK_SCOPE, MOCK_TENANT));
         });
 
         it('should return a new access token string when existing token is expired.', async () => {
@@ -102,7 +104,7 @@ describe('ClientAuthManager', () => {
             // Assert
             assert.equal(result, MOCK_ACCESS_TOKEN);
             assert(tokenStub.calledOnce);
-            assert(tokenStub.calledWith(MOCK_CLIENT_ID, MOCK_CLIENT_SECRET, MOCK_GRANT_TYPE, MOCK_SCOPE));
+            assert(tokenStub.calledWith(MOCK_CLIENT_ID, MOCK_CLIENT_SECRET, MOCK_GRANT_TYPE, MOCK_SCOPE, MOCK_TENANT));
         });
 
         it('should return an existing access token string when existing token is not expired.', async () => {
@@ -123,7 +125,8 @@ describe('ClientAuthManager', () => {
         it('should throw SplunkAuthError when clientId is not specified', async () => {
             // Arrange
             authManager = new ClientAuthManager(
-                new ClientAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, '', MOCK_CLIENT_SECRET, MOCK_GRANT_TYPE),
+                new ClientAuthManagerSettings(
+                    MOCK_HOST, MOCK_SCOPE, '', MOCK_CLIENT_SECRET, MOCK_GRANT_TYPE, MOCK_TENANT),
                 mockAuthProxy);
             const tokenStub = sandbox.stub(mockAuthProxy, 'clientAccessToken');
             const expectedErrorMessage = 'clientId is not specified.';
@@ -140,7 +143,8 @@ describe('ClientAuthManager', () => {
         it('should throw SplunkAuthError when clientSecret is not specified', async () => {
             // Arrange
             authManager = new ClientAuthManager(
-                new ClientAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, '', MOCK_GRANT_TYPE),
+                new ClientAuthManagerSettings(
+                    MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, '', MOCK_GRANT_TYPE, MOCK_TENANT),
                 mockAuthProxy);
             const tokenStub = sandbox.stub(mockAuthProxy, 'clientAccessToken');
             const expectedErrorMessage = 'clientSecret is not specified.';
@@ -157,7 +161,8 @@ describe('ClientAuthManager', () => {
         it('should throw SplunkAuthError when grantType is not specified', async () => {
             // Arrange
             authManager = new ClientAuthManager(
-                new ClientAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_CLIENT_SECRET, ''),
+                new ClientAuthManagerSettings(
+                    MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_CLIENT_SECRET, '', MOCK_TENANT),
                 mockAuthProxy);
             const tokenStub = sandbox.stub(mockAuthProxy, 'clientAccessToken');
             const expectedErrorMessage = 'grantType is not specified.';

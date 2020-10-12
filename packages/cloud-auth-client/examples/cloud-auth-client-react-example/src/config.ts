@@ -31,7 +31,7 @@ const {
  * They can be set as node environment variables or hardcoded below.
  */
 export const Config = {
-    GRANT_TYPE: REACT_APP_GRANT_TYPE || 'implicit',
+    GRANT_TYPE: REACT_APP_GRANT_TYPE || 'pkce',
     CLIENT_ID: REACT_APP_CLIENT_ID || 'YOUR_CLIENT_ID',
     REDIRECT_URI: REACT_APP_REDIRECT_URI || 'https://YOUR_URL_USED_TO_REGISTER_CLIENT.com',
     ON_RESTORE_PATH: (path: string) => {

@@ -39,12 +39,13 @@ const MOCK_REFRESH_TOKEN = 'rt';
 const MOCK_SCOPE = 's';
 const MOCK_TOKEN_TYPE = 'tt';
 const MOCK_USERNAME = 'username';
+const MOCK_TENANT = 'testtenant';
 const TIME_MILLIS_BUFFER = 999999;
 
 describe('PKCEAuthManager', () => {
     const mockAuthSettings =
         new PKCEAuthManagerSettings(
-            MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_REDIRECT_URI, MOCK_USERNAME, MOCK_PASSWORD);
+            MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_REDIRECT_URI, MOCK_USERNAME, MOCK_PASSWORD, MOCK_TENANT);
     let mockAuthProxy: AuthProxy;
     let authManager: PKCEAuthManager;
 
@@ -132,7 +133,8 @@ describe('PKCEAuthManager', () => {
                 MOCK_SCOPE,
                 SESSION_TOKEN));
             assert(tokenStub.calledOnce);
-            assert(tokenStub.calledWith(MOCK_CLIENT_ID, AUTHORIZATION_CODE, CODE_VERIFIER, MOCK_REDIRECT_URI));
+            assert(tokenStub.calledWith(
+                MOCK_CLIENT_ID, AUTHORIZATION_CODE, CODE_VERIFIER, MOCK_REDIRECT_URI, MOCK_TENANT));
         });
 
         it('should return a new access token string when existing token is expired.', async () => {
@@ -202,7 +204,8 @@ describe('PKCEAuthManager', () => {
                 MOCK_SCOPE,
                 SESSION_TOKEN));
             assert(tokenStub.calledOnce);
-            assert(tokenStub.calledWith(MOCK_CLIENT_ID, AUTHORIZATION_CODE, CODE_VERIFIER, MOCK_REDIRECT_URI));
+            assert(tokenStub.calledWith(
+                MOCK_CLIENT_ID, AUTHORIZATION_CODE, CODE_VERIFIER, MOCK_REDIRECT_URI, MOCK_TENANT));
         });
 
         it('should return an existing access token string when existing token is not expired.', async () => {
@@ -224,7 +227,7 @@ describe('PKCEAuthManager', () => {
             // Arrange
             authManager = new PKCEAuthManager(
                 new PKCEAuthManagerSettings(
-                    MOCK_HOST, MOCK_SCOPE, '', MOCK_REDIRECT_URI, MOCK_USERNAME, MOCK_PASSWORD),
+                    MOCK_HOST, MOCK_SCOPE, '', MOCK_REDIRECT_URI, MOCK_USERNAME, MOCK_PASSWORD, MOCK_TENANT),
                 mockAuthProxy);
             const csrfTokenStub = sandbox.stub(mockAuthProxy, 'csrfToken');
             const expectedErrorMessage = 'clientId is not specified.';
@@ -242,7 +245,7 @@ describe('PKCEAuthManager', () => {
             // Arrange
             authManager = new PKCEAuthManager(
                 new PKCEAuthManagerSettings(
-                    MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, '', MOCK_USERNAME, MOCK_PASSWORD),
+                    MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, '', MOCK_USERNAME, MOCK_PASSWORD, MOCK_TENANT),
                 mockAuthProxy);
             const csrfTokenStub = sandbox.stub(mockAuthProxy, 'csrfToken');
             const expectedErrorMessage = 'redirectUri is not specified.';

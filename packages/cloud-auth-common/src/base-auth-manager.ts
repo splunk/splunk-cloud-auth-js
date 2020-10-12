@@ -69,15 +69,22 @@ export abstract class AuthManagerSettings {
     public scope: string;
 
     /**
+     * Tenant.
+     */
+    public tenant: string;
+
+    /**
      * AuthManagerSettings.
      * @param host Host.
      * @param scope Scope.
      * @param clientId Client Id.
+     * @param tenant Tenant.
      */
-    constructor(host: string, scope: string, clientId: string) {
+    constructor(host: string, scope: string, clientId: string, tenant: string) {
         this.host = host;
         this.scope = scope;
         this.clientId = clientId;
+        this.tenant = tenant;
     }
 }
 

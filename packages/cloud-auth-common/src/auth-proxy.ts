@@ -107,6 +107,7 @@ export class AuthProxy {
      * @param authCode Authorization code.
      * @param codeVerifier Code verifier.
      * @param redirectUri Redirect URI.
+     * @param tenant Tenant.
      * @param acceptTos Accepted TOS.
      */
     public async accessToken(
@@ -114,6 +115,7 @@ export class AuthProxy {
         authCode: string,
         codeVerifier: string,
         redirectUri: string,
+        tenant: string,
         acceptTos?: string): Promise<AccessTokenResponse> {
         const body: Map<string, any> = new Map([
             ['grant_type', 'authorization_code'],
@@ -126,7 +128,7 @@ export class AuthProxy {
             body.set('accept_tos', acceptTos);
         }
 
-        return this._token(HEADERS_APPLICATION_JSON_URLENCODED, body);
+        return this._token(HEADERS_APPLICATION_JSON_URLENCODED, tenant, body);
     }
 
     /**
@@ -253,12 +255,14 @@ export class AuthProxy {
      * @param clientSecret Client secret.
      * @param grantType Grant type.
      * @param scope Scope.
+     * @param tenant Tenant.
      */
     public async clientAccessToken(
         clientId: string,
         clientSecret: string,
         grantType: string,
-        scope: string
+        scope: string,
+        tenant: string
     ): Promise<AccessTokenResponse> {
         const authEncoded = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
         const headers = {
@@ -270,7 +274,7 @@ export class AuthProxy {
             ['scope', scope]
         ]);
 
-        return this._token(headers, body);
+        return this._token(headers, tenant, body);
     }
 
     /**
@@ -314,12 +318,14 @@ export class AuthProxy {
      * @param clientSecret Client secret.
      * @param grantType Grant type.
      * @param scope Scope.
+     * @param tenant Tenant.
      */
     public async refreshAccessToken(
         clientId: string,
         grantType = 'refresh_token',
         scope: string,
-        refreshToken: string
+        refreshToken: string,
+        tenant: string
     ): Promise<AccessTokenResponse> {
         const body: Map<string, any> = new Map([
             ['client_id', clientId],
@@ -328,7 +334,7 @@ export class AuthProxy {
             ['scope', scope],
         ]);
 
-        return this._token(HEADERS_APPLICATION_JSON_URLENCODED, body);
+        return this._token(HEADERS_APPLICATION_JSON_URLENCODED, tenant, body);
     }
 
     /**
@@ -379,8 +385,22 @@ export class AuthProxy {
             });
     }
 
-    private async _token(headers: any, body: Map<string, any>): Promise<AccessTokenResponse> {
-        const tokenUrl = new URL(AuthProxy.PATH_TOKEN, this.host);
+    /**
+     * Retreives an access token.
+     *      - Returns a tenant-scoped access token if the tenant is defined
+     *      - Returns a global acccess token if the tenant is not defined
+     * @param headers Request headers.
+     * @param tenant Tenant name.
+     * @param body Request body.
+     */
+    private async _token(headers: any, tenant: string, body: Map<string, any>): Promise<AccessTokenResponse> {
+        let tokenPath;
+        if (tenant) {
+            tokenPath = `${tenant}${AuthProxy.PATH_TOKEN}`;
+        } else {
+            tokenPath = AuthProxy.PATH_TOKEN;
+        }
+        const tokenUrl = new URL(tokenPath, this.host);
         // remove the prefixed query "?" to convert the query params into form url
         let formUrlEncodedBody = generateQueryParameters(body);
         formUrlEncodedBody = formUrlEncodedBody.slice(1);

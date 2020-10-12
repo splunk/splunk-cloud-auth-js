@@ -263,7 +263,7 @@ describe('SplunkAuthClient', () => {
                 done();
             });
 
-            it('returns valid AccessToken after failed token validation and successful retrieval of a new token', async () => {
+            it('returns valid global AccessToken after failed token validation and successful retrieval of a new token', async () => {
                 // Arrange
                 mockStorageGet = jest
                     .fn()
@@ -300,6 +300,54 @@ describe('SplunkAuthClient', () => {
 
                 // Assert
                 expect(result).toEqual(accessToken);
+                expect(mockStorageGet).toBeCalledWith('');
+                expect(mockStorageGet).toBeCalledTimes(2);
+                expect(mockStorageSet).toBeCalledTimes(1);
+                expect(mockGetAccessToken).toBeCalledTimes(1);
+                expect(mockGenerateAuthUrl).toBeCalledTimes(0);
+            });
+
+            it('returns valid tenant-scoped AccessToken after failed token validation and successful retrieval of a new token', async () => {
+                // Arrange
+                const tenantAccessToken = accessToken
+                tenantAccessToken.tenant = 'testtenant';
+
+                mockStorageGet = jest
+                    .fn()
+                    .mockImplementationOnce(
+                        (): AccessToken => {
+                            return invalidAccessToken;
+                        }
+                    )
+                    .mockImplementationOnce(
+                        (): AccessToken => {
+                            return tenantAccessToken;
+                        }
+                    );
+                mockGenerateAuthUrl = jest.fn(() => {
+                    return URL_0;
+                });
+                mockGetAccessToken = jest.fn(() => {
+                    return new Promise((resolve) => resolve(tenantAccessToken));
+                });
+                mockAuthManager = {
+                    getRedirectPath: jest.fn(),
+                    setRedirectPath: jest.fn(),
+                    deleteRedirectPath: jest.fn(),
+                    getAccessToken: mockGetAccessToken,
+                    generateAuthUrl: mockGenerateAuthUrl,
+                    generateLogoutUrl: jest.fn(),
+                };
+
+                const settings = new SplunkAuthClientSettings(GRANT_TYPE_PKCE, CLIENT_ID, REDIRECT_URI);
+                const authClient = new SplunkAuthClient(settings);
+
+                // Act
+                const result = await authClient.getAccessTokenContext();
+
+                // Assert
+                expect(result).toEqual(tenantAccessToken);
+                expect(mockStorageGet).toBeCalledWith(tenantAccessToken.tenant);
                 expect(mockStorageGet).toBeCalledTimes(2);
                 expect(mockStorageSet).toBeCalledTimes(1);
                 expect(mockGetAccessToken).toBeCalledTimes(1);

@@ -34,9 +34,14 @@ import {
     REDIRECT_OAUTH_PARAMS_NAME,
     REDIRECT_PARAMS_STORAGE_NAME,
     REDIRECT_PATH_PARAMS_NAME,
+    USER_PARAMS_STORAGE_NAME
 } from '../splunk-auth-client-settings';
 import { StorageManager } from '../storage/storage-manager';
-import { validateOAuthParameters, validateSearchParameters } from '../validator/pkce-param-validators';
+import {
+    validateOAuthParameters,
+    validateSearchParameters,
+    validateStateParameters
+} from '../validator/pkce-param-validators';
 import { AuthManager } from './auth-manager';
 
 /**
@@ -48,16 +53,19 @@ export class PKCEAuthManagerSettings {
      * @param authHost Authorize Host.
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
+     * @param tenant Tenant.
      */
     public constructor(
         authHost: string,
         clientId: string,
         redirectUri: string,
+        tenant: string,
         redirectParamsStorageName = REDIRECT_PARAMS_STORAGE_NAME
     ) {
         this.authHost = authHost;
         this.clientId = clientId;
         this.redirectUri = redirectUri;
+        this.tenant = tenant;
         this.redirectParamsStorageName = redirectParamsStorageName;
     }
 
@@ -80,6 +88,11 @@ export class PKCEAuthManagerSettings {
      * Redirect params storage name.
      */
     public redirectParamsStorageName: string;
+
+    /**
+     * Tenant.
+     */
+    public tenant: string;
 }
 
 /**
@@ -89,6 +102,24 @@ export interface PKCEOAuthRedirectParams {
     state: string;
     codeVerifier: string;
     codeChallenge: string;
+}
+
+/**
+ * UserParams.
+ */
+export interface UserParams {
+    email: string;
+    inviteID?: string;
+}
+
+/**
+ * UserState.
+ */
+export interface UserState {
+    tenant: string;
+    email?: string;
+    inviteID?: string;
+    accept_tos?: string;
 }
 
 /**
@@ -102,12 +133,15 @@ export class PKCEAuthManager implements AuthManager {
     public constructor(settings: PKCEAuthManagerSettings) {
         this._settings = settings;
         this._redirectParamsStorage = new StorageManager(this._settings.redirectParamsStorageName);
+        this._userParamsStorage = new StorageManager(USER_PARAMS_STORAGE_NAME);
         this._authProxy = new AuthProxy(this._settings.authHost);
     }
 
     private _settings: PKCEAuthManagerSettings;
 
     private _redirectParamsStorage: StorageManager;
+
+    private _userParamsStorage: StorageManager;
 
     private _authProxy: AuthProxy;
 
@@ -144,9 +178,25 @@ export class PKCEAuthManager implements AuthManager {
 
         clearWindowLocationFragments();
 
-        if (searchParameters.get('state') !== storedOAuthParameters.state) {
-            throw new SplunkOAuthError('OAuth flow response state does not match request state');
+        // get the user state (tenant, email, inviteID, accept_tos) from decoding the state parameter
+        const userState = this.getUserState(String(searchParameters.get('state')));
+        
+        this._settings.tenant = userState.tenant;
+
+        // user state will return an email if user is coming from
+        // the sso login flow, store the email in session storage
+        if (userState.email) {
+            this._userParamsStorage.set(userState.email, 'email');
         }
+
+        // user state will return an inviteID if user is coming from
+        // the invite flow via sso, store the inviteID to preserve it
+        // in case the user needs to sign their TOS
+        if (userState.inviteID) {
+            this._userParamsStorage.set(userState.inviteID, 'inviteID');
+        }
+
+        const acceptTos = userState.accept_tos ? userState.accept_tos : searchParameters.get('accept_tos');
 
         // call authproxy accessToken to get token
         let accessToken: AccessTokenResponse;
@@ -157,12 +207,18 @@ export class PKCEAuthManager implements AuthManager {
                 String(searchParameters.get('code')),
                 storedOAuthParameters.codeVerifier,
                 this._settings.redirectUri,
-                searchParameters.get('accept_tos')?.toString());
+                this._settings.tenant,
+                acceptTos?.toString());
 
-            // delete the redirect oauth params after successfully returning the
-            // access token otherwise if accessToken returns a unsignedtos error
-            // then these params are needed to generate the tos redirect url
+            // throws an error if refresh token was not returned as part of the access token response
+            if (!accessToken.refresh_token) {
+                throw new SplunkOAuthError('Missing refresh token.');
+            }
+
+            // after successfully returning the access token clean up the
+            // redirect oauth params and the invite id user params in storage
             this.deleteRedirectOAuthParameters();
+            this.deleteStoredUserParameters('inviteID');
         } catch (e) {
             if (e.message.includes(ERROR_CODE_UNSIGNED_TOS)) {
                 throw new SplunkOAuthError(
@@ -171,6 +227,7 @@ export class PKCEAuthManager implements AuthManager {
                 );
             }
             this.deleteRedirectOAuthParameters();
+            this.deleteStoredUserParameters('inviteID');
             throw new SplunkOAuthError(`${accessTokenError} ${e.message}`);
         }
 
@@ -180,7 +237,8 @@ export class PKCEAuthManager implements AuthManager {
             expiresIn: accessToken.expires_in,
             tokenType: accessToken.token_type,
             scopes: accessToken.scope.split(' '),
-            refreshToken: accessToken.refresh_token
+            refreshToken: accessToken.refresh_token,
+            tenant: this._settings.tenant  
         };
     }
 
@@ -193,6 +251,10 @@ export class PKCEAuthManager implements AuthManager {
         const pkceParamCodeVerifier = encodeCodeVerifier(cv);
         const pkceParamCodeChallenge = createCodeChallenge(pkceParamCodeVerifier);
 
+        const storedUserParameters = this.getStoredUserParameters();
+        const email = storedUserParameters && storedUserParameters.email || undefined;
+        const tenant = (this._settings.tenant !== 'system') && this._settings.tenant || undefined;
+
         const oauthQueryParams = new Map([
             ['client_id', this._settings.clientId],
             ['code_challenge', pkceParamCodeChallenge],
@@ -202,7 +264,10 @@ export class PKCEAuthManager implements AuthManager {
             ['state', generateRandomString(64)],
             ['nonce', generateRandomString(64)],
             ['max_age', undefined],
-            ['scope', 'openid email profile offline_access']
+            ['scope', 'openid email profile offline_access'],
+            ['encode_state', '1'],
+            ['tenant', tenant],
+            ['email', email],
         ]);
 
         if (additionalQueryParams) {
@@ -225,10 +290,12 @@ export class PKCEAuthManager implements AuthManager {
     }
 
     /**
-     * Generates the Logout URL.
+     * Generates the Logout URL and clear user params saved in session storage.
      * @param redirectUrl Optional redirect URL.
      */
     public generateLogoutUrl(redirectUrl: string): URL {
+        this._userParamsStorage.clear();
+
         const url = new URL(AuthProxy.PATH_LOGOUT, this._settings.authHost);
         const queryParameterString = `?redirect_uri=${encodeURIComponent(redirectUrl)}`;
         return new URL(queryParameterString, url);
@@ -239,6 +306,10 @@ export class PKCEAuthManager implements AuthManager {
      */
     public generateTosUrl(): URL {
         const storedOAuthParameters = this.getRedirectOAuthParameters();
+        const storedUserParameters = this.getStoredUserParameters();
+        const email = storedUserParameters && storedUserParameters.email || undefined;
+        const inviteID = storedUserParameters && storedUserParameters.inviteID || undefined;
+        const tenant = (this._settings.tenant !== 'system') && this._settings.tenant || undefined;
 
         const oauthQueryParams = new Map([
             ['client_id', this._settings.clientId],
@@ -247,7 +318,11 @@ export class PKCEAuthManager implements AuthManager {
             ['redirect_uri', this._settings.redirectUri || window.location.href],
             ['response_type', 'code'],
             ['state', storedOAuthParameters.state],
-            ['scope', 'openid email profile offline_access']
+            ['scope', 'openid email profile offline_access'],
+            ['encode_state', '1'],
+            ['tenant', tenant],
+            ['email', email],
+            ['inviteID', inviteID]
         ]);
 
         const url = new URL(AuthProxy.PATH_TOS, this._settings.authHost);
@@ -284,5 +359,34 @@ export class PKCEAuthManager implements AuthManager {
         } catch (e) {
             throw new SplunkAuthClientError(`Failed to remove the ${REDIRECT_OAUTH_PARAMS_NAME} data. ${e.message}`);
         }
+    }
+
+    private getStoredUserParameters(): UserParams {
+        try {
+            return this._userParamsStorage.get();
+        } catch {
+            throw new SplunkAuthClientError('Unable to retrieve user params storage');
+        }
+    }
+
+    private deleteStoredUserParameters(key?: string) {
+        try {
+            this._userParamsStorage.delete(key);
+        } catch (e) {
+            throw new SplunkAuthClientError(`Failed to remove the ${key} data from the user storage. ${e.message}`);
+        }
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    private getUserState(state: string): UserState {
+        let userState: UserState
+        try {
+            userState = JSON.parse(decodeURIComponent(state));
+        } catch {
+            throw new SplunkAuthClientError('Unable to parse state parameter to get user state');
+        }
+        validateStateParameters(userState);
+
+        return userState;
     }
 }

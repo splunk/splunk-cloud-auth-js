@@ -1,5 +1,9 @@
 import { SplunkOAuthError } from '../../../src/error/splunk-oauth-error';
-import { validateOAuthParameters, validateSearchParameters } from '../../../src/validator/pkce-param-validators';
+import {
+    validateOAuthParameters,
+    validateSearchParameters,
+    validateStateParameters
+} from '../../../src/validator/pkce-param-validators';
 
 describe('validateSearchParameters', () => {
     it('successfully validates parameters', () => {
@@ -100,5 +104,30 @@ describe('validateOAuthParameters', () => {
                 new SplunkOAuthError(
                     'Unable to retrieve codeChallenge from redirect params storage.',
                     'token_not_found'));
+    });
+});
+
+describe('validateStateParameters', () => {
+    it('successfully validates parameters', () => {
+        // Arrange
+        const userStateParameter = {
+            tenant: 'testtenant',
+            email: 'testuser@splunk.com'
+        };
+
+        // Act/Arrange
+        expect(() => validateStateParameters(userStateParameter)).not.toThrow();
+    });
+
+    it('throws SplunkOAuthError when parameters does not contain tenant', () => {
+        // Arrange
+        const userStateParameter = {
+            tenant: undefined
+        };
+
+        // Act/Arrange
+        expect(() => validateStateParameters(userStateParameter))
+            .toThrow(
+                new SplunkOAuthError('Unable to parse the tenant from the state parameter.'));
     });
 });

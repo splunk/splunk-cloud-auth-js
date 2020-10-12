@@ -6,6 +6,7 @@ const CLIENT_ID = 'abcde';
 const AUTH_HOST = 'https://authhost.com';
 const REDIRECT_URI = 'https://redirect.com';
 const REDIRECT_PARAM_STORAGE_NAME = 'storage-name';
+const TENANT = 'testtenant';
 
 const mockImplicitAuthManager: AuthManager = {
     deleteRedirectPath: jest.fn(),
@@ -55,7 +56,8 @@ describe('AuthManagerFactory', () => {
                 AUTH_HOST,
                 CLIENT_ID,
                 REDIRECT_URI,
-                REDIRECT_PARAM_STORAGE_NAME
+                '',
+                REDIRECT_PARAM_STORAGE_NAME,
             );
 
             // Assert
@@ -69,6 +71,7 @@ describe('AuthManagerFactory', () => {
                 AUTH_HOST,
                 CLIENT_ID,
                 REDIRECT_URI,
+                TENANT,
                 REDIRECT_PARAM_STORAGE_NAME
             );
 

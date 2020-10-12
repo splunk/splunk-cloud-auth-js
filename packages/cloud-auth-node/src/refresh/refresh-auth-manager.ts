@@ -41,14 +41,16 @@ export class RefreshAuthManagerSettings extends AuthManagerSettings {
      * @param clientId Client Id.
      * @param grantType Grant type.
      * @param refreshToken Refresh token.
+     * @param tenant Tenant.
      */
     constructor(
         host: string,
         scope = 'openid',
         clientId: string,
         grantType = 'refresh_token',
-        refreshToken: string) {
-        super(host, scope, clientId);
+        refreshToken: string,
+        tenant: string) {
+        super(host, scope, clientId, tenant);
 
         this.grantType = grantType;
         this.refreshToken = refreshToken;
@@ -99,7 +101,8 @@ export class RefreshAuthManager extends BaseAuthManager<RefreshAuthManagerSettin
             this.authSettings.clientId,
             this.authSettings.grantType,
             this.authSettings.scope,
-            this.authSettings.refreshToken)
+            this.authSettings.refreshToken,
+            this.authSettings.tenant)
             .then((response: AccessTokenResponse) => {
                 this.authContext.tokenExpiration = new Date().getTime() + response.expires_in * MILLISECONDS_IN_SECOND;
                 this.authContext.tokenType = response.token_type;

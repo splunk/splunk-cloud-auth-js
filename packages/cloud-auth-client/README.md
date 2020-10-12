@@ -17,8 +17,8 @@ You can use the `@splunkdev/cloud-auth-client` library alone or with the [Splunk
 
 This library supports the following OAuth authorization grant types:
 
+-   [Proof Key for Code Exchange](https://oauth.net/2/pkce/) (PKCE) - Recommended
 -   [Implicit](https://oauth.net/2/grant-types/implicit/)
--   [Proof Key for Code Exchange](https://oauth.net/2/pkce/) (PKCE)
 
 For more about authorization flows that are supported by Splunk Cloud Services, see [Plan apps for Splunk Cloud Services](https://dev.splunk.com/scs/docs/apps/plan#Choose-an-authorization-flow) on the Splunk Developer Portal.
 
@@ -71,12 +71,11 @@ const authClientSettings = new SplunkAuthClientSettings(
     QUERY_PARAMS_FOR_LOGIN,
     AUTO_TOKEN_RENEWAL_BUFFER,
     TOKEN_STORAGE_NAME,
-    REDIRECT_PARAMS_STORAGE_NAME,
-    TENANT
+    REDIRECT_PARAMS_STORAGE_NAME
 );
 
-// Initialize SplunkAuthClient.
-const authClient = new SplunkAuthClient(authClientSettings);
+// Initialize SplunkAuthClient with the Auth Client settings configuration and the tenant
+const authClient = new SplunkAuthClient(authClientSettings, tenant);
 
 class App extends Component {
     state = {
@@ -135,8 +134,8 @@ The following example sets configuration options for `SplunkAuthClient`.
 
 ```js
 {
-    // The grant type.  The SplunkAuthClient supports the following grant types: implicit, pkce.
-    grantType: 'implicit', // required
+    // The grant type.  The SplunkAuthClient supports the following grant types: pkce, implicit.
+    grantType: 'pkce', // required
 
     // The clientId setting identifies the app that is registered with the App Registry service.
     clientId: 'YOUR_CLIENT_ID', // required
@@ -184,12 +183,18 @@ The following example sets configuration options for `SplunkAuthClient`.
 
     // The storage key name for managing URL redirect parameter data.
     // The default value for storage key is 'splunk-redirect-params-storage'.
-    redirectParamsStorageName: 'splunk-redirect-params-storage',
-
-    // This setting specifies the tenant specific access token to set and return.
-    // Access tokens set for a specific tenant does not support token refresh.
-    tenant: 'YOUR_TENANT_NAME'
+    redirectParamsStorageName: 'splunk-redirect-params-storage'
 }
+```
+
+The `SplunkAuthClient` is also configured with a `tenant` at initialization.
+```js
+// The tenant parameter identifies the scope of the Auth Client.
+// For client apps that support tenant switching logic, whenever a tenant
+// is switched the Auth Client must be re-initialized with the tenant
+// defined to scope the client to that tenant and return a tenant-scoped access token.
+// The default value is an empty string ''.
+tenant: ''
 ```
 
 ## Usage with the Splunk Cloud SDK

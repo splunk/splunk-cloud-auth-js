@@ -55,7 +55,8 @@ const authSettings = new ClientAuthManagerSettings(
     scope = '',
     clientId = CLIENT_CREDENTIAL_ID,
     clientSecret = CLIENT_CREDENTIAL_SECRET,
-    grantType = 'client_credentials');
+    grantType = 'client_credentials',
+    tenant = TENANT);
 
 // Use AuthManagerSettings to initialize an AuthManager.
 const authManager = new ClientAuthManager(authSettings);

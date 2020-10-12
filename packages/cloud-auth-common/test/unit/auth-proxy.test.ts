@@ -32,6 +32,7 @@ const MOCK_REFRESH_TOKEN = 'rt';
 const MOCK_SCOPE = 's';
 const MOCK_TOKEN_TYPE = 'tt';
 const MOCK_ACCEPT_TOS = '1';
+const MOCK_TENANT = 'testtenant';
 const PATH_AUTHN = '/authn';
 const PATH_AUTHORIZATION = '/authorize';
 const PATH_TOKEN = '/token';
@@ -50,47 +51,7 @@ describe('AuthProxy', () => {
         const AUTH_CODE = 'authcode';
         const CODE_VERIFIER = 'codeverifier';
         const REDIRECT_URI = 'https://redirect.com/';
-        it('should return a successful AccessTokenResponse promise', async () => {
-            // Arrange
-            // TODO: figure out how to assert the body.
-            fetchMock.post(
-                `${MOCK_HOST}${PATH_TOKEN}`,
-                {
-                    body: {
-                        access_token: MOCK_ACCESS_TOKEN,
-                        expires_in: MOCK_EXPIRES_IN,
-                        id_token: MOCK_ID_TOKEN,
-                        refresh_token: MOCK_REFRESH_TOKEN,
-                        scope: MOCK_SCOPE,
-                        token_type: MOCK_TOKEN_TYPE
-                    },
-                    status: 200,
-                },
-                {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                });
-
-            // Act
-            const result = await authProxy.accessToken(
-                CLIENT_ID,
-                AUTH_CODE,
-                CODE_VERIFIER,
-                REDIRECT_URI
-            );
-
-            // Assert
-            assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
-            assert.equal(result.expires_in, MOCK_EXPIRES_IN);
-            assert.equal(result.id_token, MOCK_ID_TOKEN);
-            assert.equal(result.refresh_token, MOCK_REFRESH_TOKEN);
-            assert.equal(result.scope, MOCK_SCOPE);
-            assert.equal(result.token_type, MOCK_TOKEN_TYPE);
-        });
-
-        it('should return a successful AccessTokenResponse promise with accept_tos parameter', async () => {
+        it('should return a successful globally scoped AccessTokenResponse promise', async () => {
             // Arrange
             // TODO: figure out how to assert the body.
             fetchMock.post(
@@ -119,6 +80,89 @@ describe('AuthProxy', () => {
                 AUTH_CODE,
                 CODE_VERIFIER,
                 REDIRECT_URI,
+                ''
+            );
+
+            // Assert
+            assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
+            assert.equal(result.expires_in, MOCK_EXPIRES_IN);
+            assert.equal(result.id_token, MOCK_ID_TOKEN);
+            assert.equal(result.refresh_token, MOCK_REFRESH_TOKEN);
+            assert.equal(result.scope, MOCK_SCOPE);
+            assert.equal(result.token_type, MOCK_TOKEN_TYPE);
+        });
+
+        it('should return a successful tenant-scoped AccessTokenResponse promise', async () => {
+            // Arrange
+            // TODO: figure out how to assert the body.
+            fetchMock.post(
+                `${MOCK_HOST}/${MOCK_TENANT}${PATH_TOKEN}`,
+                {
+                    body: {
+                        access_token: MOCK_ACCESS_TOKEN,
+                        expires_in: MOCK_EXPIRES_IN,
+                        id_token: MOCK_ID_TOKEN,
+                        refresh_token: MOCK_REFRESH_TOKEN,
+                        scope: MOCK_SCOPE,
+                        token_type: MOCK_TOKEN_TYPE
+                    },
+                    status: 200,
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+            // Act
+            const result = await authProxy.accessToken(
+                CLIENT_ID,
+                AUTH_CODE,
+                CODE_VERIFIER,
+                REDIRECT_URI,
+                MOCK_TENANT
+            );
+
+            // Assert
+            assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
+            assert.equal(result.expires_in, MOCK_EXPIRES_IN);
+            assert.equal(result.id_token, MOCK_ID_TOKEN);
+            assert.equal(result.refresh_token, MOCK_REFRESH_TOKEN);
+            assert.equal(result.scope, MOCK_SCOPE);
+            assert.equal(result.token_type, MOCK_TOKEN_TYPE);
+        });
+
+        it('should return a successful AccessTokenResponse promise with accept_tos parameter', async () => {
+            // Arrange
+            // TODO: figure out how to assert the body.
+            fetchMock.post(
+                `${MOCK_HOST}/${MOCK_TENANT}${PATH_TOKEN}`,
+                {
+                    body: {
+                        access_token: MOCK_ACCESS_TOKEN,
+                        expires_in: MOCK_EXPIRES_IN,
+                        id_token: MOCK_ID_TOKEN,
+                        refresh_token: MOCK_REFRESH_TOKEN,
+                        scope: MOCK_SCOPE,
+                        token_type: MOCK_TOKEN_TYPE
+                    },
+                    status: 200,
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+            // Act
+            const result = await authProxy.accessToken(
+                CLIENT_ID,
+                AUTH_CODE,
+                CODE_VERIFIER,
+                REDIRECT_URI,
+                MOCK_TENANT,
                 MOCK_ACCEPT_TOS
             );
 
@@ -393,7 +437,7 @@ describe('AuthProxy', () => {
         const CLIENT_SECRET = 'clientsecret';
         const GRANT_TYPE = 'granttype';
         const SCOPE = 'scope';
-        it('should return a successful AccessTokenResponse promise', async () => {
+        it('should return a successful globally scoped AccessTokenResponse promise', async () => {
             // Arrange
             // TODO: figure out how to assert the body.
             fetchMock.post(
@@ -417,7 +461,41 @@ describe('AuthProxy', () => {
                 });
 
             // Act
-            const result = await authProxy.clientAccessToken(CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, SCOPE);
+            const result = await authProxy.clientAccessToken(CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, SCOPE, '');
+
+            // Assert
+            assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
+            assert.equal(result.expires_in, MOCK_EXPIRES_IN);
+            assert.equal(result.id_token, MOCK_ID_TOKEN);
+            assert.equal(result.scope, MOCK_SCOPE);
+            assert.equal(result.token_type, MOCK_TOKEN_TYPE);
+        });
+
+        it('should return a successful tenant-scoped AccessTokenResponse promise', async () => {
+            // Arrange
+            // TODO: figure out how to assert the body.
+            fetchMock.post(
+                `${MOCK_HOST}/${MOCK_TENANT}${PATH_TOKEN}`,
+                {
+                    body: {
+                        access_token: MOCK_ACCESS_TOKEN,
+                        expires_in: MOCK_EXPIRES_IN,
+                        id_token: MOCK_ID_TOKEN,
+                        scope: MOCK_SCOPE,
+                        token_type: MOCK_TOKEN_TYPE
+                    },
+                    status: 200,
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': 'Basic Y2xpZW50aWQ6Y2xpZW50c2VjcmV0',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                });
+
+            // Act
+            const result = await authProxy.clientAccessToken(CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, SCOPE, MOCK_TENANT);
 
             // Assert
             assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
@@ -432,7 +510,7 @@ describe('AuthProxy', () => {
             const ERROR_CODE = 'errorcode';
             const expectedErrorMessage = '';
             fetchMock.post(
-                `${MOCK_HOST}${PATH_TOKEN}`,
+                `${MOCK_HOST}/${MOCK_TENANT}${PATH_TOKEN}`,
                 {
                     body: {
                         access_token: '',
@@ -449,7 +527,7 @@ describe('AuthProxy', () => {
 
             // Act/Assert
             return assert.isRejected(
-                authProxy.clientAccessToken(CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, SCOPE),
+                authProxy.clientAccessToken(CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, SCOPE, MOCK_TENANT),
                 expectedErrorMessage);
         });
     });
@@ -560,7 +638,7 @@ describe('AuthProxy', () => {
         const GRANT_TYPE = 'refresh_token';
         const SCOPE = 'scope';
         const REFRESH_TOKEN = 'abcde12345';
-        it('should return a successful AccessTokenResponse promise', async () => {
+        it('should return a successful globally scoped AccessTokenResponse promise', async () => {
             // Arrange
             // TODO: figure out how to assert the body.
             fetchMock.post(
@@ -583,7 +661,40 @@ describe('AuthProxy', () => {
                 });
 
             // Act
-            const result = await authProxy.refreshAccessToken(CLIENT_ID, GRANT_TYPE, SCOPE, REFRESH_TOKEN);
+            const result = await authProxy.refreshAccessToken(CLIENT_ID, GRANT_TYPE, SCOPE, REFRESH_TOKEN, '');
+
+            // Assert
+            assert.equal(result.access_token, MOCK_ACCESS_TOKEN);
+            assert.equal(result.expires_in, MOCK_EXPIRES_IN);
+            assert.equal(result.id_token, MOCK_ID_TOKEN);
+            assert.equal(result.scope, MOCK_SCOPE);
+            assert.equal(result.token_type, MOCK_TOKEN_TYPE);
+        });
+
+        it('should return a successful tenant-scoped AccessTokenResponse promise', async () => {
+            // Arrange
+            // TODO: figure out how to assert the body.
+            fetchMock.post(
+                `${MOCK_HOST}/${MOCK_TENANT}${PATH_TOKEN}`,
+                {
+                    body: {
+                        access_token: MOCK_ACCESS_TOKEN,
+                        expires_in: MOCK_EXPIRES_IN,
+                        id_token: MOCK_ID_TOKEN,
+                        scope: MOCK_SCOPE,
+                        token_type: MOCK_TOKEN_TYPE
+                    },
+                    status: 200,
+                },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                });
+
+            // Act
+            const result = await authProxy.refreshAccessToken(CLIENT_ID, GRANT_TYPE, SCOPE, REFRESH_TOKEN, MOCK_TENANT);
 
             // Assert
             assert.equal(result.access_token, MOCK_ACCESS_TOKEN);

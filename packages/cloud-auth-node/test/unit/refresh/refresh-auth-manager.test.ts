@@ -33,11 +33,13 @@ const MOCK_ID_TOKEN = 'it';
 const MOCK_REFRESH_TOKEN = 'rt';
 const MOCK_SCOPE = 's';
 const MOCK_TOKEN_TYPE = 'tt';
+const MOCK_TENANT = 'testtenant';
 const TIME_MILLIS_BUFFER = 999999;
 
 describe('RefreshAuthManager', () => {
     const mockAuthSettings =
-        new RefreshAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_GRANT_TYPE, MOCK_REFRESH_TOKEN);
+        new RefreshAuthManagerSettings(
+            MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_GRANT_TYPE, MOCK_REFRESH_TOKEN, MOCK_TENANT);
     let mockAuthProxy: AuthProxy;
     let authManager: RefreshAuthManager;
 
@@ -74,7 +76,8 @@ describe('RefreshAuthManager', () => {
             // Assert
             assert.equal(result, MOCK_ACCESS_TOKEN);
             assert(refreshAccessTokenStub.calledOnce);
-            assert(refreshAccessTokenStub.calledWith(MOCK_CLIENT_ID, MOCK_GRANT_TYPE, MOCK_SCOPE, MOCK_REFRESH_TOKEN));
+            assert(refreshAccessTokenStub.calledWith(
+                MOCK_CLIENT_ID, MOCK_GRANT_TYPE, MOCK_SCOPE, MOCK_REFRESH_TOKEN, MOCK_TENANT));
         });
 
         it('should return a new access token string when existing token is expired.', async () => {
@@ -101,7 +104,8 @@ describe('RefreshAuthManager', () => {
             // Assert
             assert.equal(result, MOCK_ACCESS_TOKEN);
             assert(refreshAccessTokenStub.calledOnce);
-            assert(refreshAccessTokenStub.calledWith(MOCK_CLIENT_ID, MOCK_GRANT_TYPE, MOCK_SCOPE, MOCK_REFRESH_TOKEN));
+            assert(refreshAccessTokenStub.calledWith(
+                MOCK_CLIENT_ID, MOCK_GRANT_TYPE, MOCK_SCOPE, MOCK_REFRESH_TOKEN, MOCK_TENANT));
         });
 
         it('should return an existing access token string when existing token is not expired.', async () => {
@@ -122,7 +126,8 @@ describe('RefreshAuthManager', () => {
         it('should throw SplunkAuthError when clientId is not specified', async () => {
             // Arrange
             authManager = new RefreshAuthManager(
-                new RefreshAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, '', MOCK_GRANT_TYPE, MOCK_REFRESH_TOKEN),
+                new RefreshAuthManagerSettings(
+                    MOCK_HOST, MOCK_SCOPE, '', MOCK_GRANT_TYPE, MOCK_REFRESH_TOKEN, MOCK_TENANT),
                 mockAuthProxy);
             const refreshAccessTokenStub = sandbox.stub(mockAuthProxy, 'refreshAccessToken');
             const expectedErrorMessage = 'clientId is not specified.';
@@ -139,7 +144,8 @@ describe('RefreshAuthManager', () => {
         it('should throw SplunkAuthError when grantType is not specified', async () => {
             // Arrange
             authManager = new RefreshAuthManager(
-                new RefreshAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, '', MOCK_REFRESH_TOKEN),
+                new RefreshAuthManagerSettings(
+                    MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, '', MOCK_REFRESH_TOKEN, MOCK_TENANT),
                 mockAuthProxy);
             const refreshAccessTokenStub = sandbox.stub(mockAuthProxy, 'refreshAccessToken');
             const expectedErrorMessage = 'grantType is not specified.';
@@ -156,7 +162,7 @@ describe('RefreshAuthManager', () => {
         it('should throw SplunkAuthError when refreshToken is not specified', async () => {
             // Arrange
             authManager = new RefreshAuthManager(
-                new RefreshAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_GRANT_TYPE, ''),
+                new RefreshAuthManagerSettings(MOCK_HOST, MOCK_SCOPE, MOCK_CLIENT_ID, MOCK_GRANT_TYPE, '', MOCK_TENANT),
                 mockAuthProxy);
             const refreshAccessTokenStub = sandbox.stub(mockAuthProxy, 'refreshAccessToken');
             const expectedErrorMessage = 'refreshToken is not specified.';

@@ -14,7 +14,7 @@
  * under the License.
  */
 
-import { PKCEOAuthRedirectParams } from '../auth/pkce-auth-manager';
+import { PKCEOAuthRedirectParams, UserState } from '../auth/pkce-auth-manager';
 import {
     ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
     SplunkOAuthError,
@@ -52,7 +52,7 @@ export function validateSearchParameters(searchParameters: URLSearchParams): voi
 
 /**
  * Validate OAuth parameters.
- * @param parameters OAuth Paremeters.
+ * @param parameters OAuth Parameters.
  */
 export function validateOAuthParameters(parameters: PKCEOAuthRedirectParams): void {
     if (!parameters.state) {
@@ -65,5 +65,15 @@ export function validateOAuthParameters(parameters: PKCEOAuthRedirectParams): vo
 
     if (!parameters.codeChallenge) {
         throw new SplunkOAuthError('Unable to retrieve codeChallenge from redirect params storage.');
+    }
+}
+
+/**
+ * Validate the decoded user state parameters.
+ * @param parameters State Parameters
+ */
+export function validateStateParameters(parameters: UserState): void {
+    if (!parameters.tenant) {
+        throw new SplunkOAuthError('Unable to parse the tenant from the state parameter.');
     }
 }

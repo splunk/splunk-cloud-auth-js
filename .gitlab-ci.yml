@@ -1,4 +1,4 @@
 include:
     - project: 'libraries/gitlab-central'
-      ref: 'aa6326d78f7c116de9f1597b1bf44adc68fd07fe'
+      ref: '5fded981b4d3fce164aacd950c71a33f2606aef2'
       file: '/js-cloud-auth/.gitlab-ci.yml'

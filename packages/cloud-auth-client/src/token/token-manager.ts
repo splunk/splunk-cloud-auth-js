@@ -19,10 +19,10 @@ import { AuthProxy } from '@splunkdev/cloud-auth-common';
 import { Logger } from '../common/logger';
 import { generateRandomString } from '../common/util';
 import { AccessToken } from '../model/access-token';
-import { TOKEN_STORAGE_NAME } from '../splunk-auth-client-settings';
+import { GrantType, TOKEN_STORAGE_NAME } from '../splunk-auth-client-settings';
 import { StorageManager } from '../storage/storage-manager';
 
-const DEFAULT_TOKEN_STORAGE_KEY = 'default';
+const GLOBAL_TOKEN_STORAGE_KEY = 'global';
 const TENANT_TOKEN_STORAGE_KEY = 'tenant';
 
 /**
@@ -31,28 +31,33 @@ const TENANT_TOKEN_STORAGE_KEY = 'tenant';
 export class TokenManagerSettings {
     /**
      * TokenManagerSettings constructor.
+     * @param grantType Grant Type.
      * @param authHost Authorize Host.
      * @param autoTokenRenewalBuffer Auto token renewal buffer.
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
      * @param storageName Storage name.
-     * @param tenant Tenant.
      */
     public constructor(
+        grantType: GrantType,
         authHost: string,
         autoTokenRenewalBuffer: number,
         clientId: string,
         redirectUri: string,
         storageName: string = TOKEN_STORAGE_NAME,
-        tenant?: string,
     ) {
+        this.grantType = grantType;
         this.authHost = authHost;
         this.autoTokenRenewalBuffer = autoTokenRenewalBuffer;
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.storageName = storageName === '' ? TOKEN_STORAGE_NAME : storageName;
-        this.tenant = tenant || '';
     }
+
+    /**
+     * Grant Type.
+     */
+    public grantType: GrantType;
 
     /**
      * Authorization Host.
@@ -78,11 +83,6 @@ export class TokenManagerSettings {
      * Storage name.
      */
     public storageName: string;
-
-    /**
-     * Tenant.
-     */
-    public tenant: string;
 }
 
 /**
@@ -110,23 +110,23 @@ export class TokenManager {
 
     /**
      * Puts the access token in storage.
-     * 
-     * Token refresh is not supported for tenant specific access tokens.
      */
     public set(accessToken: AccessToken): void {
-        const tenant = this._settings.tenant;
-        if (tenant) {
-            let tenantTokens;
-            tenantTokens = this._storage.get(TENANT_TOKEN_STORAGE_KEY);
-            if (tenantTokens === undefined) {
-                tenantTokens = {};
+        if (accessToken.tenant) {
+            let tenantScopedTokens;
+            
+            tenantScopedTokens = this._storage.get(TENANT_TOKEN_STORAGE_KEY);
+            if (tenantScopedTokens === undefined) {
+                tenantScopedTokens = {};
             }
-            tenantTokens[tenant] = accessToken;
-            this._storage.set(tenantTokens, TENANT_TOKEN_STORAGE_KEY);
-            return;
-        }
+            
+            tenantScopedTokens[accessToken.tenant] = accessToken;
 
-        this._storage.set(accessToken, DEFAULT_TOKEN_STORAGE_KEY);
+            this._storage.set(tenantScopedTokens, TENANT_TOKEN_STORAGE_KEY);
+        } else {
+            // global access token
+            this._storage.set(accessToken, GLOBAL_TOKEN_STORAGE_KEY);
+        }
 
         if (this._settings.autoTokenRenewalBuffer <= 0) {
             return;
@@ -143,25 +143,27 @@ export class TokenManager {
 
         // set the auto-refresh interval
         this._autoRefreshFunction = setTimeout(() => {
-            this.refreshToken();
+            this.refreshToken(accessToken);
         }, refreshTime);
     }
 
     /**
      * Gets the access token from storage.
      * 
-     * If a tenant is defined and in storage return the tenant access token.
-     * Otherwise return the default access token.
+     * Returns the tenant-scoped access token if the tenant is defined
+     * and available in the session storage.
+     * 
+     * Returns the globally-scoped access token if the tenant token 
      */
-    public get(): AccessToken {
-        const tenant = this._settings.tenant;
-        const defaultToken = this._storage.get(DEFAULT_TOKEN_STORAGE_KEY);
-        // check if tenant is defined and in storage
+    public get(tenant: string | undefined): AccessToken {
+        const globalToken = this._storage.get(GLOBAL_TOKEN_STORAGE_KEY);
+
         if (tenant) {
-            const tenantTokens = this._storage.get(TENANT_TOKEN_STORAGE_KEY);
-            return tenantTokens && tenantTokens[tenant] || defaultToken;
+            const tenantScopedTokens = this._storage.get(TENANT_TOKEN_STORAGE_KEY);
+            return tenantScopedTokens && tenantScopedTokens[tenant] || globalToken;
         }
-        return defaultToken;
+
+        return globalToken;
     }
 
     /**
@@ -174,26 +176,49 @@ export class TokenManager {
     /**
      * Refreshes the token.
      */
-    public async refreshToken(): Promise<void> {
-        this._authProxy.authorizationToken(
-            this._settings.clientId,
-            '',
-            generateRandomString(64),
-            this._settings.redirectUri || window.location.href,
-            'json',
-            'token id_token',
-            'openid email profile',
-            generateRandomString(64)
-        ).then((response: any) => {
-            const accessToken: AccessToken = {
-                accessToken: response.access_token,
-                expiresAt: Number(response.expires_in) + Math.floor(Date.now() / 1000),
-                expiresIn: Number(response.expires_in),
-                tokenType: response.token_type
-            };
-            this.set(accessToken);
-        }).catch((err: any) => {
-            Logger.warn(err);
-        });
+    public async refreshToken(accessToken: AccessToken): Promise<void> {
+        if (this._settings.grantType === GrantType.PKCE) {
+            const tenant = accessToken.tenant || '';
+            this._authProxy.refreshAccessToken(
+                this._settings.clientId,
+                'refresh_token',
+                'openid email profile offline_access',
+                String(accessToken.refreshToken),
+                tenant
+            ).then(response => {
+                const token: AccessToken = {
+                    accessToken: response.access_token,
+                    expiresAt: Number(response.expires_in) + Math.floor(Date.now() / 1000),
+                    expiresIn: Number(response.expires_in),
+                    tokenType: response.token_type,
+                    refreshToken: response.refresh_token,
+                    tenant
+                };
+                this.set(token);
+            }).catch((err: any) => {
+                Logger.warn(err);
+            });
+        } else {
+            this._authProxy.authorizationToken(
+                this._settings.clientId,
+                '',
+                generateRandomString(64),
+                this._settings.redirectUri || window.location.href,
+                'json',
+                'token id_token',
+                'openid email profile',
+                generateRandomString(64)
+            ).then(response  => {
+                const token: AccessToken = {
+                    accessToken: response.access_token,
+                    expiresAt: Number(response.expires_in) + Math.floor(Date.now() / 1000),
+                    expiresIn: Number(response.expires_in),
+                    tokenType: response.token_type
+                };
+                this.set(token);
+            }).catch((err: any) => {
+                Logger.warn(err);
+            });
+        }
     }
 }

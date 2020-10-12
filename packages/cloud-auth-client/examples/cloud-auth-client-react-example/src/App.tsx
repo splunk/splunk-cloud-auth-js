@@ -19,6 +19,8 @@ import {
     SplunkAuthClientSettings,
     GrantType,
     ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
+    TOKEN_STORAGE_NAME,
+    REDIRECT_PARAMS_STORAGE_NAME
 } from '@splunkdev/cloud-auth-client';
 import React, { Component } from 'react';
 import { Config } from './config';
@@ -34,11 +36,13 @@ const authClientSettings = new SplunkAuthClientSettings(
     Config.RESTORE_PATH_AFTER_LOGIN,
     Config.MAX_CLOCK_SKEW,
     Config.QUERY_PARAMS_FOR_LOGIN,
-    Config.AUTO_TOKEN_RENEWAL_BUFFER
+    Config.AUTO_TOKEN_RENEWAL_BUFFER,
+    TOKEN_STORAGE_NAME,
+    REDIRECT_PARAMS_STORAGE_NAME
 );
 
 // Initialize AuthClient
-const authClient = new SplunkAuthClient(authClientSettings);
+const authClient = new SplunkAuthClient(authClientSettings, '');
 
 class App extends Component {
     state = {

@@ -96,6 +96,7 @@ export class PKCEAuthManagerSettings extends AuthManagerSettings {
      * @param redirectUri Redirect Uri.
      * @param username Username.
      * @param password Password.
+     * @param tenant Tenant.
      */
     constructor(
         host: string,
@@ -103,8 +104,9 @@ export class PKCEAuthManagerSettings extends AuthManagerSettings {
         clientId: string,
         redirectUri: string,
         username: string,
-        password: string) {
-        super(host, scope, clientId);
+        password: string,
+        tenant: string) {
+        super(host, scope, clientId, tenant);
 
         this.redirectUri = redirectUri;
         this.username = username;
@@ -183,7 +185,8 @@ export class PKCEAuthManager extends BaseAuthManager<PKCEAuthManagerSettings> im
             this.authSettings.clientId,
             authCode,
             codeVerifier,
-            this.authSettings.redirectUri);
+            this.authSettings.redirectUri,
+            this.authSettings.tenant);
         this.authContext.tokenExpiration =
             new Date().getTime() + accessTokenResponse.expires_in * MILLISECONDS_IN_SECOND;
         this.authContext.tokenType = accessTokenResponse.token_type;

@@ -49,8 +49,9 @@ export class SplunkAuthClient implements SdkAuthManager {
     /**
      * AuthClient constructor.
      * @param settings AuthClientSettings.
+     * @param tenant Tenant.
      */
-    public constructor(settings: SplunkAuthClientSettings) {
+    public constructor(settings: SplunkAuthClientSettings, tenant = '') {
         if (!Object.values(GrantType).some((value) => value === settings.grantType)) {
             throw new SplunkAuthClientError(
                 `Missing valid value for required configuration option "grantType". ` +
@@ -62,23 +63,21 @@ export class SplunkAuthClient implements SdkAuthManager {
             throw new SplunkAuthClientError('Missing required configuration option "clientId".');
         }
 
+        this._tenant = tenant;
+
         this._settings = settings;
         this._settings.onRestorePath = this._settings.onRestorePath
             ? this._settings.onRestorePath
             : SplunkAuthClient.defaultRestorePath;
 
-        this._settings.tenant = this._settings.tenant
-            ? this._settings.tenant
-            : SplunkAuthClient.getTenantQueryForLogin() || '';
-
         this._tokenManager = new TokenManager(
             new TokenManagerSettings(
+                this._settings.grantType,
                 this._settings.authHost,
                 this._settings.autoTokenRenewalBuffer,
                 this._settings.clientId,
                 this._settings.redirectUri,
-                this._settings.tokenStorageName,
-                this._settings.tenant
+                this._settings.tokenStorageName
             )
         );
         this._authManager = AuthManagerFactory.get(
@@ -86,6 +85,7 @@ export class SplunkAuthClient implements SdkAuthManager {
             this._settings.authHost,
             this._settings.clientId,
             this._settings.redirectUri,
+            this._tenant,
             this._settings.redirectParamsStorageName
         );
 
@@ -103,6 +103,8 @@ export class SplunkAuthClient implements SdkAuthManager {
     private _hasRequestedToken = false;
 
     private _redirectInProgress = false;
+
+    private _tenant: string;
 
     /**
      * Gets the access token string.
@@ -127,12 +129,12 @@ export class SplunkAuthClient implements SdkAuthManager {
     public async getAccessTokenContext(): Promise<AccessToken | undefined> {
         try {
             if (this.isAuthenticated()) {
-                return this._tokenManager.get();
+                return this._tokenManager.get(this._tenant);
             }
 
             const token = await this.requestToken();
             this._tokenManager.set(token);
-            return this._tokenManager.get();
+            return this._tokenManager.get(token.tenant);
         } catch (e) {
             Logger.warn(e.toString());
 
@@ -181,7 +183,7 @@ export class SplunkAuthClient implements SdkAuthManager {
      * and comparing against the expiration time.
      */
     public isAuthenticated() {
-        const accessToken = this._tokenManager.get();
+        const accessToken = this._tokenManager.get(this._tenant);
         return (
             accessToken &&
             get(accessToken, 'expiresAt') + this._settings.maxClockSkew >
@@ -229,14 +231,6 @@ export class SplunkAuthClient implements SdkAuthManager {
             this._redirectInProgress = true;
             window.location.href = getTosUrl.href;
         }
-    }
-
-    /**
-     * Get the tenant from the url params for login.
-     */
-    private static getTenantQueryForLogin(): string | undefined {
-        const urlQueryParams = new URLSearchParams(window.location.search);
-        return urlQueryParams.get('tenant')?.toString();
     }
 
     /**

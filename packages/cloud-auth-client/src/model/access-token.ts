@@ -47,4 +47,9 @@ export interface AccessToken {
      * Refresh token string.
      */
     refreshToken?: string;
+
+    /**
+     * Tenant.
+     */
+    tenant?: string;
 }

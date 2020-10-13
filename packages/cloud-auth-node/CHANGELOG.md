@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.3...@splunkdev/cloud-auth-node@2.0.0) (2020-10-12)
+
+### BREAKING CHANGES
+
+* **cloud-auth-node:** Introduce tenant parameter in constructor of each auth manager in the cloud-auth-node to retrieve tenant-scoped access token. ([d75ebcb0](https://github.com/splunk/splunk-cloud-auth-js/commit/d75ebcb056e7d323d9a841c15a086cc0f5a82c30))
+
+
+
+
+
 ## [1.0.3](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-node@1.0.2...@splunkdev/cloud-auth-node@1.0.3) (2020-06-08)
 
 **Note:** Version bump only for package @splunkdev/cloud-auth-node

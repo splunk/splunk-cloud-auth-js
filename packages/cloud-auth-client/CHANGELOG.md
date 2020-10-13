@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.3.1...@splunkdev/cloud-auth-client@3.0.0) (2020-10-12)
+
+
+### Features
+
+* **cloud-auth-client:** Support tenant-scoped access tokens in the JS Cloud Auth Library ([d75ebcb0](https://github.com/splunk/splunk-cloud-auth-js/commit/d75ebcb056e7d323d9a841c15a086cc0f5a82c30))
+  * The generated auth and tos URLs in the pkce-auth-manager will additionally pass an encode_state=1 query parameter as well as the tenant and user email address is those parameters are known.
+  * The incoming state parameter from the authorization request will be expected to be encoded with the user login information and in the pkce-auth-manager before requesting for an access token the client will decode the state parameter to get that information.
+  * A new session storage user-params-storage will be created to store the user email address.
+  * Enable refresh token logic for PKCE authentication flow.
+
+
+### BREAKING CHANGES
+
+* **cloud-auth-client:** The tenant parameter has moved from being initialized in the SplunkAuthClientSettings configuration to the SplunkAuthClient constructor.
+
+
+
+
+
 ## [2.3.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@2.3.0...@splunkdev/cloud-auth-client@2.3.1) (2020-07-28)
 
 

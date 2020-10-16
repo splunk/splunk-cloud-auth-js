@@ -410,7 +410,8 @@ export class AuthProxy {
             {
                 headers,
                 body: formUrlEncodedBody,
-                method: 'POST'
+                method: 'POST',
+                credentials: 'include'
             })
             .then(response => response.json())
             .then(json => {

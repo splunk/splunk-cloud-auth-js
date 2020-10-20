@@ -1,6 +1,6 @@
 {
   "name": "@splunkdev/cloud-auth-node",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Splunk Cloud Node Authentication Library for Node.js applications",
   "author": "Splunk, Inc.",
   "license": "Apache-2.0",
@@ -93,7 +93,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "@splunkdev/cloud-auth-common": "^2.0.0",
+    "@splunkdev/cloud-auth-common": "^2.1.0",
     "node-fetch": "^2.6.0"
   },
   "nyc": {

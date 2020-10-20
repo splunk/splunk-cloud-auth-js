@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-common@2.0.0...@splunkdev/cloud-auth-common@2.1.0) (2020-10-20)
+
+
+### Features
+
+* **cloud-auth-common:** send cookies on token endpoint for input free SSO ([1115391](https://github.com/splunk/splunk-cloud-auth-js/commit/1115391f34c0fccf07ff1421a8ee31a130348e20))
+
+
+
+
+
 # [2.0.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-common@1.1.0...@splunkdev/cloud-auth-common@2.0.0) (2020-10-12)
 
 ### BREAKING CHANGES

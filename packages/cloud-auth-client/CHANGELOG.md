@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.0.1...@splunkdev/cloud-auth-client@3.1.0) (2020-12-10)
+
+
+### Features
+
+* **cloud-auth-client:** introduce enableTenantScopedTokens settings parameter to enable/disable returning tenant-scoped access tokens ([5564f5d](https://github.com/splunk/splunk-cloud-auth-js/commit/5564f5d9daae4fd22cbf37a466923aa7a835674f))
+
+
+
+
+
 ## [3.0.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.0.0...@splunkdev/cloud-auth-client@3.0.1) (2020-10-20)
 
 **Note:** Version bump only for package @splunkdev/cloud-auth-client

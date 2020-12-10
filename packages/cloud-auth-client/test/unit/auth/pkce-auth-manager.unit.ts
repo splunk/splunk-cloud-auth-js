@@ -25,6 +25,7 @@ const EXPIRES_IN = 1000;
 const TOKEN_TYPE = 'tokentype';
 const SCOPES = 'scope0 scope1';
 const REFRESH_TOKEN = 'refreshtoken';
+const DEFAULT_ENABLE_TENANT_SCOPED_TOKENS = true;
 
 let mockStorageGet: jest.Mock;
 let mockStorageSet: jest.Mock;
@@ -102,14 +103,15 @@ jest.mock('@splunkdev/cloud-auth-common', () => ({
 describe('PKCEAuthManager', () => {
     let pkceAuthManager: PKCEAuthManager;
 
-    function getPKCEAuthManager(tenant?: string): PKCEAuthManager {
+    function getPKCEAuthManager(tenant?: string, enableTenantScopedTokens: boolean = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS): PKCEAuthManager {
         return new PKCEAuthManager(
             new PKCEAuthManagerSettings(
                 AUTH_HOST,
                 CLIENT_ID,
                 REDIRECT_URI,
                 tenant,
-                REDIRECT_PARAMS_STORAGE_NAME
+                REDIRECT_PARAMS_STORAGE_NAME,
+                enableTenantScopedTokens
             )
         );
     }
@@ -434,6 +436,95 @@ describe('PKCEAuthManager', () => {
                     done();
                 });
 
+        });
+
+        it('returns globally scoped AccessToken when enableTenantScopedTokens flag is set to false', async (done) => {
+            // Arrange
+            const urlMock = `https://url.com/?code=${CODE}&state=${STATE}&accept_tos=1`;
+
+            mockStorageGet = jest.fn(() => {
+                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+            });
+
+            mockAuthProxyAccessToken = jest.fn((): Promise<AccessTokenResponse> => {
+                return Promise.resolve({
+                    access_token: ACCESS_TOKEN,
+                    expires_in: EXPIRES_IN,
+                    id_token: 'idtoken',
+                    refresh_token: REFRESH_TOKEN,
+                    token_type: TOKEN_TYPE,
+                    scope: SCOPES
+                });
+            });
+
+            const enableTenantScopedTokens = false;
+            pkceAuthManager = getPKCEAuthManager('', enableTenantScopedTokens);
+
+            // Act/Assert
+            return pkceAuthManager.getAccessToken(urlMock)
+                .then((accessToken: AccessToken) => {
+                    expect(accessToken.accessToken).toEqual(ACCESS_TOKEN);
+                    expect(accessToken.expiresAt).toBeLessThanOrEqual(EXPIRES_IN + Math.floor(Date.now() / 1000));
+                    expect(accessToken.expiresIn).toEqual(EXPIRES_IN);
+                    expect(accessToken.tokenType).toEqual(TOKEN_TYPE);
+                    expect(accessToken.scopes).toEqual(SCOPES.split(' '));
+                    expect(accessToken.refreshToken).toEqual(REFRESH_TOKEN);
+                    expect(accessToken.tenant).toEqual('');
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
+                    expect(mockStorageDelete).toBeCalledTimes(2);
+                    expect(mockStorageSet).toBeCalledTimes(0);
+                    done();
+                })
+                .catch((e) => {
+                    done.fail(e);
+                });
+        });
+
+        it('decode state, stores email and inviteID and returns globally scoped AccessToken when enableTenantScopedTokens flag is set to false', async (done) => {
+            // Arrange
+            const encodedState = `{"accept_tos":true,"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"inviteme","tenant":"testtenant"}`
+            const urlMock = `https://url.com/?code=${CODE}&state=${encodedState}`;
+
+            mockStorageGet = jest.fn(() => {
+                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+            });
+
+            mockAuthProxyAccessToken = jest.fn((): Promise<AccessTokenResponse> => {
+                return Promise.resolve({
+                    access_token: ACCESS_TOKEN,
+                    expires_in: EXPIRES_IN,
+                    id_token: 'idtoken',
+                    refresh_token: REFRESH_TOKEN,
+                    token_type: TOKEN_TYPE,
+                    scope: SCOPES
+                });
+            });
+
+            const enableTenantScopedTokens = false;
+            pkceAuthManager = getPKCEAuthManager('', enableTenantScopedTokens);
+
+            // Act/Assert
+            return pkceAuthManager.getAccessToken(urlMock)
+                .then((accessToken: AccessToken) => {
+                    expect(accessToken.accessToken).toEqual(ACCESS_TOKEN);
+                    expect(accessToken.expiresAt).toBeLessThanOrEqual(EXPIRES_IN + Math.floor(Date.now() / 1000));
+                    expect(accessToken.expiresIn).toEqual(EXPIRES_IN);
+                    expect(accessToken.tokenType).toEqual(TOKEN_TYPE);
+                    expect(accessToken.scopes).toEqual(SCOPES.split(' '));
+                    expect(accessToken.refreshToken).toEqual(REFRESH_TOKEN);
+                    expect(accessToken.tenant).toEqual('');
+                    expect(mockStorageSet).toBeCalledWith('testuser@splunk.com', 'email');
+                    expect(mockStorageSet).toBeCalledWith('inviteme', 'inviteID');
+                    expect(mockStorageSet).toBeCalledTimes(2);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
+                    expect(mockStorageDelete).toBeCalledTimes(2);
+                    done();
+                })
+                .catch((e) => {
+                    done.fail(e);
+                });
         });
 
         it('returns system level tenant-scoped AccessToken', async (done) => {

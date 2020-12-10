@@ -31,6 +31,7 @@ import {
 } from '../error/splunk-oauth-error';
 import { AccessToken } from '../model/access-token';
 import {
+    DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
     REDIRECT_OAUTH_PARAMS_NAME,
     REDIRECT_PARAMS_STORAGE_NAME,
     REDIRECT_PATH_PARAMS_NAME,
@@ -60,13 +61,15 @@ export class PKCEAuthManagerSettings {
         clientId: string,
         redirectUri: string,
         tenant: string,
-        redirectParamsStorageName = REDIRECT_PARAMS_STORAGE_NAME
+        redirectParamsStorageName = REDIRECT_PARAMS_STORAGE_NAME,
+        enableTenantScopedTokens = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
     ) {
         this.authHost = authHost;
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.tenant = tenant;
         this.redirectParamsStorageName = redirectParamsStorageName;
+        this.enableTenantScopedTokens = enableTenantScopedTokens;
     }
 
     /**
@@ -93,6 +96,11 @@ export class PKCEAuthManagerSettings {
      * Tenant.
      */
     public tenant: string;
+
+    /**
+     * Return tenant scoped access tokens if set to true
+     */
+    public enableTenantScopedTokens: boolean;
 }
 
 /**
@@ -181,7 +189,12 @@ export class PKCEAuthManager implements AuthManager {
         // get the user state (tenant, email, inviteID, accept_tos) from decoding the state parameter
         const userState = this.getUserState(String(searchParameters.get('state')));
         
-        this._settings.tenant = userState.tenant;
+        if (this._settings.enableTenantScopedTokens) {
+            this._settings.tenant = userState.tenant;
+        } else {
+            // set tenant to be empty to return global scoped access tokens
+            this._settings.tenant = '';
+        }
 
         // user state will return an email if user is coming from
         // the sso login flow, store the email in session storage

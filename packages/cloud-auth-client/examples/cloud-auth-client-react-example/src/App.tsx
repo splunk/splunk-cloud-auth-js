@@ -38,7 +38,8 @@ const authClientSettings = new SplunkAuthClientSettings(
     Config.QUERY_PARAMS_FOR_LOGIN,
     Config.AUTO_TOKEN_RENEWAL_BUFFER,
     TOKEN_STORAGE_NAME,
-    REDIRECT_PARAMS_STORAGE_NAME
+    REDIRECT_PARAMS_STORAGE_NAME,
+    Config.ENABLE_TENANT_SCOPED_TOKENS
 );
 
 // Initialize AuthClient

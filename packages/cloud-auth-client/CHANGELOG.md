@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.1.0...@splunkdev/cloud-auth-client@3.2.0) (2021-02-04)
+
+
+### Features
+
+* Introduce `inviteTenant` parameter & pass `state` param to get token call ([e610552](https://github.com/splunk/splunk-cloud-auth-js/commit/e6105523a98c5e5c1b6e027ef657bb87dbd2999e))
+
+
+
+
+
 # [3.1.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.0.1...@splunkdev/cloud-auth-client@3.1.0) (2020-12-10)
 
 

@@ -118,6 +118,7 @@ export interface PKCEOAuthRedirectParams {
 export interface UserParams {
     email: string;
     inviteID?: string;
+    inviteTenant?: string;
 }
 
 /**
@@ -127,6 +128,7 @@ export interface UserState {
     tenant: string;
     email?: string;
     inviteID?: string;
+    inviteTenant?: string;
     accept_tos?: string;
 }
 
@@ -186,8 +188,9 @@ export class PKCEAuthManager implements AuthManager {
 
         clearWindowLocationFragments();
 
-        // get the user state (tenant, email, inviteID, accept_tos) from decoding the state parameter
-        const userState = this.getUserState(String(searchParameters.get('state')));
+        // get the user state (tenant, email, inviteID, inviteTenant, accept_tos) from decoding the state parameter
+        const state = String(searchParameters.get('state'));
+        const userState = this.getUserState(state);
         
         if (this._settings.enableTenantScopedTokens) {
             this._settings.tenant = userState.tenant;
@@ -202,11 +205,15 @@ export class PKCEAuthManager implements AuthManager {
             this._userParamsStorage.set(userState.email, 'email');
         }
 
-        // user state will return an inviteID if user is coming from
-        // the invite flow via sso, store the inviteID to preserve it
+        // user state will return an inviteID and inviteTenant
+        // if user is coming from the invite flow via sso.
+        // store the inviteID and inviteTenant to preserve it
         // in case the user needs to sign their TOS
         if (userState.inviteID) {
             this._userParamsStorage.set(userState.inviteID, 'inviteID');
+        }
+        if (userState.inviteTenant) {
+            this._userParamsStorage.set(userState.inviteTenant, 'inviteTenant');
         }
 
         const acceptTos = userState.accept_tos ? userState.accept_tos : searchParameters.get('accept_tos');
@@ -221,6 +228,7 @@ export class PKCEAuthManager implements AuthManager {
                 storedOAuthParameters.codeVerifier,
                 this._settings.redirectUri,
                 this._settings.tenant,
+                state,
                 acceptTos?.toString());
 
             // throws an error if refresh token was not returned as part of the access token response
@@ -229,9 +237,10 @@ export class PKCEAuthManager implements AuthManager {
             }
 
             // after successfully returning the access token clean up the
-            // redirect oauth params and the invite id user params in storage
+            // redirect oauth params and the inviteID and inviteTenant user params in storage
             this.deleteRedirectOAuthParameters();
             this.deleteStoredUserParameters('inviteID');
+            this.deleteStoredUserParameters('inviteTenant');
         } catch (e) {
             if (e.message.includes(ERROR_CODE_UNSIGNED_TOS)) {
                 throw new SplunkOAuthError(
@@ -241,6 +250,7 @@ export class PKCEAuthManager implements AuthManager {
             }
             this.deleteRedirectOAuthParameters();
             this.deleteStoredUserParameters('inviteID');
+            this.deleteStoredUserParameters('inviteTenant');
             throw new SplunkOAuthError(`${accessTokenError} ${e.message}`);
         }
 
@@ -322,7 +332,15 @@ export class PKCEAuthManager implements AuthManager {
         const storedUserParameters = this.getStoredUserParameters();
         const email = storedUserParameters && storedUserParameters.email || undefined;
         const inviteID = storedUserParameters && storedUserParameters.inviteID || undefined;
-        const tenant = (this._settings.tenant !== 'system') && this._settings.tenant || undefined;
+
+        // when authenticating through the invite flow determined by the
+        // presence of the inviteID, set the tenant to the invited tenant
+        let tenant;
+        if (inviteID) {
+            tenant = storedUserParameters && storedUserParameters.inviteTenant || undefined;
+        } else {
+            tenant = (this._settings.tenant !== 'system') && this._settings.tenant || undefined;
+        }
 
         const oauthQueryParams = new Map([
             ['client_id', this._settings.clientId],

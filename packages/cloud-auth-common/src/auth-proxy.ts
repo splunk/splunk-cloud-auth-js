@@ -108,6 +108,7 @@ export class AuthProxy {
      * @param codeVerifier Code verifier.
      * @param redirectUri Redirect URI.
      * @param tenant Tenant.
+     * @param state State.
      * @param acceptTos Accepted TOS.
      */
     public async accessToken(
@@ -116,6 +117,7 @@ export class AuthProxy {
         codeVerifier: string,
         redirectUri: string,
         tenant: string,
+        state?: string,
         acceptTos?: string): Promise<AccessTokenResponse> {
         const body: Map<string, any> = new Map([
             ['grant_type', 'authorization_code'],
@@ -124,6 +126,9 @@ export class AuthProxy {
             ['code_verifier', codeVerifier],
             ['redirect_uri', redirectUri]
         ]);
+        if (state) {
+            body.set('state', state);
+        }
         if (acceptTos) {
             body.set('accept_tos', acceptTos);
         }

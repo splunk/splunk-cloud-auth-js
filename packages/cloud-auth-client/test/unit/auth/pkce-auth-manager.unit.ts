@@ -13,6 +13,7 @@ const REDIRECT_PARAMS_STORAGE_NAME = 'some-storage';
 const REDIRECT_PATH_PARAMS_NAME = 'redirect-path';
 const REDIRECT_OAUTH_PARAMS_NAME = 'redirect-oauth-params';
 const USER_PARAM_INVITE_ID_KEY = 'inviteID';
+const USER_PARAM_INVITE_TENANT_KEY = 'inviteTenant';
 const CODE = 'iamcode';
 const CLIENT_STATE = 'iamclientstate';
 const STATE = '{"client_state":"iamclientstate","tenant":"system"}';
@@ -268,9 +269,8 @@ describe('PKCEAuthManager', () => {
                 });
         });
 
-        it('throws SplunkAuthClientError when unable to delete user parameters inviteID key', async (done) => {
+        it('throws SplunkAuthClientError when unable to delete user parameters inviteID and inviteTenant key', async (done) => {
             // Arrange
-            // const state = `{"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"1234"}`
             const urlMock = `https://url.com/?code=${CODE}&state=${STATE}`;
 
             mockStorageGet = jest.fn(() => {
@@ -291,6 +291,11 @@ describe('PKCEAuthManager', () => {
                 .mockImplementationOnce(
                     () => {
                         return 'successfully_deleted_redirect_params'; 
+                    }
+                )
+                .mockImplementationOnce(
+                    () => {
+                        return 'successfully_deleted_user_params'; 
                     }
                 )
                 .mockImplementationOnce(
@@ -320,14 +325,15 @@ describe('PKCEAuthManager', () => {
                 .catch(e => {
                     expect(e).toEqual(
                         new SplunkAuthClientError(
-                            `Failed to remove the inviteID data from the user storage. ${ERROR_MESSAGE}`));
+                            `Failed to remove the inviteTenant data from the user storage. ${ERROR_MESSAGE}`));
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageGet).toBeCalledTimes(1);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(3, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(4, USER_PARAM_INVITE_ID_KEY);
-                    expect(mockStorageDelete).toBeCalledTimes(4);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(5, USER_PARAM_INVITE_TENANT_KEY);
+                    expect(mockStorageDelete).toBeCalledTimes(5);
                     done();
                 });
         });
@@ -359,7 +365,8 @@ describe('PKCEAuthManager', () => {
                     expect(mockStorageGet).toBeCalledTimes(1);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
-                    expect(mockStorageDelete).toBeCalledTimes(2);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
+                    expect(mockStorageDelete).toBeCalledTimes(3);
                     done();
                 });
         });
@@ -432,7 +439,7 @@ describe('PKCEAuthManager', () => {
                     );
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageGet).toBeCalledTimes(1);
-                    expect(mockStorageDelete).toBeCalledTimes(2);
+                    expect(mockStorageDelete).toBeCalledTimes(3);
                     done();
                 });
 
@@ -472,7 +479,8 @@ describe('PKCEAuthManager', () => {
                     expect(accessToken.tenant).toEqual('');
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
-                    expect(mockStorageDelete).toBeCalledTimes(2);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
+                    expect(mockStorageDelete).toBeCalledTimes(3);
                     expect(mockStorageSet).toBeCalledTimes(0);
                     done();
                 })
@@ -481,9 +489,9 @@ describe('PKCEAuthManager', () => {
                 });
         });
 
-        it('decode state, stores email and inviteID and returns globally scoped AccessToken when enableTenantScopedTokens flag is set to false', async (done) => {
+        it('decode state, stores email, inviteID and inviteTenant and returns globally scoped AccessToken when enableTenantScopedTokens flag is set to false', async (done) => {
             // Arrange
-            const encodedState = `{"accept_tos":true,"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"inviteme","tenant":"testtenant"}`
+            const encodedState = `{"accept_tos":true,"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"inviteme","inviteTenant":"testtenant","tenant":"system"}`
             const urlMock = `https://url.com/?code=${CODE}&state=${encodedState}`;
 
             mockStorageGet = jest.fn(() => {
@@ -516,10 +524,12 @@ describe('PKCEAuthManager', () => {
                     expect(accessToken.tenant).toEqual('');
                     expect(mockStorageSet).toBeCalledWith('testuser@splunk.com', 'email');
                     expect(mockStorageSet).toBeCalledWith('inviteme', 'inviteID');
-                    expect(mockStorageSet).toBeCalledTimes(2);
+                    expect(mockStorageSet).toBeCalledWith('testtenant', 'inviteTenant');
+                    expect(mockStorageSet).toBeCalledTimes(3);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
-                    expect(mockStorageDelete).toBeCalledTimes(2);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
+                    expect(mockStorageDelete).toBeCalledTimes(3);
                     done();
                 })
                 .catch((e) => {
@@ -560,7 +570,8 @@ describe('PKCEAuthManager', () => {
                     expect(accessToken.tenant).toEqual('system');
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
-                    expect(mockStorageDelete).toBeCalledTimes(2);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
+                    expect(mockStorageDelete).toBeCalledTimes(3);
                     expect(mockStorageSet).toBeCalledTimes(0);
                     done();
                 })
@@ -569,9 +580,9 @@ describe('PKCEAuthManager', () => {
                 });
         });
 
-        it('decode state, stores email and inviteID and returns tenant-scoped AccessToken', async (done) => {
+        it('decode state, stores email, inviteID and inviteTenant and returns tenant-scoped AccessToken', async (done) => {
             // Arrange
-            const encodedState = `{"accept_tos":true,"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"inviteme","tenant":"testtenant"}`
+            const encodedState = `{"accept_tos":true,"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"inviteme","inviteTenant":"testtenant","tenant":"testtenant"}`
             const urlMock = `https://url.com/?code=${CODE}&state=${encodedState}`;
 
             mockStorageGet = jest.fn(() => {
@@ -603,10 +614,12 @@ describe('PKCEAuthManager', () => {
                     expect(accessToken.tenant).toEqual('testtenant');
                     expect(mockStorageSet).toBeCalledWith('testuser@splunk.com', 'email');
                     expect(mockStorageSet).toBeCalledWith('inviteme', 'inviteID');
-                    expect(mockStorageSet).toBeCalledTimes(2);
+                    expect(mockStorageSet).toBeCalledWith('testtenant', 'inviteTenant');
+                    expect(mockStorageSet).toBeCalledTimes(3);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
-                    expect(mockStorageDelete).toBeCalledTimes(2);
+                    expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
+                    expect(mockStorageDelete).toBeCalledTimes(3);
                     done();
                 })
                 .catch((e) => {
@@ -762,12 +775,78 @@ describe('PKCEAuthManager', () => {
             expect(mockStorageGet).toBeCalledTimes(2);
         });
 
-        it('with email, inviteID and tenant generates the tos url', () => {
+        it('with email, inviteID and inviteTenant and tenant generates the tos url', () => {
             // Arrange
             mockStorageGet = jest.fn(() => {
                 return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
             });
 
+
+            mockStorageGet = jest.fn()
+                .mockImplementationOnce(
+                    () => {
+                        return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+                    }
+                )
+                .mockImplementationOnce(
+                    () => {
+                        return {"email":"testuser@splunk.com","inviteID":"inviteme","inviteTenant":"invitedtesttenant"}
+                    }
+                );
+
+            pkceAuthManager = getPKCEAuthManager('testtenant');
+
+            // Act
+            const result = pkceAuthManager.generateTosUrl();
+
+            // Assert
+            expect(result).not.toBeNull();
+            expect(result.href)
+                .toEqual('https://host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&' +
+                    'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
+                    'state=iamclientstate&scope=openid%20email%20profile%20offline_access&' +
+                    'encode_state=1&tenant=invitedtesttenant&email=testuser%40splunk.com&inviteID=inviteme');
+            expect(mockStorageGet).toBeCalledTimes(2);
+        });
+
+        it('with email and tenant generates the tos url', () => {
+            // Arrange
+            mockStorageGet = jest.fn(() => {
+                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+            });
+
+            mockStorageGet = jest.fn()
+                .mockImplementationOnce(
+                    () => {
+                        return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+                    }
+                )
+                .mockImplementationOnce(
+                    () => {
+                        return {"email":"testuser@splunk.com"}
+                    }
+                );
+
+            pkceAuthManager = getPKCEAuthManager('testtenant');
+
+            // Act
+            const result = pkceAuthManager.generateTosUrl();
+
+            // Assert
+            expect(result).not.toBeNull();
+            expect(result.href)
+                .toEqual('https://host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&' +
+                    'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
+                    'state=iamclientstate&scope=openid%20email%20profile%20offline_access&' +
+                    'encode_state=1&tenant=testtenant&email=testuser%40splunk.com');
+            expect(mockStorageGet).toBeCalledTimes(2);
+        });
+
+        it('with email and inviteID but no inviteTenant generates the tos url', () => {
+            // Arrange
+            mockStorageGet = jest.fn(() => {
+                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+            });
 
             mockStorageGet = jest.fn()
                 .mockImplementationOnce(
@@ -792,7 +871,7 @@ describe('PKCEAuthManager', () => {
                 .toEqual('https://host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&' +
                     'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
                     'state=iamclientstate&scope=openid%20email%20profile%20offline_access&' +
-                    'encode_state=1&tenant=testtenant&email=testuser%40splunk.com&inviteID=inviteme');
+                    'encode_state=1&email=testuser%40splunk.com&inviteID=inviteme');
             expect(mockStorageGet).toBeCalledTimes(2);
         });
     });

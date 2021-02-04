@@ -32,6 +32,7 @@ const MOCK_REFRESH_TOKEN = 'rt';
 const MOCK_SCOPE = 's';
 const MOCK_TOKEN_TYPE = 'tt';
 const MOCK_ACCEPT_TOS = '1';
+const MOCK_STATE = '{"client_state":"iamclientstate","tenant":"system"}';
 const MOCK_TENANT = 'testtenant';
 const PATH_AUTHN = '/authn';
 const PATH_AUTHORIZATION = '/authorize';
@@ -133,7 +134,7 @@ describe('AuthProxy', () => {
             assert.equal(result.token_type, MOCK_TOKEN_TYPE);
         });
 
-        it('should return a successful AccessTokenResponse promise with accept_tos parameter', async () => {
+        it('should return a successful AccessTokenResponse promise with state and accept_tos parameter', async () => {
             // Arrange
             // TODO: figure out how to assert the body.
             fetchMock.post(
@@ -163,6 +164,7 @@ describe('AuthProxy', () => {
                 CODE_VERIFIER,
                 REDIRECT_URI,
                 MOCK_TENANT,
+                MOCK_STATE,
                 MOCK_ACCEPT_TOS
             );
 

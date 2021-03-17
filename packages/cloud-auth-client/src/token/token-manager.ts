@@ -17,9 +17,13 @@
 import { AuthProxy } from '@splunkdev/cloud-auth-common';
 
 import { Logger } from '../common/logger';
-import { generateRandomString } from '../common/util';
+import { generateRandomString, generateTenantBasedAuthHost } from '../common/util';
 import { AccessToken } from '../model/access-token';
-import { GrantType, TOKEN_STORAGE_NAME } from '../splunk-auth-client-settings';
+import {
+    DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
+    GrantType,
+    TOKEN_STORAGE_NAME
+} from '../splunk-auth-client-settings';
 import { StorageManager } from '../storage/storage-manager';
 
 const GLOBAL_TOKEN_STORAGE_KEY = 'global';
@@ -45,6 +49,7 @@ export class TokenManagerSettings {
         clientId: string,
         redirectUri: string,
         storageName: string = TOKEN_STORAGE_NAME,
+        enableMultiRegionSupport = DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
     ) {
         this.grantType = grantType;
         this.authHost = authHost;
@@ -52,6 +57,7 @@ export class TokenManagerSettings {
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.storageName = storageName === '' ? TOKEN_STORAGE_NAME : storageName;
+        this.enableMultiRegionSupport = enableMultiRegionSupport;
     }
 
     /**
@@ -83,6 +89,11 @@ export class TokenManagerSettings {
      * Storage name.
      */
     public storageName: string;
+
+    /**
+     * Update auth host url to be tenant based if set to true
+     */
+    public enableMultiRegionSupport: boolean;
 }
 
 /**
@@ -179,6 +190,11 @@ export class TokenManager {
     public async refreshToken(accessToken: AccessToken): Promise<void> {
         if (this._settings.grantType === GrantType.PKCE) {
             const tenant = accessToken.tenant || '';
+
+            if (this._settings.enableMultiRegionSupport) {
+                this._authProxy = new AuthProxy(generateTenantBasedAuthHost(this._authProxy.host, tenant));
+            }
+
             this._authProxy.refreshAccessToken(
                 this._settings.clientId,
                 'refresh_token',

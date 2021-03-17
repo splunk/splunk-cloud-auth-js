@@ -27,6 +27,7 @@ const TOKEN_TYPE = 'tokentype';
 const SCOPES = 'scope0 scope1';
 const REFRESH_TOKEN = 'refreshtoken';
 const DEFAULT_ENABLE_TENANT_SCOPED_TOKENS = true;
+const DEFAULT_ENABLE_MULTI_REGION_SUPPORT = false;
 
 let mockStorageGet: jest.Mock;
 let mockStorageSet: jest.Mock;
@@ -48,6 +49,7 @@ jest.mock('../../../src/storage/storage-manager', () => {
 let mockCodeVerifier: string;
 let mockEncodedCodeVerifier: string;
 let mockCodeChallenge: string;
+let mockAuthHost: string;
 jest.mock('../../../src/common/util', () => {
     return {
         clearWindowLocationFragments: jest.fn(),
@@ -60,6 +62,9 @@ jest.mock('../../../src/common/util', () => {
         }),
         createCodeChallenge: jest.fn().mockImplementation(() => {
             return mockCodeChallenge;
+        }),
+        generateTenantBasedAuthHost: jest.fn().mockImplementation(() => {
+            return mockAuthHost;
         }),
     };
 });
@@ -104,7 +109,7 @@ jest.mock('@splunkdev/cloud-auth-common', () => ({
 describe('PKCEAuthManager', () => {
     let pkceAuthManager: PKCEAuthManager;
 
-    function getPKCEAuthManager(tenant?: string, enableTenantScopedTokens: boolean = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS): PKCEAuthManager {
+    function getPKCEAuthManager(tenant?: string, enableTenantScopedTokens: boolean = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS, enableMultiRegionSupport: boolean = DEFAULT_ENABLE_MULTI_REGION_SUPPORT): PKCEAuthManager {
         return new PKCEAuthManager(
             new PKCEAuthManagerSettings(
                 AUTH_HOST,
@@ -112,7 +117,8 @@ describe('PKCEAuthManager', () => {
                 REDIRECT_URI,
                 tenant,
                 REDIRECT_PARAMS_STORAGE_NAME,
-                enableTenantScopedTokens
+                enableTenantScopedTokens,
+                enableMultiRegionSupport
             )
         );
     }
@@ -725,6 +731,42 @@ describe('PKCEAuthManager', () => {
             expect(mockStorageSet).toBeCalledTimes(1);
         });
 
+        it('with email and tenant generates tenant based auth URL', () => {
+            // Arrange
+            mockCodeVerifier = '123';
+            mockEncodedCodeVerifier = 'encoded123';
+            mockCodeChallenge = 'abc';
+
+            mockStorageGet = jest.fn(() => {
+                return {"email":"testuser@splunk.com"};
+            });
+
+            const testTenant = 'testtenant';
+            mockAuthHost = `https://${testTenant}.host.com`;
+
+            pkceAuthManager = getPKCEAuthManager(testTenant, true, true);
+            // Act
+            const result = pkceAuthManager.generateAuthUrl();
+
+            // Assert
+            expect(result).not.toBeNull();
+            expect(result.href)
+                .toEqual(`https://${testTenant}.host.com/authorize?client_id=clientid&code_challenge=abc&` +
+                    `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
+                    `state=random&nonce=random&scope=openid%20email%20profile%20offline_access&` +
+                    `encode_state=1&tenant=${testTenant}&email=testuser%40splunk.com`);
+            expect(mockStorageSet)
+                .toBeCalledWith(
+                    JSON.stringify({
+                        state: 'random',
+                        codeVerifier: mockEncodedCodeVerifier,
+                        codeChallenge: mockCodeChallenge
+                    }),
+                    REDIRECT_OAUTH_PARAMS_NAME);
+            expect(mockStorageGet).toBeCalledTimes(1);
+            expect(mockStorageSet).toBeCalledTimes(1);
+        });
+
         it('throws SplunkAuthClientError when unable to get stored user parameters', () => {
             // Arrange
             mockStorageGet = jest.fn(() => {
@@ -809,6 +851,42 @@ describe('PKCEAuthManager', () => {
             expect(mockStorageGet).toBeCalledTimes(2);
         });
 
+        it('with email, inviteID and inviteTenant and tenant generates the tenant based tos url', () => {
+            const testInviteTenant = 'invitedtesttenant';
+            mockAuthHost = `https://${testInviteTenant}.host.com`;
+            // Arrange
+            mockStorageGet = jest.fn(() => {
+                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+            });
+
+
+            mockStorageGet = jest.fn()
+                .mockImplementationOnce(
+                    () => {
+                        return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+                    }
+                )
+                .mockImplementationOnce(
+                    () => {
+                        return {"email":"testuser@splunk.com","inviteID":"inviteme","inviteTenant":testInviteTenant}
+                    }
+                );
+
+            pkceAuthManager = getPKCEAuthManager('system', true, true);
+
+            // Act
+            const result = pkceAuthManager.generateTosUrl();
+
+            // Assert
+            expect(result).not.toBeNull();
+            expect(result.href)
+                .toEqual(`https://${testInviteTenant}.host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&` +
+                    `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
+                    `state=iamclientstate&scope=openid%20email%20profile%20offline_access&` +
+                    `encode_state=1&tenant=${testInviteTenant}&email=testuser%40splunk.com&inviteID=inviteme`);
+            expect(mockStorageGet).toBeCalledTimes(2);
+        });
+
         it('with email and tenant generates the tos url', () => {
             // Arrange
             mockStorageGet = jest.fn(() => {
@@ -839,6 +917,41 @@ describe('PKCEAuthManager', () => {
                     'code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&' +
                     'state=iamclientstate&scope=openid%20email%20profile%20offline_access&' +
                     'encode_state=1&tenant=testtenant&email=testuser%40splunk.com');
+            expect(mockStorageGet).toBeCalledTimes(2);
+        });
+
+        it('with email and tenant generates the tenant based tos url', () => {
+            // Arrange
+            mockStorageGet = jest.fn(() => {
+                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+            });
+
+            mockStorageGet = jest.fn()
+                .mockImplementationOnce(
+                    () => {
+                        return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+                    }
+                )
+                .mockImplementationOnce(
+                    () => {
+                        return {"email":"testuser@splunk.com"}
+                    }
+                );
+
+            const testTenant = 'testtenant'
+            mockAuthHost = `https://${testTenant}.host.com`;
+            pkceAuthManager = getPKCEAuthManager(testTenant, true, true);
+
+            // Act
+            const result = pkceAuthManager.generateTosUrl();
+
+            // Assert
+            expect(result).not.toBeNull();
+            expect(result.href)
+                .toEqual(`https://${testTenant}.host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&` +
+                    `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
+                    `state=iamclientstate&scope=openid%20email%20profile%20offline_access&` +
+                    `encode_state=1&tenant=${testTenant}&email=testuser%40splunk.com`);
             expect(mockStorageGet).toBeCalledTimes(2);
         });
 

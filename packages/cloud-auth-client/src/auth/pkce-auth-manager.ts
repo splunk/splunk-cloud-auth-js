@@ -13,7 +13,6 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-
 import { AccessTokenResponse, AuthProxy } from '@splunkdev/cloud-auth-common';
 import { generateQueryParameters } from '@splunkdev/cloud-auth-common/src/util';
 
@@ -22,7 +21,8 @@ import {
     createCodeChallenge,
     encodeCodeVerifier,
     generateCodeVerifier,
-    generateRandomString
+    generateRandomString,
+    generateTenantBasedAuthHost
 } from '../common/util';
 import { SplunkAuthClientError } from "../error/splunk-auth-client-error";
 import {
@@ -31,6 +31,7 @@ import {
 } from '../error/splunk-oauth-error';
 import { AccessToken } from '../model/access-token';
 import {
+    DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
     DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
     REDIRECT_OAUTH_PARAMS_NAME,
     REDIRECT_PARAMS_STORAGE_NAME,
@@ -63,6 +64,7 @@ export class PKCEAuthManagerSettings {
         tenant: string,
         redirectParamsStorageName = REDIRECT_PARAMS_STORAGE_NAME,
         enableTenantScopedTokens = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
+        enableMultiRegionSupport = DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
     ) {
         this.authHost = authHost;
         this.clientId = clientId;
@@ -70,6 +72,7 @@ export class PKCEAuthManagerSettings {
         this.tenant = tenant;
         this.redirectParamsStorageName = redirectParamsStorageName;
         this.enableTenantScopedTokens = enableTenantScopedTokens;
+        this.enableMultiRegionSupport = enableMultiRegionSupport;
     }
 
     /**
@@ -101,6 +104,11 @@ export class PKCEAuthManagerSettings {
      * Return tenant scoped access tokens if set to true
      */
     public enableTenantScopedTokens: boolean;
+
+    /**
+     * Update auth host url to be tenant based if set to true
+     */
+    public enableMultiRegionSupport: boolean;
 }
 
 /**
@@ -216,6 +224,11 @@ export class PKCEAuthManager implements AuthManager {
             this._userParamsStorage.set(userState.inviteTenant, 'inviteTenant');
         }
 
+        // overriding authProxy for with tenant based authHost for multi-region support
+        if (this._settings.enableMultiRegionSupport) {
+            this._authProxy = new AuthProxy(generateTenantBasedAuthHost(this._authProxy.host, this._settings.tenant));
+        }
+
         const acceptTos = userState.accept_tos ? userState.accept_tos : searchParameters.get('accept_tos');
 
         // call authproxy accessToken to get token
@@ -277,6 +290,11 @@ export class PKCEAuthManager implements AuthManager {
         const storedUserParameters = this.getStoredUserParameters();
         const email = storedUserParameters && storedUserParameters.email || undefined;
         const tenant = (this._settings.tenant !== 'system') && this._settings.tenant || undefined;
+        
+        let authHost = this._settings.authHost;
+        if (this._settings.enableMultiRegionSupport) {
+            authHost = generateTenantBasedAuthHost(authHost, tenant);
+        }
 
         const oauthQueryParams = new Map([
             ['client_id', this._settings.clientId],
@@ -306,7 +324,7 @@ export class PKCEAuthManager implements AuthManager {
         };
         this._redirectParamsStorage.set(JSON.stringify(redirectStorageParams), REDIRECT_OAUTH_PARAMS_NAME);
 
-        const url = new URL(AuthProxy.PATH_AUTHORIZATION, this._settings.authHost);
+        const url = new URL(AuthProxy.PATH_AUTHORIZATION, authHost);
         const queryParameterString = generateQueryParameters(oauthQueryParams);
 
         return new URL(queryParameterString, url.href);
@@ -319,7 +337,12 @@ export class PKCEAuthManager implements AuthManager {
     public generateLogoutUrl(redirectUrl: string): URL {
         this._userParamsStorage.clear();
 
-        const url = new URL(AuthProxy.PATH_LOGOUT, this._settings.authHost);
+        let authHost = this._settings.authHost;
+        if (this._settings.enableMultiRegionSupport) {
+            authHost = generateTenantBasedAuthHost(authHost, this._settings.tenant);
+        }
+
+        const url = new URL(AuthProxy.PATH_LOGOUT, authHost);
         const queryParameterString = `?redirect_uri=${encodeURIComponent(redirectUrl)}`;
         return new URL(queryParameterString, url);
     }
@@ -342,6 +365,11 @@ export class PKCEAuthManager implements AuthManager {
             tenant = (this._settings.tenant !== 'system') && this._settings.tenant || undefined;
         }
 
+        let authHost = this._settings.authHost;
+        if (this._settings.enableMultiRegionSupport) {
+            authHost = generateTenantBasedAuthHost(authHost, tenant);
+        }
+
         const oauthQueryParams = new Map([
             ['client_id', this._settings.clientId],
             ['code_challenge', storedOAuthParameters.codeChallenge],
@@ -356,7 +384,7 @@ export class PKCEAuthManager implements AuthManager {
             ['inviteID', inviteID]
         ]);
 
-        const url = new URL(AuthProxy.PATH_TOS, this._settings.authHost);
+        const url = new URL(AuthProxy.PATH_TOS, authHost);
         const queryParameterString = generateQueryParameters(oauthQueryParams);
 
         return new URL(queryParameterString, url.href);

@@ -5,6 +5,7 @@ export const DEFAULT_QUERY_PARAMS_FOR_LOGIN = undefined;
 export const DEFAULT_MAX_CLOCK_SKEW = 600; // maximum clock skew allowed when validating JWT
 export const DEFAULT_AUTO_TOKEN_RENEWAL_BUFFER = 720; // Auto renew tokens 720 seconds before the token expires
 export const DEFAULT_ENABLE_TENANT_SCOPED_TOKENS = true;
+export const DEFAULT_ENABLE_MULTI_REGION_SUPPORT = false;
 
 export const REDIRECT_PATH_PARAMS_NAME = 'redirect-path';
 export const REDIRECT_OAUTH_PARAMS_NAME = 'redirect-oauth-params';
@@ -56,6 +57,7 @@ export class SplunkAuthClientSettings {
      * @param tokenStorageName Token storage name.
      * @param redirectParamsStorageName Redirect parameters storage name.
      * @param enableTenantScopedTokens Enable tenant scoped access tokens.
+     * @param enableMultiRegionSupport Enable multi-region support (tenant based auth hosturl).
      */
     public constructor(
         grantType: GrantType = GrantType.PKCE,
@@ -71,6 +73,7 @@ export class SplunkAuthClientSettings {
         tokenStorageName: string = TOKEN_STORAGE_NAME,
         redirectParamsStorageName: string = REDIRECT_PARAMS_STORAGE_NAME,
         enableTenantScopedTokens: boolean = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
+        enableMultiRegionSupport: boolean = DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
     ) {
         this.grantType = grantType;
         this.clientId = clientId;
@@ -85,6 +88,7 @@ export class SplunkAuthClientSettings {
         this.tokenStorageName = tokenStorageName;
         this.redirectParamsStorageName = redirectParamsStorageName;
         this.enableTenantScopedTokens = enableTenantScopedTokens;
+        this.enableMultiRegionSupport = enableMultiRegionSupport;
     }
 
     /**
@@ -184,4 +188,13 @@ export class SplunkAuthClientSettings {
      * This is enabled by default but can be disabled by setting it to `false`.
      */
     public enableTenantScopedTokens: boolean;
+
+    /**
+     * Flag to enable support for multi-region.
+     * 
+     * If enabled, then the auth client will used tenant based auth host url
+     * otherwise auth host url will be as given in authHost.
+     * This is enabled by default but can be disabled by setting it to `false`.
+     */
+    public enableMultiRegionSupport: boolean;
 }

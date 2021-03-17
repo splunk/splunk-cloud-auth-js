@@ -8,6 +8,7 @@ const REDIRECT_URI = 'https://redirect.com';
 const REDIRECT_PARAM_STORAGE_NAME = 'storage-name';
 const TENANT = 'testtenant';
 const DEFAULT_ENABLE_TENANT_SCOPED_TOKENS = true;
+const DEFAULT_ENABLE_MULTI_REGION_SUPPORT = true;
 
 const mockImplicitAuthManager: AuthManager = {
     deleteRedirectPath: jest.fn(),
@@ -60,6 +61,7 @@ describe('AuthManagerFactory', () => {
                 '',
                 REDIRECT_PARAM_STORAGE_NAME,
                 DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
+                DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
             );
 
             // Assert
@@ -75,7 +77,8 @@ describe('AuthManagerFactory', () => {
                 REDIRECT_URI,
                 TENANT,
                 REDIRECT_PARAM_STORAGE_NAME,
-                DEFAULT_ENABLE_TENANT_SCOPED_TOKENS
+                DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
+                DEFAULT_ENABLE_MULTI_REGION_SUPPORT
             );
 
             // Assert

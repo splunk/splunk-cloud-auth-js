@@ -34,6 +34,7 @@ export class AuthManagerFactory {
         tenant: string,
         redirectParamsStorageName: string,
         enableTenantScopedTokens: boolean,
+        enableMultiRegionSupport: boolean,
     ): AuthManager {
         if (grantType.valueOf() === GrantType.PKCE.valueOf()) {
             return new PKCEAuthManager(
@@ -43,7 +44,8 @@ export class AuthManagerFactory {
                     redirectUri,
                     tenant,
                     redirectParamsStorageName,
-                    enableTenantScopedTokens
+                    enableTenantScopedTokens,
+                    enableMultiRegionSupport
                 )
             );
         }

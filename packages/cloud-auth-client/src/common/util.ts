@@ -89,3 +89,22 @@ export function generateCodeVerifier(codeVerifierLength: number) {
     }
     return generateRandomString(codeVerifierLength);
 }
+
+/**
+ * Generates tenant based auth host url with the given auth host url
+ * @param inputURL Host URL
+ * @param tenant Tenant's name
+ */
+export function generateTenantBasedAuthHost(inputURL: string, tenant?: string): string {
+    if (!tenant || tenant === 'system') { return inputURL }
+
+    let tenantBasedAuthHost = ''
+    try {
+        const url = new URL(inputURL);
+        if (url.protocol !== 'https:' || (url.hostname.startsWith(tenant))) { return inputURL }
+        tenantBasedAuthHost = `${url.protocol}//${tenant}.${url.hostname}${url.pathname}`;
+    } catch {
+        throw new SplunkAuthClientError('Invalid Auth URL')
+    }
+    return tenantBasedAuthHost;
+}

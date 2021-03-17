@@ -87,7 +87,8 @@ export class SplunkAuthClient implements SdkAuthManager {
             this._settings.redirectUri,
             this._tenant,
             this._settings.redirectParamsStorageName,
-            this._settings.enableTenantScopedTokens
+            this._settings.enableTenantScopedTokens,
+            this._settings.enableMultiRegionSupport
         );
 
         if (this._settings.autoRedirectToLogin) {

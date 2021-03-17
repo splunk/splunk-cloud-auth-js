@@ -4,6 +4,7 @@ import {
     encodeCodeVerifier,
     generateCodeVerifier,
     generateRandomString,
+    generateTenantBasedAuthHost,
 } from '../../../src/common/util';
 import { SplunkAuthClientError } from '../../../src/error/splunk-auth-client-error';
 import { mockWindowProperty } from '../fixture/test-setup';
@@ -219,6 +220,51 @@ describe('util', () => {
             expect(result).toEqual(expectedResult);
             expect(cryptoMock.getRandomValues).toBeCalledWith(new Uint32Array(50));
             expect(cryptoMock.getRandomValues).toBeCalledTimes(1);
+        });
+    });
+
+    describe('generateTenantBasedAuthHost', () => {
+        it('returns tenant based url', () => {
+            const tenant = 'foo';
+            const inputUrl = 'https://example.com/';
+            const expectedUrl = `https://${tenant}.example.com/`;
+            const url = generateTenantBasedAuthHost(inputUrl, tenant);
+            expect(url).toEqual(expectedUrl);
+        });
+
+        it('returns url for a system tenant', () => {
+            const tenant = 'system';
+            const inputUrl = 'https://example.com/';
+            const expectedUrl = `https://example.com/`;
+            const url = generateTenantBasedAuthHost(inputUrl, tenant);
+            expect(url).toEqual(expectedUrl);
+        });
+
+        it('returns url for non https protocol', () => {
+            const tenant = 'foo';
+            const inputUrl = 'http://example.com/';
+            const expectedUrl = `http://example.com/`;
+            const url = generateTenantBasedAuthHost(inputUrl, tenant);
+            expect(url).toEqual(expectedUrl);
+        });
+
+        it('returns a correct tenant based url for already tenant based url', () => {
+            const tenant = 'foo';
+            const inputUrl = 'http://{tenant}.example.com/';
+            const expectedUrl = `http://{tenant}.example.com/`;
+            const url = generateTenantBasedAuthHost(inputUrl, tenant);
+            expect(url).toEqual(expectedUrl);
+        });
+
+        it('throws SplunkAuthClientError for invalid url', () => {
+            const tenant = 'foo';
+            const inputUrl = 'boo';
+
+            expect(() => {
+                generateTenantBasedAuthHost(inputUrl, tenant);
+            }).toThrow(
+                new SplunkAuthClientError('Invalid Auth URL')
+            );
         });
     });
 });

@@ -72,7 +72,8 @@ const authClientSettings = new SplunkAuthClientSettings(
     AUTO_TOKEN_RENEWAL_BUFFER,
     TOKEN_STORAGE_NAME,
     REDIRECT_PARAMS_STORAGE_NAME,
-    ENABLE_TENANT_SCOPED_TOKENS
+    ENABLE_TENANT_SCOPED_TOKENS,
+    ENABLE_MULTI_REGION_SUPPORT
 );
 
 // Initialize SplunkAuthClient with the Auth Client settings configuration and the tenant

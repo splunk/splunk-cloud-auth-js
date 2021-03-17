@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.2.0...@splunkdev/cloud-auth-client@3.3.0) (2021-03-17)
+
+
+### Features
+
+* **cloud-auth-client:** multi-region support ([41b95e7](https://github.com/splunk/splunk-cloud-auth-js/commit/41b95e7f0b8fd83ad184c9bfad952ea307bd2638))
+
+
+
+
+
 # [3.2.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.1.0...@splunkdev/cloud-auth-client@3.2.0) (2021-02-04)
 
 

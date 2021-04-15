@@ -32,6 +32,7 @@ export class AuthManagerFactory {
         clientId: string,
         redirectUri: string,
         tenant: string,
+        region: string,
         redirectParamsStorageName: string,
         enableTenantScopedTokens: boolean,
         enableMultiRegionSupport: boolean,
@@ -43,6 +44,7 @@ export class AuthManagerFactory {
                     clientId,
                     redirectUri,
                     tenant,
+                    region,
                     redirectParamsStorageName,
                     enableTenantScopedTokens,
                     enableMultiRegionSupport

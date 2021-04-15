@@ -109,13 +109,14 @@ jest.mock('@splunkdev/cloud-auth-common', () => ({
 describe('PKCEAuthManager', () => {
     let pkceAuthManager: PKCEAuthManager;
 
-    function getPKCEAuthManager(tenant?: string, enableTenantScopedTokens: boolean = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS, enableMultiRegionSupport: boolean = DEFAULT_ENABLE_MULTI_REGION_SUPPORT): PKCEAuthManager {
+    function getPKCEAuthManager(tenant?: string, region?: string, enableTenantScopedTokens: boolean = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS, enableMultiRegionSupport: boolean = DEFAULT_ENABLE_MULTI_REGION_SUPPORT): PKCEAuthManager {
         return new PKCEAuthManager(
             new PKCEAuthManagerSettings(
                 AUTH_HOST,
                 CLIENT_ID,
                 REDIRECT_URI,
                 tenant,
+                region,
                 REDIRECT_PARAMS_STORAGE_NAME,
                 enableTenantScopedTokens,
                 enableMultiRegionSupport
@@ -471,7 +472,7 @@ describe('PKCEAuthManager', () => {
             });
 
             const enableTenantScopedTokens = false;
-            pkceAuthManager = getPKCEAuthManager('', enableTenantScopedTokens);
+            pkceAuthManager = getPKCEAuthManager('', '', enableTenantScopedTokens);
 
             // Act/Assert
             return pkceAuthManager.getAccessToken(urlMock)
@@ -516,7 +517,7 @@ describe('PKCEAuthManager', () => {
             });
 
             const enableTenantScopedTokens = false;
-            pkceAuthManager = getPKCEAuthManager('', enableTenantScopedTokens);
+            pkceAuthManager = getPKCEAuthManager('', '', enableTenantScopedTokens);
 
             // Act/Assert
             return pkceAuthManager.getAccessToken(urlMock)
@@ -744,7 +745,7 @@ describe('PKCEAuthManager', () => {
             const testTenant = 'testtenant';
             mockAuthHost = `https://${testTenant}.host.com`;
 
-            pkceAuthManager = getPKCEAuthManager(testTenant, true, true);
+            pkceAuthManager = getPKCEAuthManager(testTenant, '', true, true);
             // Act
             const result = pkceAuthManager.generateAuthUrl();
 
@@ -755,6 +756,43 @@ describe('PKCEAuthManager', () => {
                     `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
                     `state=random&nonce=random&scope=openid%20email%20profile%20offline_access&` +
                     `encode_state=1&tenant=${testTenant}&email=testuser%40splunk.com`);
+            expect(mockStorageSet)
+                .toBeCalledWith(
+                    JSON.stringify({
+                        state: 'random',
+                        codeVerifier: mockEncodedCodeVerifier,
+                        codeChallenge: mockCodeChallenge
+                    }),
+                    REDIRECT_OAUTH_PARAMS_NAME);
+            expect(mockStorageGet).toBeCalledTimes(1);
+            expect(mockStorageSet).toBeCalledTimes(1);
+        });
+
+        it('with email and a system tenant generates region based auth URL', () => {
+            // Arrange
+            mockCodeVerifier = '123';
+            mockEncodedCodeVerifier = 'encoded123';
+            mockCodeChallenge = 'abc';
+
+            mockStorageGet = jest.fn(() => {
+                return {"email":"testuser@splunk.com"};
+            });
+
+            const testTenant = 'system';
+            const testRegion = 'sea10'
+            mockAuthHost = `https://region-${testRegion}.host.com`;
+
+            pkceAuthManager = getPKCEAuthManager(testTenant, testRegion, true, true);
+            // Act
+            const result = pkceAuthManager.generateAuthUrl();
+
+            // Assert
+            expect(result).not.toBeNull();
+            expect(result.href)
+                .toEqual(`https://region-${testRegion}.host.com/authorize?client_id=clientid&code_challenge=abc&` +
+                    `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
+                    `state=random&nonce=random&scope=openid%20email%20profile%20offline_access&` +
+                    `encode_state=1&email=testuser%40splunk.com`);
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
@@ -872,7 +910,7 @@ describe('PKCEAuthManager', () => {
                     }
                 );
 
-            pkceAuthManager = getPKCEAuthManager('system', true, true);
+            pkceAuthManager = getPKCEAuthManager('system', '', true, true);
 
             // Act
             const result = pkceAuthManager.generateTosUrl();
@@ -940,7 +978,7 @@ describe('PKCEAuthManager', () => {
 
             const testTenant = 'testtenant'
             mockAuthHost = `https://${testTenant}.host.com`;
-            pkceAuthManager = getPKCEAuthManager(testTenant, true, true);
+            pkceAuthManager = getPKCEAuthManager(testTenant, '', true, true);
 
             // Act
             const result = pkceAuthManager.generateTosUrl();

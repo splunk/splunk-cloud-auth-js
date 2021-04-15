@@ -40,6 +40,7 @@ export class TokenManagerSettings {
      * @param autoTokenRenewalBuffer Auto token renewal buffer.
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
+     * @param region Region.
      * @param storageName Storage name.
      */
     public constructor(
@@ -48,6 +49,7 @@ export class TokenManagerSettings {
         autoTokenRenewalBuffer: number,
         clientId: string,
         redirectUri: string,
+        region: string,
         storageName: string = TOKEN_STORAGE_NAME,
         enableMultiRegionSupport = DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
     ) {
@@ -56,6 +58,7 @@ export class TokenManagerSettings {
         this.autoTokenRenewalBuffer = autoTokenRenewalBuffer;
         this.clientId = clientId;
         this.redirectUri = redirectUri;
+        this.region = region;
         this.storageName = storageName === '' ? TOKEN_STORAGE_NAME : storageName;
         this.enableMultiRegionSupport = enableMultiRegionSupport;
     }
@@ -84,6 +87,11 @@ export class TokenManagerSettings {
      * Redirect URI.
      */
     public redirectUri: string;
+
+    /**
+     * Region
+     */
+    public region: string;
 
     /**
      * Storage name.
@@ -192,7 +200,8 @@ export class TokenManager {
             const tenant = accessToken.tenant || '';
 
             if (this._settings.enableMultiRegionSupport) {
-                this._authProxy = new AuthProxy(generateTenantBasedAuthHost(this._authProxy.host, tenant));
+                this._authProxy = new AuthProxy(generateTenantBasedAuthHost(this._authProxy.host,
+                                    tenant, this._settings.region));
             }
 
             this._authProxy.refreshAccessToken(

@@ -56,12 +56,14 @@ export class PKCEAuthManagerSettings {
      * @param clientId Client Id.
      * @param redirectUri Redirect URI.
      * @param tenant Tenant.
+     * @param region Region.
      */
     public constructor(
         authHost: string,
         clientId: string,
         redirectUri: string,
         tenant: string,
+        region: string,
         redirectParamsStorageName = REDIRECT_PARAMS_STORAGE_NAME,
         enableTenantScopedTokens = DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
         enableMultiRegionSupport = DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
@@ -70,6 +72,7 @@ export class PKCEAuthManagerSettings {
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.tenant = tenant;
+        this.region = region;
         this.redirectParamsStorageName = redirectParamsStorageName;
         this.enableTenantScopedTokens = enableTenantScopedTokens;
         this.enableMultiRegionSupport = enableMultiRegionSupport;
@@ -99,6 +102,11 @@ export class PKCEAuthManagerSettings {
      * Tenant.
      */
     public tenant: string;
+
+    /**
+     * Region.
+     */
+    public region: string;
 
     /**
      * Return tenant scoped access tokens if set to true
@@ -226,7 +234,8 @@ export class PKCEAuthManager implements AuthManager {
 
         // overriding authProxy for with tenant based authHost for multi-region support
         if (this._settings.enableMultiRegionSupport) {
-            this._authProxy = new AuthProxy(generateTenantBasedAuthHost(this._authProxy.host, this._settings.tenant));
+            this._authProxy = new AuthProxy(generateTenantBasedAuthHost(this._authProxy.host,
+                                    this._settings.tenant, this._settings.region));
         }
 
         const acceptTos = userState.accept_tos ? userState.accept_tos : searchParameters.get('accept_tos');
@@ -293,7 +302,7 @@ export class PKCEAuthManager implements AuthManager {
         
         let authHost = this._settings.authHost;
         if (this._settings.enableMultiRegionSupport) {
-            authHost = generateTenantBasedAuthHost(authHost, tenant);
+            authHost = generateTenantBasedAuthHost(authHost, tenant, this._settings.region);
         }
 
         const oauthQueryParams = new Map([
@@ -339,7 +348,7 @@ export class PKCEAuthManager implements AuthManager {
 
         let authHost = this._settings.authHost;
         if (this._settings.enableMultiRegionSupport) {
-            authHost = generateTenantBasedAuthHost(authHost, this._settings.tenant);
+            authHost = generateTenantBasedAuthHost(authHost, this._settings.tenant, this._settings.region);
         }
 
         const url = new URL(AuthProxy.PATH_LOGOUT, authHost);
@@ -367,7 +376,7 @@ export class PKCEAuthManager implements AuthManager {
 
         let authHost = this._settings.authHost;
         if (this._settings.enableMultiRegionSupport) {
-            authHost = generateTenantBasedAuthHost(authHost, tenant);
+            authHost = generateTenantBasedAuthHost(authHost, tenant, this._settings.region);
         }
 
         const oauthQueryParams = new Map([

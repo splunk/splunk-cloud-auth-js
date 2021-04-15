@@ -92,19 +92,28 @@ export function generateCodeVerifier(codeVerifierLength: number) {
 
 /**
  * Generates tenant based auth host url with the given auth host url
+ * if a tenant is 'system', auth host will be of region based
  * @param inputURL Host URL
  * @param tenant Tenant's name
+ * @param region Region
  */
-export function generateTenantBasedAuthHost(inputURL: string, tenant?: string): string {
-    if (!tenant || tenant === 'system') { return inputURL }
+export function generateTenantBasedAuthHost(inputURL: string, tenant?: string, region?: string): string {
+    if (!region && (!tenant || tenant === 'system')) { return inputURL }
 
-    let tenantBasedAuthHost = ''
+    let authost = ''
+    let multiRegionPrefix = tenant
     try {
         const url = new URL(inputURL);
-        if (url.protocol !== 'https:' || (url.hostname.startsWith(tenant))) { return inputURL }
-        tenantBasedAuthHost = `${url.protocol}//${tenant}.${url.hostname}${url.pathname}`;
+        if (url.protocol !== 'https:' ||
+            (tenant && url.hostname.startsWith(tenant)) || url.hostname.startsWith('region-')) {
+            return inputURL;
+        }
+        if (region && (!tenant || tenant === 'system')) {
+            multiRegionPrefix = `region-${region}`;
+        } 
+        authost = `${url.protocol}//${multiRegionPrefix}.${url.hostname}${url.pathname}`;
     } catch {
         throw new SplunkAuthClientError('Invalid Auth URL')
     }
-    return tenantBasedAuthHost;
+    return authost;
 }

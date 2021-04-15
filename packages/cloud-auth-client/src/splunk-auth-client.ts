@@ -50,8 +50,9 @@ export class SplunkAuthClient implements SdkAuthManager {
      * AuthClient constructor.
      * @param settings AuthClientSettings.
      * @param tenant Tenant.
+     * @param region Region.
      */
-    public constructor(settings: SplunkAuthClientSettings, tenant = '') {
+    public constructor(settings: SplunkAuthClientSettings, tenant = '', region = '') {
         if (!Object.values(GrantType).some((value) => value === settings.grantType)) {
             throw new SplunkAuthClientError(
                 `Missing valid value for required configuration option "grantType". ` +
@@ -64,6 +65,7 @@ export class SplunkAuthClient implements SdkAuthManager {
         }
 
         this._tenant = tenant;
+        this._region = region;
 
         this._settings = settings;
         this._settings.onRestorePath = this._settings.onRestorePath
@@ -77,6 +79,7 @@ export class SplunkAuthClient implements SdkAuthManager {
                 this._settings.autoTokenRenewalBuffer,
                 this._settings.clientId,
                 this._settings.redirectUri,
+                this._region,
                 this._settings.tokenStorageName
             )
         );
@@ -86,6 +89,7 @@ export class SplunkAuthClient implements SdkAuthManager {
             this._settings.clientId,
             this._settings.redirectUri,
             this._tenant,
+            this._region,
             this._settings.redirectParamsStorageName,
             this._settings.enableTenantScopedTokens,
             this._settings.enableMultiRegionSupport
@@ -107,6 +111,8 @@ export class SplunkAuthClient implements SdkAuthManager {
     private _redirectInProgress = false;
 
     private _tenant: string;
+
+    private _region: string;
 
     /**
      * Gets the access token string.

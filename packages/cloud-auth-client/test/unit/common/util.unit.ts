@@ -4,6 +4,7 @@ import {
     encodeCodeVerifier,
     generateCodeVerifier,
     generateRandomString,
+    generateRegionBasedAuthHost,
     generateTenantBasedAuthHost,
 } from '../../../src/common/util';
 import { SplunkAuthClientError } from '../../../src/error/splunk-auth-client-error';
@@ -220,6 +221,51 @@ describe('util', () => {
             expect(result).toEqual(expectedResult);
             expect(cryptoMock.getRandomValues).toBeCalledWith(new Uint32Array(50));
             expect(cryptoMock.getRandomValues).toBeCalledTimes(1);
+        });
+    });
+    
+    describe('generateRegionBasedAuthHost', () => {
+        it('returns region based url', () => {
+            const region = 'foo';
+            const inputUrl = 'https://example.com/';
+            const expectedUrl = `https://region-${region}.example.com/`;
+            const url = generateRegionBasedAuthHost(inputUrl, region);
+            expect(url).toEqual(expectedUrl);
+        });
+
+        it('returns url for non https protocol', () => {
+            const region = 'foo';
+            const inputUrl = 'http://example.com/';
+            const expectedUrl = `http://example.com/`;
+            const url = generateRegionBasedAuthHost(inputUrl, region);
+            expect(url).toEqual(expectedUrl);
+        });
+
+        it('returns url for when region is undefined', () => {
+            const region = undefined;
+            const inputUrl = 'https://example.com/';
+            const expectedUrl = `https://example.com/`;
+            const url = generateRegionBasedAuthHost(inputUrl, region);
+            expect(url).toEqual(expectedUrl);
+        });
+
+        it('returns a correct region based url for already region based url', () => {
+            const region = 'foo';
+            const inputUrl = 'http://region-{foo}.example.com/';
+            const expectedUrl = `http://region-{foo}.example.com/`;
+            const url = generateRegionBasedAuthHost(inputUrl, region);
+            expect(url).toEqual(expectedUrl);
+        });
+
+        it('throws SplunkAuthClientError for invalid url', () => {
+            const region = 'foo';
+            const inputUrl = 'boo';
+
+            expect(() => {
+                generateRegionBasedAuthHost(inputUrl, region);
+            }).toThrow(
+                new SplunkAuthClientError('Invalid Auth URL')
+            );
         });
     });
 

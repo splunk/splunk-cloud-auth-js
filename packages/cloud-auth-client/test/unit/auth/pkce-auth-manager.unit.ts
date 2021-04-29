@@ -50,6 +50,7 @@ let mockCodeVerifier: string;
 let mockEncodedCodeVerifier: string;
 let mockCodeChallenge: string;
 let mockAuthHost: string;
+let mockRegionAuthHost: string;
 jest.mock('../../../src/common/util', () => {
     return {
         clearWindowLocationFragments: jest.fn(),
@@ -65,6 +66,9 @@ jest.mock('../../../src/common/util', () => {
         }),
         generateTenantBasedAuthHost: jest.fn().mockImplementation(() => {
             return mockAuthHost;
+        }),
+        generateRegionBasedAuthHost: jest.fn().mockImplementation(() => {
+            return mockRegionAuthHost;
         }),
     };
 });
@@ -792,7 +796,7 @@ describe('PKCEAuthManager', () => {
                 .toEqual(`https://region-${testRegion}.host.com/authorize?client_id=clientid&code_challenge=abc&` +
                     `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
                     `state=random&nonce=random&scope=openid%20email%20profile%20offline_access&` +
-                    `encode_state=1&email=testuser%40splunk.com`);
+                    `encode_state=1&tenant=system&email=testuser%40splunk.com`);
             expect(mockStorageSet)
                 .toBeCalledWith(
                     JSON.stringify({
@@ -891,7 +895,8 @@ describe('PKCEAuthManager', () => {
 
         it('with email, inviteID and inviteTenant and tenant generates the tenant based tos url', () => {
             const testInviteTenant = 'invitedtesttenant';
-            mockAuthHost = `https://${testInviteTenant}.host.com`;
+            const testRegion = `region-foo`;
+            mockRegionAuthHost = `https://${testRegion}.host.com`;
             // Arrange
             mockStorageGet = jest.fn(() => {
                 return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
@@ -918,7 +923,7 @@ describe('PKCEAuthManager', () => {
             // Assert
             expect(result).not.toBeNull();
             expect(result.href)
-                .toEqual(`https://${testInviteTenant}.host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&` +
+                .toEqual(`https://${testRegion}.host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&` +
                     `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
                     `state=iamclientstate&scope=openid%20email%20profile%20offline_access&` +
                     `encode_state=1&tenant=${testInviteTenant}&email=testuser%40splunk.com&inviteID=inviteme`);
@@ -977,7 +982,8 @@ describe('PKCEAuthManager', () => {
                 );
 
             const testTenant = 'testtenant'
-            mockAuthHost = `https://${testTenant}.host.com`;
+            const testRegion = `region-foo`;
+            mockRegionAuthHost = `https://${testRegion}.host.com`;
             pkceAuthManager = getPKCEAuthManager(testTenant, '', true, true);
 
             // Act
@@ -986,7 +992,7 @@ describe('PKCEAuthManager', () => {
             // Assert
             expect(result).not.toBeNull();
             expect(result.href)
-                .toEqual(`https://${testTenant}.host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&` +
+                .toEqual(`https://${testRegion}.host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&` +
                     `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
                     `state=iamclientstate&scope=openid%20email%20profile%20offline_access&` +
                     `encode_state=1&tenant=${testTenant}&email=testuser%40splunk.com`);

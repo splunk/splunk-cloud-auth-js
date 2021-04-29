@@ -22,6 +22,7 @@ import {
     encodeCodeVerifier,
     generateCodeVerifier,
     generateRandomString,
+    generateRegionBasedAuthHost,
     generateTenantBasedAuthHost
 } from '../common/util';
 import { SplunkAuthClientError } from "../error/splunk-auth-client-error";
@@ -146,6 +147,7 @@ export interface UserState {
     inviteID?: string;
     inviteTenant?: string;
     accept_tos?: string;
+    region: string;
 }
 
 /**
@@ -204,7 +206,8 @@ export class PKCEAuthManager implements AuthManager {
 
         clearWindowLocationFragments();
 
-        // get the user state (tenant, email, inviteID, inviteTenant, accept_tos) from decoding the state parameter
+        // get the user state (tenant, email, inviteID, inviteTenant, accept_tos, region) 
+        // from decoding the state parameter
         const state = String(searchParameters.get('state'));
         const userState = this.getUserState(state);
         
@@ -230,6 +233,10 @@ export class PKCEAuthManager implements AuthManager {
         }
         if (userState.inviteTenant) {
             this._userParamsStorage.set(userState.inviteTenant, 'inviteTenant');
+        }
+
+        if (userState.region) {
+            this._settings.region = userState.region.replace('region-', '');
         }
 
         // overriding authProxy for with tenant based authHost for multi-region support
@@ -298,7 +305,7 @@ export class PKCEAuthManager implements AuthManager {
 
         const storedUserParameters = this.getStoredUserParameters();
         const email = storedUserParameters && storedUserParameters.email || undefined;
-        const tenant = (this._settings.tenant !== 'system') && this._settings.tenant || undefined;
+        const tenant = this._settings.tenant || undefined;
         
         let authHost = this._settings.authHost;
         if (this._settings.enableMultiRegionSupport) {
@@ -371,12 +378,12 @@ export class PKCEAuthManager implements AuthManager {
         if (inviteID) {
             tenant = storedUserParameters && storedUserParameters.inviteTenant || undefined;
         } else {
-            tenant = (this._settings.tenant !== 'system') && this._settings.tenant || undefined;
+            tenant = this._settings.tenant || undefined;
         }
 
         let authHost = this._settings.authHost;
         if (this._settings.enableMultiRegionSupport) {
-            authHost = generateTenantBasedAuthHost(authHost, tenant, this._settings.region);
+            authHost = generateRegionBasedAuthHost(authHost, this._settings.region);
         }
 
         const oauthQueryParams = new Map([

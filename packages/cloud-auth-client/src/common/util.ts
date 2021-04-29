@@ -117,3 +117,24 @@ export function generateTenantBasedAuthHost(inputURL: string, tenant?: string, r
     }
     return authost;
 }
+
+/**
+ * Generates region based auth host url with the given auth host url
+ * @param inputURL Host URL
+ * @param region Region
+ */
+ export function generateRegionBasedAuthHost(inputURL: string, region?: string): string {
+    if (!region) { return inputURL }
+
+    let authost = ''
+    try {
+        const url = new URL(inputURL);
+        if (url.protocol !== 'https:' || url.hostname.startsWith('region-')) {
+            return inputURL;
+        }
+        authost = `${url.protocol}//region-${region}.${url.hostname}${url.pathname}`;
+    } catch {
+        throw new SplunkAuthClientError('Invalid Auth URL')
+    }
+    return authost;
+}

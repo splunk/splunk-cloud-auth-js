@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.4.0...@splunkdev/cloud-auth-client@3.4.1) (2021-04-30)
+
+
+### Bug Fixes
+
+* **cloud-auth-client:** make tos region based and allow a system tenant to be passed along in author ([373a98f](https://github.com/splunk/splunk-cloud-auth-js/commit/373a98f78120b0a231dac78f00571a8f1ee72605))
+
+
+
+
+
 # [3.4.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.3.0...@splunkdev/cloud-auth-client@3.4.0) (2021-04-15)
 
 

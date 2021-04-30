@@ -915,7 +915,7 @@ describe('PKCEAuthManager', () => {
                     }
                 );
 
-            pkceAuthManager = getPKCEAuthManager('system', '', true, true);
+            pkceAuthManager = getPKCEAuthManager('system', 'foo', true, true);
 
             // Act
             const result = pkceAuthManager.generateTosUrl();
@@ -926,7 +926,7 @@ describe('PKCEAuthManager', () => {
                 .toEqual(`https://${testRegion}.host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&` +
                     `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
                     `state=iamclientstate&scope=openid%20email%20profile%20offline_access&` +
-                    `encode_state=1&tenant=${testInviteTenant}&email=testuser%40splunk.com&inviteID=inviteme`);
+                    `encode_state=1&tenant=${testInviteTenant}&email=testuser%40splunk.com&inviteID=inviteme&region=region-foo`);
             expect(mockStorageGet).toBeCalledTimes(2);
         });
 
@@ -984,7 +984,7 @@ describe('PKCEAuthManager', () => {
             const testTenant = 'testtenant'
             const testRegion = `region-foo`;
             mockRegionAuthHost = `https://${testRegion}.host.com`;
-            pkceAuthManager = getPKCEAuthManager(testTenant, '', true, true);
+            pkceAuthManager = getPKCEAuthManager(testTenant, 'foo', true, true);
 
             // Act
             const result = pkceAuthManager.generateTosUrl();
@@ -995,7 +995,7 @@ describe('PKCEAuthManager', () => {
                 .toEqual(`https://${testRegion}.host.com/tos?client_id=clientid&code_challenge=iamcodechallenge&` +
                     `code_challenge_method=S256&redirect_uri=https%3A%2F%2Fredirect.com&response_type=code&` +
                     `state=iamclientstate&scope=openid%20email%20profile%20offline_access&` +
-                    `encode_state=1&tenant=${testTenant}&email=testuser%40splunk.com`);
+                    `encode_state=1&tenant=${testTenant}&email=testuser%40splunk.com&region=region-foo`);
             expect(mockStorageGet).toBeCalledTimes(2);
         });
 

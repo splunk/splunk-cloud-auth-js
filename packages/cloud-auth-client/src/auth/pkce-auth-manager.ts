@@ -382,8 +382,10 @@ export class PKCEAuthManager implements AuthManager {
         }
 
         let authHost = this._settings.authHost;
+        let region;
         if (this._settings.enableMultiRegionSupport) {
             authHost = generateRegionBasedAuthHost(authHost, this._settings.region);
+            region = `region-${this._settings.region}`;
         }
 
         const oauthQueryParams = new Map([
@@ -397,7 +399,8 @@ export class PKCEAuthManager implements AuthManager {
             ['encode_state', '1'],
             ['tenant', tenant],
             ['email', email],
-            ['inviteID', inviteID]
+            ['inviteID', inviteID],
+            ['region', region]
         ]);
 
         const url = new URL(AuthProxy.PATH_TOS, authHost);

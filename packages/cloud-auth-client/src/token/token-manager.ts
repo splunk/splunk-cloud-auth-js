@@ -42,6 +42,7 @@ export class TokenManagerSettings {
      * @param redirectUri Redirect URI.
      * @param region Region.
      * @param storageName Storage name.
+     * @param enableMultiRegionSupport Enable multi region support.
      */
     public constructor(
         grantType: GrantType,
@@ -51,7 +52,7 @@ export class TokenManagerSettings {
         redirectUri: string,
         region: string,
         storageName: string = TOKEN_STORAGE_NAME,
-        enableMultiRegionSupport = DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
+        enableMultiRegionSupport: boolean = DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
     ) {
         this.grantType = grantType;
         this.authHost = authHost;

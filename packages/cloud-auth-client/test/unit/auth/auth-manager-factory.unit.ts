@@ -17,6 +17,7 @@ const mockImplicitAuthManager: AuthManager = {
     getAccessToken: jest.fn(),
     getRedirectPath: jest.fn(),
     setRedirectPath: jest.fn(),
+    getUserStateParameter: jest.fn(),
 };
 jest.mock('../../../src/auth/implicit-auth-manager', () => {
     return {
@@ -37,6 +38,7 @@ const mockPKCEAuthManager: AuthManager = {
     getAccessToken: jest.fn(),
     getRedirectPath: jest.fn(),
     setRedirectPath: jest.fn(),
+    getUserStateParameter: jest.fn(),
 };
 jest.mock('../../../src/auth/pkce-auth-manager', () => {
     return {
@@ -59,6 +61,7 @@ describe('AuthManagerFactory', () => {
                 CLIENT_ID,
                 REDIRECT_URI,
                 '',
+                '',
                 REDIRECT_PARAM_STORAGE_NAME,
                 DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
                 DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
@@ -76,6 +79,7 @@ describe('AuthManagerFactory', () => {
                 CLIENT_ID,
                 REDIRECT_URI,
                 TENANT,
+                '',
                 REDIRECT_PARAM_STORAGE_NAME,
                 DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
                 DEFAULT_ENABLE_MULTI_REGION_SUPPORT

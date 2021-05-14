@@ -121,6 +121,15 @@ export class ImplicitAuthManager implements AuthManager {
     }
 
     /**
+     * Gets user state params from storage.
+     * @param params Parameter name.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    public getUserStateParameter(): string { 
+        return 'not-implemented';
+    }
+
+    /**
      * Gets an access token from the OAuth parameters in the provided URL or the window location
      * @param url Url.
      */

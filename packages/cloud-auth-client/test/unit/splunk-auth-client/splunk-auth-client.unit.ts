@@ -38,6 +38,7 @@ describe('SplunkAuthClient', () => {
                 getAccessToken: jest.fn(),
                 generateAuthUrl: jest.fn(),
                 generateLogoutUrl: jest.fn(),
+                getUserStateParameter: jest.fn(),
             };
         });
     });

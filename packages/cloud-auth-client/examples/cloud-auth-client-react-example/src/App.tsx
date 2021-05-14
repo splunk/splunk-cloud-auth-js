@@ -95,6 +95,11 @@ class App extends Component {
         console.log(JSON.stringify(token, null, '\t'));
     }
 
+    public getTenantInfo() {
+        const info = authClient.getTenantInfo();
+        console.log(`Tenant: ${info.tenant}, Region: ${info.region}`);
+    }
+
     public render() {
         const { error, loggedIn } = this.state;
 
@@ -147,6 +152,12 @@ class App extends Component {
                     <button id="get-token" onClick={this.getToken}>
                         {' '}
                         Get Token{' '}
+                    </button>
+                </div>
+                <div>
+                    <button id="get-tenant-info" onClick={this.getTenantInfo}>
+                        {' '}
+                        Get Tenant Info{' '}
                     </button>
                 </div>
             </div>

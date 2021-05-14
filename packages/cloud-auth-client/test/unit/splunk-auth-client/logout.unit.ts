@@ -81,7 +81,8 @@ describe('SplunkAuthClient', () => {
                     deleteRedirectPath: jest.fn(),
                     getAccessToken: jest.fn(),
                     generateAuthUrl: jest.fn(),
-                    generateLogoutUrl: mockGenerateLogoutUrl
+                    generateLogoutUrl: mockGenerateLogoutUrl,
+                    getUserStateParameter: jest.fn(),
                 };
                 const authClient = getAuthClient();
 
@@ -105,7 +106,8 @@ describe('SplunkAuthClient', () => {
                     deleteRedirectPath: jest.fn(),
                     getAccessToken: jest.fn(),
                     generateAuthUrl: jest.fn(),
-                    generateLogoutUrl: mockGenerateLogoutUrl
+                    generateLogoutUrl: mockGenerateLogoutUrl,
+                    getUserStateParameter: jest.fn(),
                 };
 
                 const authClient = getAuthClient();
@@ -138,7 +140,8 @@ describe('SplunkAuthClient', () => {
                     deleteRedirectPath: jest.fn(),
                     getAccessToken: jest.fn(),
                     generateAuthUrl: jest.fn(),
-                    generateLogoutUrl: mockGenerateLogoutUrl
+                    generateLogoutUrl: mockGenerateLogoutUrl,
+                    getUserStateParameter: jest.fn(),
                 };
 
                 const authSettings = new SplunkAuthClientSettings(GRANT_TYPE, CLIENT_ID, '');

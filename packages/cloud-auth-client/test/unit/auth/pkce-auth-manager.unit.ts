@@ -16,7 +16,7 @@ const USER_PARAM_INVITE_ID_KEY = 'inviteID';
 const USER_PARAM_INVITE_TENANT_KEY = 'inviteTenant';
 const CODE = 'iamcode';
 const CLIENT_STATE = 'iamclientstate';
-const STATE = '{"client_state":"iamclientstate","tenant":"system"}';
+const STATE = '{"client_state":"iamclientstate","tenant":"system","region":"region-iad10"}';
 const CODE_VERIFIER = 'iamcodeverifier';
 const CODE_CHALLENGE = 'iamcodechallenge';
 const ERROR_MESSAGE = 'iamerrormessage';
@@ -86,8 +86,7 @@ jest.mock('../../../src/validator/pkce-param-validators', () => {
     return {
         validateSearchParameters: jest.fn(),
         validateOAuthParameters: jest.fn(),
-        validateStateParameters: jest.fn(),
-        validateUserParameters: jest.fn()
+        validateStateParameters: jest.fn()
     };
 });
 
@@ -187,6 +186,26 @@ describe('PKCEAuthManager', () => {
         });
     });
 
+    describe('getUserStateParameter', () => {
+        it('gets user state parameter from storage', () => {
+            // Arrange
+            mockStorageGet = jest.fn(() => {
+                return {'tenant': 'testtenant', 'region': 'iad10', 'email': 'testuser@splunk.com'};
+            });
+
+            pkceAuthManager = getPKCEAuthManager();
+
+            // Act
+            const result = pkceAuthManager.getUserStateParameter();
+
+            // Assert
+            expect(result.tenant).toEqual('testtenant');
+            expect(result.region).toEqual('iad10');
+            expect(result.email).toEqual('testuser@splunk.com');
+            expect(mockStorageGet).toBeCalledTimes(1);
+        });
+    })
+
     describe('getAccessToken', () => {
 
         it('throws SplunkAuthClientError when there are no redirect params in storage', async (done) => {
@@ -273,7 +292,7 @@ describe('PKCEAuthManager', () => {
                         new SplunkAuthClientError(
                             `Failed to remove the ${REDIRECT_OAUTH_PARAMS_NAME} data. ${ERROR_MESSAGE}`));
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
-                    expect(mockStorageGet).toBeCalledTimes(1);
+                    expect(mockStorageGet).toBeCalledTimes(2); // get redirect oauth param and get user params
                     expect(mockStorageDelete).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toBeCalledTimes(2);
                     done();
@@ -338,7 +357,7 @@ describe('PKCEAuthManager', () => {
                         new SplunkAuthClientError(
                             `Failed to remove the inviteTenant data from the user storage. ${ERROR_MESSAGE}`));
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
-                    expect(mockStorageGet).toBeCalledTimes(1);
+                    expect(mockStorageGet).toBeCalledTimes(2); // get redirect oauth param and get user params
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(3, REDIRECT_OAUTH_PARAMS_NAME);
@@ -373,7 +392,7 @@ describe('PKCEAuthManager', () => {
                         new SplunkOAuthError(
                             `Failed to retrieve access token from token endpoint. ${ERROR_MESSAGE}`));
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
-                    expect(mockStorageGet).toBeCalledTimes(1);
+                    expect(mockStorageGet).toBeCalledTimes(2); // get redirect oauth param and get user params
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
@@ -409,7 +428,7 @@ describe('PKCEAuthManager', () => {
                         )
                     );
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
-                    expect(mockStorageGet).toBeCalledTimes(1);
+                    expect(mockStorageGet).toBeCalledTimes(2); // get redirect oauth param and get user params
                     expect(mockStorageDelete).toBeCalledTimes(0);
                     done();
                 });
@@ -449,7 +468,7 @@ describe('PKCEAuthManager', () => {
                         )
                     );
                     expect(mockStorageGet).toBeCalledWith(REDIRECT_OAUTH_PARAMS_NAME);
-                    expect(mockStorageGet).toBeCalledTimes(1);
+                    expect(mockStorageGet).toBeCalledTimes(2); // get redirect oauth param and get user params
                     expect(mockStorageDelete).toBeCalledTimes(3);
                     done();
                 });
@@ -492,7 +511,7 @@ describe('PKCEAuthManager', () => {
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
                     expect(mockStorageDelete).toBeCalledTimes(3);
-                    expect(mockStorageSet).toBeCalledTimes(0);
+                    expect(mockStorageSet).toBeCalledTimes(1); // set user params
                     done();
                 })
                 .catch((e) => {
@@ -500,9 +519,9 @@ describe('PKCEAuthManager', () => {
                 });
         });
 
-        it('decode state, stores email, inviteID and inviteTenant and returns globally scoped AccessToken when enableTenantScopedTokens flag is set to false', async (done) => {
+        it('decode state, stores email, region, inviteID and inviteTenant and returns globally scoped AccessToken when enableTenantScopedTokens flag is set to false', async (done) => {
             // Arrange
-            const encodedState = `{"accept_tos":true,"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"inviteme","inviteTenant":"testtenant","tenant":"system"}`
+            const encodedState = `{"accept_tos": true, "client_state": "${CLIENT_STATE}", "email": "testuser@splunk.com", "inviteID": "inviteme", "inviteTenant": "testtenant", "region": "iad10", "tenant": "system"}`;
             const urlMock = `https://url.com/?code=${CODE}&state=${encodedState}`;
 
             mockStorageGet = jest.fn(() => {
@@ -533,10 +552,8 @@ describe('PKCEAuthManager', () => {
                     expect(accessToken.scopes).toEqual(SCOPES.split(' '));
                     expect(accessToken.refreshToken).toEqual(REFRESH_TOKEN);
                     expect(accessToken.tenant).toEqual('');
-                    expect(mockStorageSet).toBeCalledWith('testuser@splunk.com', 'email');
-                    expect(mockStorageSet).toBeCalledWith('inviteme', 'inviteID');
-                    expect(mockStorageSet).toBeCalledWith('testtenant', 'inviteTenant');
-                    expect(mockStorageSet).toBeCalledTimes(3);
+                    expect(mockStorageSet).toBeCalledWith(JSON.parse(encodedState));
+                    expect(mockStorageSet).toBeCalledTimes(1); // set user params
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
@@ -552,9 +569,17 @@ describe('PKCEAuthManager', () => {
             // Arrange
             const urlMock = `https://url.com/?code=${CODE}&state=${STATE}&accept_tos=1`;
 
-            mockStorageGet = jest.fn(() => {
-                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
-            });
+            mockStorageGet = jest.fn()
+                .mockImplementationOnce(
+                    () => {
+                        return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+                    }
+                )
+                .mockImplementationOnce(
+                    () => {
+                        return JSON.parse(STATE);
+                    }
+                )
 
             mockAuthProxyAccessToken = jest.fn((): Promise<AccessTokenResponse> => {
                 return Promise.resolve({
@@ -583,7 +608,7 @@ describe('PKCEAuthManager', () => {
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
                     expect(mockStorageDelete).toBeCalledTimes(3);
-                    expect(mockStorageSet).toBeCalledTimes(0);
+                    expect(mockStorageSet).toBeCalledTimes(1); // set user params
                     done();
                 })
                 .catch((e) => {
@@ -593,12 +618,20 @@ describe('PKCEAuthManager', () => {
 
         it('decode state, stores email, inviteID and inviteTenant and returns tenant-scoped AccessToken', async (done) => {
             // Arrange
-            const encodedState = `{"accept_tos":true,"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"inviteme","inviteTenant":"testtenant","tenant":"testtenant"}`
+            const encodedState = `{"accept_tos":true,"client_state":"${CLIENT_STATE}","email":"testuser@splunk.com","inviteID":"inviteme","inviteTenant":"testtenant","tenant":"testtenant","region":"region-iad10"}`
             const urlMock = `https://url.com/?code=${CODE}&state=${encodedState}`;
 
-            mockStorageGet = jest.fn(() => {
-                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
-            });
+            mockStorageGet = jest.fn()
+                .mockImplementationOnce(
+                    () => {
+                        return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
+                    }
+                )
+                .mockImplementationOnce(
+                    () => {
+                        return JSON.parse(encodedState);
+                    }
+                )
 
             mockAuthProxyAccessToken = jest.fn((): Promise<AccessTokenResponse> => {
                 return Promise.resolve({
@@ -613,6 +646,10 @@ describe('PKCEAuthManager', () => {
 
             pkceAuthManager = getPKCEAuthManager();
 
+            // in the decodeAndStoreUserStateParameters we strip out the region prefix
+            const expectedStoredState = JSON.parse(encodedState);
+            expectedStoredState.region = "iad10";
+
             // Act/Assert
             return pkceAuthManager.getAccessToken(urlMock)
                 .then((accessToken: AccessToken) => {
@@ -623,10 +660,8 @@ describe('PKCEAuthManager', () => {
                     expect(accessToken.scopes).toEqual(SCOPES.split(' '));
                     expect(accessToken.refreshToken).toEqual(REFRESH_TOKEN);
                     expect(accessToken.tenant).toEqual('testtenant');
-                    expect(mockStorageSet).toBeCalledWith('testuser@splunk.com', 'email');
-                    expect(mockStorageSet).toBeCalledWith('inviteme', 'inviteID');
-                    expect(mockStorageSet).toBeCalledWith('testtenant', 'inviteTenant');
-                    expect(mockStorageSet).toBeCalledTimes(3);
+                    expect(mockStorageSet).toBeCalledWith(expectedStoredState);
+                    expect(mockStorageSet).toBeCalledTimes(1);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(1, REDIRECT_OAUTH_PARAMS_NAME);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(2, USER_PARAM_INVITE_ID_KEY);
                     expect(mockStorageDelete).toHaveBeenNthCalledWith(3, USER_PARAM_INVITE_TENANT_KEY);
@@ -861,11 +896,6 @@ describe('PKCEAuthManager', () => {
 
         it('with email, inviteID and inviteTenant and tenant generates the tos url', () => {
             // Arrange
-            mockStorageGet = jest.fn(() => {
-                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
-            });
-
-
             mockStorageGet = jest.fn()
                 .mockImplementationOnce(
                     () => {
@@ -893,16 +923,11 @@ describe('PKCEAuthManager', () => {
             expect(mockStorageGet).toBeCalledTimes(2);
         });
 
-        it('with email, inviteID and inviteTenant and tenant generates the tenant based tos url', () => {
+        it('with email, inviteID and inviteTenant and tenant generates the region based tos url', () => {
             const testInviteTenant = 'invitedtesttenant';
             const testRegion = `region-foo`;
             mockRegionAuthHost = `https://${testRegion}.host.com`;
             // Arrange
-            mockStorageGet = jest.fn(() => {
-                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
-            });
-
-
             mockStorageGet = jest.fn()
                 .mockImplementationOnce(
                     () => {
@@ -932,10 +957,6 @@ describe('PKCEAuthManager', () => {
 
         it('with email and tenant generates the tos url', () => {
             // Arrange
-            mockStorageGet = jest.fn(() => {
-                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
-            });
-
             mockStorageGet = jest.fn()
                 .mockImplementationOnce(
                     () => {
@@ -963,7 +984,7 @@ describe('PKCEAuthManager', () => {
             expect(mockStorageGet).toBeCalledTimes(2);
         });
 
-        it('with email and tenant generates the tenant based tos url', () => {
+        it('with email and tenant generates the region based tos url', () => {
             // Arrange
             mockStorageGet = jest.fn(() => {
                 return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
@@ -1001,10 +1022,6 @@ describe('PKCEAuthManager', () => {
 
         it('with email and inviteID but no inviteTenant generates the tos url', () => {
             // Arrange
-            mockStorageGet = jest.fn(() => {
-                return `{"state":"${CLIENT_STATE}","codeVerifier":"${CODE_VERIFIER}","codeChallenge":"${CODE_CHALLENGE}"}`;
-            });
-
             mockStorageGet = jest.fn()
                 .mockImplementationOnce(
                     () => {

@@ -31,6 +31,7 @@ import {
     SplunkOAuthError
 } from '../error/splunk-oauth-error';
 import { AccessToken } from '../model/access-token';
+import { UserState } from '../model/user-state';
 import {
     DEFAULT_ENABLE_MULTI_REGION_SUPPORT,
     DEFAULT_ENABLE_TENANT_SCOPED_TOKENS,
@@ -130,27 +131,6 @@ export interface PKCEOAuthRedirectParams {
 }
 
 /**
- * UserParams.
- */
-export interface UserParams {
-    email: string;
-    inviteID?: string;
-    inviteTenant?: string;
-}
-
-/**
- * UserState.
- */
-export interface UserState {
-    tenant: string;
-    email?: string;
-    inviteID?: string;
-    inviteTenant?: string;
-    accept_tos?: string;
-    region: string;
-}
-
-/**
  * PKCEAuthManager.
  */
 export class PKCEAuthManager implements AuthManager {
@@ -196,6 +176,17 @@ export class PKCEAuthManager implements AuthManager {
     }
 
     /**
+     * Gets user state params from storage.
+     */
+    public getUserStateParameter(): UserState {
+        try {
+            return this._userParamsStorage.get();
+        } catch {
+            throw new SplunkAuthClientError('Unable to retrieve user params storage');
+        }
+    }
+
+    /**
      * Gets an access token using the search parameters from a provided URL or window location
      * and stored OAuth parameters.  An underlying token API call is made to retrieve a new token.
      * @param url Url.
@@ -206,38 +197,13 @@ export class PKCEAuthManager implements AuthManager {
 
         clearWindowLocationFragments();
 
-        // get the user state (tenant, email, inviteID, inviteTenant, accept_tos, region) 
-        // from decoding the state parameter
+        // decode the state parameter and store the user state in session storage
         const state = String(searchParameters.get('state'));
-        const userState = this.getUserState(state);
+        this.decodeAndStoreUserStateParameters(state);
+        const userState = this.getUserStateParameter();
         
-        if (this._settings.enableTenantScopedTokens) {
-            this._settings.tenant = userState.tenant;
-        } else {
-            // set tenant to be empty to return global scoped access tokens
-            this._settings.tenant = '';
-        }
-
-        // user state will return an email if user is coming from
-        // the sso login flow, store the email in session storage
-        if (userState.email) {
-            this._userParamsStorage.set(userState.email, 'email');
-        }
-
-        // user state will return an inviteID and inviteTenant
-        // if user is coming from the invite flow via sso.
-        // store the inviteID and inviteTenant to preserve it
-        // in case the user needs to sign their TOS
-        if (userState.inviteID) {
-            this._userParamsStorage.set(userState.inviteID, 'inviteID');
-        }
-        if (userState.inviteTenant) {
-            this._userParamsStorage.set(userState.inviteTenant, 'inviteTenant');
-        }
-
-        if (userState.region) {
-            this._settings.region = userState.region.replace('region-', '');
-        }
+        this._settings.tenant = this._settings.enableTenantScopedTokens ? userState.tenant : '';
+        this._settings.region = userState.region;
 
         // overriding authProxy for with tenant based authHost for multi-region support
         if (this._settings.enableMultiRegionSupport) {
@@ -268,8 +234,8 @@ export class PKCEAuthManager implements AuthManager {
             // after successfully returning the access token clean up the
             // redirect oauth params and the inviteID and inviteTenant user params in storage
             this.deleteRedirectOAuthParameters();
-            this.deleteStoredUserParameters('inviteID');
-            this.deleteStoredUserParameters('inviteTenant');
+            this.deleteStoredUserStateParameters('inviteID');
+            this.deleteStoredUserStateParameters('inviteTenant');
         } catch (e) {
             if (e.message.includes(ERROR_CODE_UNSIGNED_TOS)) {
                 throw new SplunkOAuthError(
@@ -278,8 +244,8 @@ export class PKCEAuthManager implements AuthManager {
                 );
             }
             this.deleteRedirectOAuthParameters();
-            this.deleteStoredUserParameters('inviteID');
-            this.deleteStoredUserParameters('inviteTenant');
+            this.deleteStoredUserStateParameters('inviteID');
+            this.deleteStoredUserStateParameters('inviteTenant');
             throw new SplunkOAuthError(`${accessTokenError} ${e.message}`);
         }
 
@@ -290,7 +256,7 @@ export class PKCEAuthManager implements AuthManager {
             tokenType: accessToken.token_type,
             scopes: accessToken.scope.split(' '),
             refreshToken: accessToken.refresh_token,
-            tenant: this._settings.tenant  
+            tenant: this._settings.tenant
         };
     }
 
@@ -303,7 +269,7 @@ export class PKCEAuthManager implements AuthManager {
         const pkceParamCodeVerifier = encodeCodeVerifier(cv);
         const pkceParamCodeChallenge = createCodeChallenge(pkceParamCodeVerifier);
 
-        const storedUserParameters = this.getStoredUserParameters();
+        const storedUserParameters = this.getUserStateParameter();
         const email = storedUserParameters && storedUserParameters.email || undefined;
         const tenant = this._settings.tenant || undefined;
         
@@ -368,7 +334,7 @@ export class PKCEAuthManager implements AuthManager {
      */
     public generateTosUrl(): URL {
         const storedOAuthParameters = this.getRedirectOAuthParameters();
-        const storedUserParameters = this.getStoredUserParameters();
+        const storedUserParameters = this.getUserStateParameter();
         const email = storedUserParameters && storedUserParameters.email || undefined;
         const inviteID = storedUserParameters && storedUserParameters.inviteID || undefined;
 
@@ -439,15 +405,7 @@ export class PKCEAuthManager implements AuthManager {
         }
     }
 
-    private getStoredUserParameters(): UserParams {
-        try {
-            return this._userParamsStorage.get();
-        } catch {
-            throw new SplunkAuthClientError('Unable to retrieve user params storage');
-        }
-    }
-
-    private deleteStoredUserParameters(key?: string) {
+    private deleteStoredUserStateParameters(key?: string) {
         try {
             this._userParamsStorage.delete(key);
         } catch (e) {
@@ -456,15 +414,18 @@ export class PKCEAuthManager implements AuthManager {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    private getUserState(state: string): UserState {
+    private decodeAndStoreUserStateParameters(state: string) {
         let userState: UserState
         try {
             userState = JSON.parse(decodeURIComponent(state));
+            // strip out the region prefix
+            userState.region = userState.region.replace('region-', '');
         } catch {
             throw new SplunkAuthClientError('Unable to parse state parameter to get user state');
         }
         validateStateParameters(userState);
 
-        return userState;
+        // store the user state parameters into storage
+        this._userParamsStorage.set(userState);
     }
 }

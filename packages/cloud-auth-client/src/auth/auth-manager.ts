@@ -15,6 +15,7 @@
  */
 
 import { AccessToken } from "../model/access-token";
+import { UserState } from "../model/user-state";
 
 /**
  * AuthManager interface.
@@ -33,6 +34,10 @@ export interface AuthManager {
      * Deletes redirect path in storage.
      */
     deleteRedirectPath(): void;
+    /**
+     * Gets user state parameters from storage.
+     */
+    getUserStateParameter(): UserState | string;
     /**
      * Gets an access token using the search parameters in the provided URL or the window location.
      * @param url Url.

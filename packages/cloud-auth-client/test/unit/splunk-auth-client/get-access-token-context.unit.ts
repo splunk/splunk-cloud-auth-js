@@ -109,6 +109,7 @@ describe('SplunkAuthClient', () => {
                     getAccessToken: mockGetAccessToken,
                     generateAuthUrl: mockGenerateAuthUrl,
                     generateLogoutUrl: jest.fn(),
+                    getUserStateParameter: jest.fn(),
                 };
 
                 const authClient = getAuthClient();
@@ -144,6 +145,7 @@ describe('SplunkAuthClient', () => {
                     getAccessToken: mockGetAccessToken,
                     generateAuthUrl: mockGenerateAuthUrl,
                     generateLogoutUrl: jest.fn(),
+                    getUserStateParameter: jest.fn(),
                 };
 
                 const settings = new SplunkAuthClientSettings(GRANT_TYPE_IMPLICIT, CLIENT_ID, REDIRECT_URI);
@@ -190,6 +192,7 @@ describe('SplunkAuthClient', () => {
                     getAccessToken: mockGetAccessToken,
                     generateAuthUrl: jest.fn(),
                     generateLogoutUrl: jest.fn(),
+                    getUserStateParameter: jest.fn(),
                 };
 
                 const settings = new SplunkAuthClientSettings(GRANT_TYPE_IMPLICIT, CLIENT_ID, REDIRECT_URI);
@@ -242,6 +245,7 @@ describe('SplunkAuthClient', () => {
                     getAccessToken: mockGetAccessToken,
                     generateAuthUrl: mockGenerateAuthUrl,
                     generateLogoutUrl: jest.fn(),
+                    getUserStateParameter: jest.fn(),
                 };
 
                 const settings = new SplunkAuthClientSettings(GRANT_TYPE_IMPLICIT, CLIENT_ID, REDIRECT_URI);
@@ -290,6 +294,7 @@ describe('SplunkAuthClient', () => {
                     getAccessToken: mockGetAccessToken,
                     generateAuthUrl: mockGenerateAuthUrl,
                     generateLogoutUrl: jest.fn(),
+                    getUserStateParameter: jest.fn(),
                 };
 
                 const settings = new SplunkAuthClientSettings(GRANT_TYPE_IMPLICIT, CLIENT_ID, REDIRECT_URI);
@@ -337,6 +342,7 @@ describe('SplunkAuthClient', () => {
                     getAccessToken: mockGetAccessToken,
                     generateAuthUrl: mockGenerateAuthUrl,
                     generateLogoutUrl: jest.fn(),
+                    getUserStateParameter: jest.fn(),
                 };
 
                 const settings = new SplunkAuthClientSettings(GRANT_TYPE_PKCE, CLIENT_ID, REDIRECT_URI);
@@ -384,7 +390,8 @@ describe('SplunkAuthClient', () => {
                 getAccessToken: mockGetAccessToken,
                 generateAuthUrl: jest.fn(),
                 generateLogoutUrl: jest.fn(),
-                generateTosUrl: mockGenerateTosUrl
+                generateTosUrl: mockGenerateTosUrl,
+                getUserStateParameter: jest.fn(),
             };
 
             const settings = new SplunkAuthClientSettings(GRANT_TYPE_PKCE, CLIENT_ID, REDIRECT_URI);

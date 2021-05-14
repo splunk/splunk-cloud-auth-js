@@ -14,11 +14,12 @@
  * under the License.
  */
 
-import { PKCEOAuthRedirectParams, UserState } from '../auth/pkce-auth-manager';
+import { PKCEOAuthRedirectParams } from '../auth/pkce-auth-manager';
 import {
     ERROR_CODE_OAUTH_PARAMS_TOKEN_NOT_FOUND,
     SplunkOAuthError,
 } from '../error/splunk-oauth-error';
+import { UserState } from '../model/user-state';
 
 /**
  * Validates URL seach parameters for the PKCE flow.
@@ -76,4 +77,9 @@ export function validateStateParameters(parameters: UserState): void {
     if (!parameters.tenant) {
         throw new SplunkOAuthError('Unable to parse the tenant from the state parameter.');
     }
+
+    if (!parameters.region) {
+        throw new SplunkOAuthError('Unable to parse the region from the state parameter.');
+    }
+
 }

@@ -112,7 +112,8 @@ describe('validateStateParameters', () => {
         // Arrange
         const userStateParameter = {
             tenant: 'testtenant',
-            email: 'testuser@splunk.com'
+            email: 'testuser@splunk.com',
+            region: 'iad10'
         };
 
         // Act/Arrange
@@ -122,7 +123,8 @@ describe('validateStateParameters', () => {
     it('throws SplunkOAuthError when parameters does not contain tenant', () => {
         // Arrange
         const userStateParameter = {
-            tenant: undefined
+            tenant: undefined,
+            region: undefined
         };
 
         // Act/Arrange

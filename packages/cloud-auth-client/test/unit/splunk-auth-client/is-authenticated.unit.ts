@@ -51,7 +51,8 @@ describe('SplunkAuthClient', () => {
             deleteRedirectPath: jest.fn(),
             getAccessToken: jest.fn(),
             generateAuthUrl: jest.fn(),
-            generateLogoutUrl: jest.fn()
+            generateLogoutUrl: jest.fn(),
+            getUserStateParameter: jest.fn(),
         };
         jest.spyOn(AuthManagerFactory, 'get').mockImplementation(() => {
             return mockAuthManager;

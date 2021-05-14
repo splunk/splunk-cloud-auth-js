@@ -28,6 +28,7 @@ import {
     ERROR_CODE_UNSIGNED_TOS
 } from './error/splunk-oauth-error';
 import { AccessToken } from './model/access-token';
+import { UserState } from './model/user-state';
 import {
     GrantType,
     REDIRECT_PATH_PARAMS_NAME,
@@ -80,7 +81,8 @@ export class SplunkAuthClient implements SdkAuthManager {
                 this._settings.clientId,
                 this._settings.redirectUri,
                 this._region,
-                this._settings.tokenStorageName
+                this._settings.tokenStorageName,
+                this._settings.enableMultiRegionSupport
             )
         );
         this._authManager = AuthManagerFactory.get(
@@ -228,6 +230,16 @@ export class SplunkAuthClient implements SdkAuthManager {
         window.location.href = this._authManager.generateLogoutUrl(
             url || this._settings.redirectUri || window.location.href
         ).href;
+    }
+
+    /**
+     * Get the tenant information such as the tenant name and the region its in.
+     */
+    public getTenantInfo(): UserState {
+        return {
+            tenant: this._tenant ? this._tenant : (this._authManager.getUserStateParameter() as UserState).tenant,
+            region: this._region ? this._region : (this._authManager.getUserStateParameter() as UserState).region
+        }
     }
 
     /**

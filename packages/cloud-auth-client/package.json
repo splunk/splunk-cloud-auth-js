@@ -1,6 +1,6 @@
 {
   "name": "@splunkdev/cloud-auth-client",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "Splunk Cloud Node Authentication Library for front-end web applications",
   "author": "Splunk, Inc.",
   "license": "Apache-2.0",
@@ -94,7 +94,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "dependencies": {
-    "@splunkdev/cloud-auth-common": "^2.2.0",
+    "@splunkdev/cloud-auth-common": "^2.3.0",
     "cookie-storage": "^5.0.3",
     "crypto-js": "^3.1.9-1",
     "lodash": "^4.17.5"

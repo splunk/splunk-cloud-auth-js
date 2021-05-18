@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.1](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.5.0...@splunkdev/cloud-auth-client@3.5.1) (2021-05-18)
+
+**Note:** Version bump only for package @splunkdev/cloud-auth-client
+
+
+
+
+
 # [3.5.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-client@3.4.2...@splunkdev/cloud-auth-client@3.5.0) (2021-05-14)
 
 

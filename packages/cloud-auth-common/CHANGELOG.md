@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-common@2.2.0...@splunkdev/cloud-auth-common@2.3.0) (2021-05-18)
+
+
+### Features
+
+* upgrade isomorphic-fetch package ([d9e0824](https://github.com/splunk/splunk-cloud-auth-js/commit/d9e08248903f962b9d059136cf0e54f27ca815f2))
+
+
+
+
+
 # [2.2.0](https://github.com/splunk/splunk-cloud-auth-js/compare/@splunkdev/cloud-auth-common@2.1.0...@splunkdev/cloud-auth-common@2.2.0) (2021-02-04)
 
 

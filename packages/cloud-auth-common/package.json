@@ -91,7 +91,7 @@
   },
   "dependencies": {
     "@types/set-cookie-parser": "^0.0.6",
-    "isomorphic-fetch": "^2.2.1",
+    "isomorphic-fetch": "3.0.0",
     "set-cookie-parser": "^2.4.1"
   },
   "nyc": {

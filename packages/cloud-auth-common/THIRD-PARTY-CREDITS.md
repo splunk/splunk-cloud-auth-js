@@ -19,7 +19,7 @@ Repository: [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.
 
 Name: isomorphic-fetch
 
-Version: 2.2.1
+Version: 3.0.0
 
 License: [MIT](https://github.com/matthew-andrews/isomorphic-fetch/raw/master/LICENSE)
 
